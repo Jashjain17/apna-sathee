@@ -1296,7 +1296,7 @@ async function askBot(message) {
 
   // 4. FETCH from Python FastAPI backend
   try {
-    const response = await fetch("http://localhost:8000/api/chat", {
+    const response = await fetch("https://apna-sathee-backend.onrender.com/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: message })
@@ -2283,7 +2283,7 @@ async function runCompare() {
       const college1 = options[0]?.label || options[0]?.institute || '';
       const college2 = options[1]?.label || options[1]?.institute || '';
 
-      fetch('http://localhost:8000/api/compare-verdict', {
+      fetch('https://apna-sathee-backend.onrender.com/api/compare-verdict', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ college1, college2 })
