@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apna Saathi | JEE Counselling Copilot</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main class="app-shell">
+    <aside class="app-sidebar">
+      <div class="brand-lockup">
+        <img src="logo.png" alt="Logo" class="brand-logo">
+        <div class="brand-text-wrap">
+          <p>Apna Sathee</p>
+          <span>JEE counselling</span>
+        </div>
+        <button id="collapseSidebarBtn" class="collapse-btn" aria-label="Collapse sidebar">&laquo;</button>
+      </div>
+      <nav class="side-nav" aria-label="Main tools">
+        <button class="nav-item active" data-target="choiceScreen" data-step-target="2">
+          <span class="nav-icon">⌂</span> <span class="nav-text">Home</span>
+        </button>
+        <button class="nav-item" data-target="profileScreen" data-step-target="1">
+          <span class="nav-icon">◉</span> <span class="nav-text">Profile</span>
+        </button>
+        <button class="nav-item" data-target="chatScreen" data-step-target="3">
+          <span class="nav-icon">◌</span> <span class="nav-text">Ask Sathee</span>
+        </button>
+        <button class="nav-item" data-target="chancesScreen" data-step-target="3">
+          <span class="nav-icon">◍</span> <span class="nav-text">My chances</span>
+        </button>
+        <button class="nav-item" data-target="preferenceScreen" data-step-target="3">
+          <span class="nav-icon">≡</span> <span class="nav-text">Preference list</span>
+        </button>
+        <button class="nav-item" data-target="compareScreen" data-step-target="3">
+          <span class="nav-icon">⇄</span> <span class="nav-text">Compare</span>
+        </button>
+        <button class="nav-item" id="contactUsBtn">
+          <span class="nav-icon">💬</span> <span class="nav-text">Contact Us</span>
+        </button>
+      </nav>
+      <div class="auth-container" id="authContainer">
+        <!-- Login UI -->
+        <button id="loginBtn" class="auth-login-btn">
+          <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+          <span class="nav-text">Login with Google</span>
+        </button>
+        <!-- Logged In UI -->
+        <div id="userProfile" class="auth-profile" style="display: none;">
+          <img id="userAvatar" src="" alt="Profile" class="profile-pic" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+          <span id="userName" class="profile-name nav-text"></span>
+          <span id="proBadge" class="pro-badge" style="display: none;">PRO</span>
+          <button id="logoutBtn" class="logout-btn" title="Sign Out">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </button>
+        </div>
+      </div>
+      <div class="theme-toggle-container">
+        <label class="minimal-toggle">
+          <input id="darkModeToggle" type="checkbox" />
+          <span class="slider"></span>
+        </label>
+        <span class="theme-label nav-text">Theme</span>
+      </div>
+    </aside>
+
+    <section class="app-main">
+
+      <section class="flowbar" aria-label="Progress">
+        <div class="step active" data-step="1"><span>1</span> Profile</div>
+        <div class="step" data-step="2"><span>2</span> Choose tool</div>
+        <div class="step" data-step="3"><span>3</span> Guidance</div>
+      </section>
+
+      <section class="screen active" id="choiceScreen" data-title="What do you want to do?">
+        <header class="launchpad-header" style="text-align: center; margin-bottom: 32px; padding-top: 20px;">
+          <p class="hero-kicker"
+            style="margin: 0 0 10px; color: var(--violet); text-transform: uppercase; font-size: 13px; font-weight: 900; letter-spacing: 1px;">
+            Built for JoSAA 2026 counselling</p>
+          <p style="margin: 0; color: var(--muted); font-size: clamp(16px, 2vw, 18px); line-height: 1.5;">Your
+            counselling copilot, but faster and clearer.</p>
+        </header>
+
+        <div class="feature-slider" aria-label="Apna Saathi tools">
+          <button id="prevFeature" class="slider-arrow" aria-label="Previous feature">‹</button>
+          <div class="tool-grid three-tools" id="featureTrack">
+            <button class="tool-card active" id="openChat">
+              <span>Ask Apna Saathi</span>
+              <strong>Ask a doubt</strong>
+              <small>Documents, rounds, reporting and counselling doubts.</small>
+              <div class="demo demo-chat" aria-hidden="true">
+                <div class="bubble student">Can I use float after Round 1?</div>
+                <div class="bubble bot">Yes. Float keeps your seat while checking higher choices.</div>
+                <div class="typing"><i></i><i></i><i></i></div>
+              </div>
+            </button>
+            <button class="tool-card" id="openPreference">
+              <span>Preference list</span>
+              <strong>Build choice list</strong>
+              <small>Safe, balanced and ambitious options from your profile.</small>
+              <div class="demo demo-compare" aria-hidden="true">
+                <div class="compare-row active"><b>1. IIT Roorkee EE</b><em>Ambitious</em></div>
+                <div class="compare-row"><b>2. NIT Jaipur CSE</b><em>Balanced</em></div>
+                <div class="meter"><span></span></div>
+              </div>
+            </button>
+            <button class="tool-card" id="openChances">
+              <span>My chances</span>
+              <strong>My chances</strong>
+              <small>Check your admission probability based on your ranks.</small>
+              <div class="demo demo-compare" aria-hidden="true">
+                <div class="compare-row active"><b>NIT Warangal CSE</b><em
+                    style="color: #4ade80; font-weight: bold; padding: 2px 6px; background: rgba(74, 222, 128, 0.1); border-radius: 4px;">95%
+                    Very High</em></div>
+                <div class="compare-row"><b>IIT Delhi Mechanical</b><em
+                    style="color: #f87171; font-weight: bold; padding: 2px 6px; background: rgba(248, 113, 113, 0.1); border-radius: 4px;">Low</em>
+                </div>
+                <div class="meter"><span></span></div>
+              </div>
+            </button>
+          </div>
+          <button id="nextFeature" class="slider-arrow" aria-label="Next feature">›</button>
+        </div>
+        <div class="slider-dots" aria-label="Feature position">
+          <button class="dot active" data-slide="0" aria-label="Ask Saathi"></button>
+          <button class="dot" data-slide="1" aria-label="Preference list"></button>
+          <button class="dot" data-slide="2" aria-label="Compare college branch"></button>
+        </div>
+
+        <div class="quick-access-grid"
+          style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 32px;">
+          <button class="nav-item launch-card" data-target="profileScreen" data-step-target="1">
+            <span class="launch-icon">👤</span>
+            <strong>Build Profile</strong>
+            <small>Set your ranks and category</small>
+          </button>
+          <button class="nav-item launch-card" data-target="chancesScreen" data-step-target="3">
+            <span class="launch-icon">🎯</span>
+            <strong>My Chances</strong>
+            <small>Check admission probabilities</small>
+          </button>
+          <button class="nav-item launch-card" data-target="preferenceScreen" data-step-target="3">
+            <span class="launch-icon">📋</span>
+            <strong>Preference List</strong>
+            <small>Generate your choice order</small>
+          </button>
+          <button class="nav-item launch-card" data-target="compareScreen" data-step-target="3">
+            <span class="launch-icon">⚖️</span>
+            <strong>Compare Colleges</strong>
+            <small>Head-to-head cutoff analysis</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="screen" id="profileScreen" data-title="Build your counselling profile">
+        <div class="panel profile-panel main-card">
+          <div class="panel-head">
+            <p>Build your counselling profile</p>
+            <span>one-time setup</span>
+          </div>
+          <div class="profile-grid">
+            <label>Name
+              <input id="studentName" placeholder="e.g. Rahul" />
+            </label>
+            <label>Exam
+              <select id="exam">
+                <option>JEE Main</option>
+                <option>JEE Advanced</option>
+                <option>Both</option>
+              </select>
+            </label>
+            <label id="rankMainLabel">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span>JEE Main Rank</span>
+                <span id="rankMainSuffix" style="color:#ff5252; font-weight:bold; font-size:0.9em;"></span>
+              </div>
+              <input id="rankMain" inputmode="numeric" placeholder="e.g. 18420" />
+            </label>
+            <label id="rankAdvancedLabel">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span>JEE Advanced Rank</span>
+                <span id="rankAdvancedSuffix" style="color:#ff5252; font-weight:bold; font-size:0.9em;"></span>
+              </div>
+              <input id="rankAdvanced" inputmode="numeric" placeholder="e.g. 1240" />
+            </label>
+            <label>Category
+              <select id="category">
+                <option>OPEN</option>
+                <option>GEN-EWS</option>
+                <option>OBC-NCL</option>
+                <option>SC</option>
+                <option>ST</option>
+                <option>OPEN-PwD</option>
+              </select>
+            </label>
+            <label>Gender pool
+              <select id="gender">
+                <option>Gender-Neutral</option>
+                <option>Female-only</option>
+              </select>
+            </label>
+            <label>Home state
+              <input id="homeState" placeholder="e.g. Rajasthan" />
+            </label>
+            <label>Branch preferences (multiple)
+              <input id="branches" placeholder="e.g. CSE, ECE, Mechanical" />
+            </label>
+            <label>PWD status
+              <select id="pwdStatus">
+                <option value="">No / Not applicable</option>
+                <option>Yes</option>
+              </select>
+            </label>
+
+            <div class="visual-card" style="grid-column: 1 / -1; margin-top: 12px; margin-bottom: 0;">
+              <p class="tag">Rank percentile</p>
+              <strong id="percentileTitle">Add rank to see percentile</strong>
+              <div class="progress-track" aria-hidden="true"><i id="percentileBar"></i></div>
+              <p class="muted" id="percentileNote">This is an approximate visualiser for quick intuition.</p>
+            </div>
+          </div>
+
+          <div class="profile-actions">
+            <button id="continueBtn" class="primary" style="grid-column: 1 / -1; width: 100%;">Save</button>
+          </div>
+          <div id="recommendations" class="recommendations"></div>
+        </div>
+      </section>
+
+      <section class="screen" id="chatScreen" data-title="Ask Apna Saathi">
+
+        <section class="chat-app panel">
+          <aside class="chat-sidebar">
+            <div class="chat-sidebar-head">
+              <p>Chats</p>
+              <div class="mini-actions">
+                <button id="toggleHistoryBtn" class="mini-btn" aria-label="Hide history" style="display:flex; align-items:center; justify-content:center; padding:4px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                <button id="newChatBtn" class="mini-btn">New</button>
+              </div>
+            </div>
+            <div class="chat-sidebar-tools">
+              <input id="historySearch" placeholder="Search chats..." />
+            </div>
+            <div id="chatHistory" class="history-list"></div>
+          </aside>
+          <section class="chat-panel">
+
+            <div id="messages" class="messages" aria-live="polite">
+              <div id="chatEmpty" class="chat-empty" hidden>
+                <div class="empty-copy" style="text-align: center; margin: 40px auto; max-width: 700px;">
+                  <h2 style="font-size: 24px; font-weight: 500; color: var(--navy); margin-bottom: 30px; line-height: 1.3;">Hi, I am Apna Saathee. Ask me anything about counselling.</h2>
+                  <div class="chip-row prompt-grid" id="emptyChips" aria-label="Suggested questions">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <form id="chatForm" class="composer">
+              <textarea id="messageInput" rows="2" placeholder="Ask a counselling doubt..."></textarea>
+              <button class="send" aria-label="Send">Send</button>
+            </form>
+          </section>
+        </section>
+      </section>
+
+      <section class="screen" id="chancesScreen" data-title="My chances dashboard">
+        <div class="view-head compact-head">
+          <button class="backBtn icon-back" aria-label="Back">&lsaquo;</button>
+        </div>
+        <section class="panel chances-panel">
+          <div class="panel-head">
+            <p>My Chances</p>
+            <span id="chancesMeta">rank-based dashboard</span>
+          </div>
+
+          <!-- Segmented Control for IIT/NIT -->
+          <div class="segmented-control" id="chancesTypeToggle">
+            <button class="segment-btn active" data-type="IIT">IITs</button>
+            <button class="segment-btn" data-type="NIT">NITs</button>
+          </div>
+
+          <div class="chances-filters">
+            <label>Branch keyword
+              <input id="chBranch" placeholder="e.g. CSE, ECE, Mechanical" />
+            </label>
+            <label>Filter
+              <select id="chCategoryFilter">
+                <option value="all-iits">All IITs</option>
+                <option value="top7">Top 7</option>
+                <option value="old12">Old 12</option>
+                <option value="newer">Newer IITs</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="chancesNotice" class="chances-notice" hidden></div>
+
+          <div class="table-wrap" role="region" aria-label="Chances table">
+            <table class="chances-table">
+              <thead>
+                <tr>
+                  <th>College</th>
+                  <th>Branch</th>
+                  <th>Round 1 cutoff</th>
+                  <th>Final cutoff</th>
+                  <th>Trend (3y)</th>
+                  <th>Seats</th>
+                  <th>Verdict</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="chancesBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" id="preferenceScreen" data-title="Preference list">
+        <div class="view-head compact-head">
+          <button class="backBtn icon-back" aria-label="Back">&lsaquo;</button>
+        </div>
+        <section class="panel preference-panel">
+          <div class="panel-head">
+            <p>Your preference list</p>
+            <span>profile based</span>
+          </div>
+          <div class="preference-intro">
+            <p>Generate a choice-filling list grouped into ambitious, balanced and safer options.</p>
+            <button id="preferenceGenerateBtn" class="primary">Generate preference list</button>
+            <button id="exportPdfBtn" class="secondary subtle" disabled>Export PDF</button>
+          </div>
+          <div class="preference-meta">
+            <div class="meta-pill"><strong id="prefCount">0</strong><span> CHOICES ADDED</span></div>
+            <div id="prefWarnings" class="pref-warnings"></div>
+          </div>
+          <div class="pref-layout">
+            <section class="pref-list-wrap">
+              <h4>Drag and reorder your list</h4>
+              <div id="preferenceDnDList" class="preference-dnd-list"></div>
+            </section>
+            <aside class="pref-history-wrap">
+              <h4>Version history</h4>
+              <div id="preferenceHistory" class="preference-history"></div>
+            </aside>
+          </div>
+          <div id="systemFilterContainer"
+            style="display:none; margin-top:24px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:24px; align-items:center;">
+            <div id="instituteFilterGroup" style="display:flex; gap:8px;">
+              <button class="sys-filter-btn secondary active" data-sys="all">Show All</button>
+              <button class="sys-filter-btn secondary subtle" data-sys="iit">IITs Only</button>
+              <button class="sys-filter-btn secondary subtle" data-sys="nit">NITs & Others</button>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+              <span style="color:var(--muted); font-size:13px; font-weight:500;">Sort View:</span>
+              <button id="sortBucketsBtn" class="sys-sort-btn secondary active" data-sort="buckets">
+                Group by Safety Buckets
+                <span class="info-tooltip-trigger"
+                  title="🔴 Ambitious = Reach&#10;🟡 Balanced = Target&#10;🟢 Safe = Backup"
+                  style="margin-left:6px; display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:var(--muted); color:var(--bg); font-size:10px; cursor:help;">i</span>
+              </button>
+              <button id="sortRankBtn" class="sys-sort-btn secondary subtle" data-sort="rank">Sort by Closing
+                Rank</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="screen" id="compareScreen" data-title="Compare college/branch">
+        <div class="view-head compact-head">
+          <button class="backBtn icon-back" aria-label="Back">&lsaquo;</button>
+        </div>
+        <section class="workspace compare-only">
+          <aside class="panel support-panel">
+            <div class="panel-head">
+              <p>Compare college/branch</p>
+              <span>logic-based decision</span>
+            </div>
+            <label>Option A
+              <input id="compareA" list="collegeSuggestions" placeholder="IIT Bombay Civil" />
+            </label>
+            <label>Option B
+              <input id="compareB" list="collegeSuggestions" placeholder="NIT Warangal CSE" />
+            </label>
+            <label>Option C (optional)
+              <input id="compareC" list="collegeSuggestions" placeholder="IIIT Hyderabad CSE" />
+            </label>
+            <datalist id="collegeSuggestions">
+              <option value="IIT Bombay Civil"></option>
+              <option value="IIT Delhi Mechanical"></option>
+              <option value="IIT Roorkee ECE"></option>
+              <option value="NIT Warangal CSE"></option>
+              <option value="NIT Trichy EEE"></option>
+              <option value="IIIT Allahabad IT"></option>
+            </datalist>
+            <div class="compare-actions">
+              <button id="compareBtn" class="secondary">Compare choices</button>
+              <button id="saveCompareBtn" class="secondary subtle">Save comparison</button>
+            </div>
+            <section class="panel compare-table-panel">
+              <div class="panel-head">
+                <p>Comparison table</p>
+                <span>up to 3 options</span>
+              </div>
+              <div class="table-wrap">
+                <table class="compare-table">
+                  <thead>
+                    <tr>
+                      <th>Metric</th>
+                      <th>Option A</th>
+                      <th>Option B</th>
+                      <th>Option C</th>
+                    </tr>
+                  </thead>
+                  <tbody id="compareTableBody"></tbody>
+                </table>
+              </div>
+            </section>
+            <section class="panel compare-saved-panel">
+              <div class="panel-head">
+                <p>Saved comparisons</p>
+                <span>revisit later</span>
+              </div>
+              <div id="savedComparisons" class="history-list"></div>
+            </section>
+          </aside>
+        </section>
+      </section>
+    </section>
+  </main>
+  <section id="walkthroughCard" class="walkthrough-card" hidden>
+    <strong>Welcome to Apna Saathi</strong>
+    <p id="walkthroughText">Step 1/3: Fill your profile once for better recommendations.</p>
+    <div class="walkthrough-actions">
+      <button id="walkthroughNext" class="mini-btn">Next</button>
+      <button id="walkthroughSkip" class="mini-btn">Skip</button>
+    </div>
+  </section>
+
+  <dialog id="supportDialog" class="support-dialog">
+    <div class="panel-head">
+      <p>Human support</p>
+      <button id="closeSupportBtn" class="mini-btn">Close</button>
+    </div>
+    <p class="muted">Use this for document rejection, payment/refund issue, category edge case or urgent official-portal
+      confusion.</p>
+    <label>Name
+      <input id="supportName" placeholder="Student name" />
+    </label>
+    <label>Contact
+      <input id="supportContact" placeholder="Email or phone" />
+    </label>
+    <label>Query
+      <textarea id="supportQuestion" rows="5" placeholder="What should a human counsellor check?"></textarea>
+    </label>
+    <button id="supportBtn" class="secondary">Create ticket</button>
+    <div id="supportResult" class="ticket"></div>
+  </dialog>
+  <!-- Paywall Modal -->
+  <div id="paywallModal" class="paywall-modal" style="display: none;">
+    <div class="paywall-card">
+      <button id="paywallCloseBtn" class="paywall-close" aria-label="Close">&times;</button>
+      <div class="paywall-badge">PRO</div>
+      <h2 class="paywall-headline">Unlock Apna Sathee Pro</h2>
+      <p class="paywall-subtext">Get unlimited AI counselling, admission chances, preference lists, and college comparisons.</p>
+      <ul class="paywall-features">
+        <li>✦ Unlimited AI chat messages</li>
+        <li>✦ Full access to My Chances</li>
+        <li>✦ Smart Preference List builder</li>
+        <li>✦ College & Branch comparisons</li>
+      </ul>
+      <div class="paywall-price">₹249 <span>/ one-time</span></div>
+      <button id="upgradeBtn" class="paywall-cta">Upgrade Now</button>
+    </div>
+  </div>
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+
+</html>

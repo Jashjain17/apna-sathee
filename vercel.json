@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "api/*.js", "use": "@vercel/node" },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "script.js", "use": "@vercel/static" },
+    { "src": "styles.css", "use": "@vercel/static" },
+    { "src": "public/*.json", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/chat", "dest": "/api/chat.js" },
+    { "src": "/api/recommend", "dest": "/api/recommend.js" },
+    { "src": "/api/compare", "dest": "/api/compare.js" },
+    { "src": "/api/institutes", "dest": "/api/institutes.js" },
+    { "src": "/api/support", "dest": "/api/support.js" },
+    { "src": "/api/csab", "dest": "/api/csab.js" },
+    { "src": "/api/data", "dest": "/api/data.js" },
+    { "src": "/cutoffs.json", "dest": "/public/cutoffs.json" },
+    { "src": "/josaa_real_cutoffs.json", "dest": "/public/josaa_real_cutoffs.json" },
+    { "src": "/institutes_master.json", "dest": "/public/institutes_master.json" },
+    { "src": "/script.js", "dest": "/script.js" },
+    { "src": "/styles.css", "dest": "/styles.css" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}
