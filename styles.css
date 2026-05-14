@@ -3326,7 +3326,7 @@ body.theme-dark .slider-arrow::after {
     }
 
     /* --- 7. PREFERENCE LIST TAB (Fix Sorting & Filters) --- */
-    #preferenceScreen { display: flex !important; flex-direction: column !important; }
+    #preferenceScreen.active{ display: flex !important; flex-direction: column !important; }
     
     #systemFilterContainer,
     #instituteFilterGroup,
