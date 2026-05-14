@@ -3123,3 +3123,13 @@ body.theme-dark .toast {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(122, 92, 255, 0.4);
 }
+
+/* --- UI HOTFIX: Fix Invisible Slider Arrows --- */
+#prevFeature, #nextFeature {
+    color: #0f172a !important; 
+}
+
+#prevFeature svg, #nextFeature svg {
+    stroke: #0f172a !important;
+    fill: #0f172a !important;
+}
