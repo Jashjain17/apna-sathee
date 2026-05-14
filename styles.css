@@ -3124,21 +3124,78 @@ body.theme-dark .toast {
   box-shadow: 0 8px 24px rgba(122, 92, 255, 0.4);
 }
 
-/* --- UI HOTFIX: Force ALL slider arrows to be visible --- */
+/* --- APNA SATHEE UNIVERSAL ARROW FRAMEWORK (Light & Dark Mode Responsive) --- */
+
+/* 1. Global Reset & Basic Button Styling (Targets specific homepage IDs + generic class) */
+#prevFeature,
+#nextFeature,
 .slider-arrow {
-    color: #0f172a !important; 
+    background-color: rgba(0, 0, 0, 0.05) !important; /* Extremely subtle circle */
+    border: none !important;
+    width: 44px !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease-in-out !important;
+    outline: none !important;
+    position: relative !important;
 }
 
-/* If the AI drew the arrow using pseudo-elements */
-.slider-arrow::before, 
+/* 2. Hover/Active State Styling */
+#prevFeature:hover,
+#nextFeature:hover,
+.slider-arrow:hover {
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    transform: scale(1.05) !important;
+}
+
+/* 3. The Magic: Injecting the Chevron Arrow using CSS Masks */
+/* This part draws the icon; the color comes from background-color below. */
+#prevFeature::after,
+#nextFeature::after,
 .slider-arrow::after {
-    color: #0f172a !important;
-    border-color: #0f172a !important;
+    content: '' !important;
+    display: block !important;
+    width: 20px !important;  /* Controls arrow size */
+    height: 20px !important;
+    background-color: #0f172a; /* DEFAULT LIGHT MODE ARROW COLOR (Dark Slate) */
+    
+    /* Using modern masking for predictable vectors */
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3%3E%3Cpolyline points='9 18 15 12 9 6'%3%3E%3C/polyline%3E%3C/svg%3E") !important;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3%3E%3Cpolyline points='9 18 15 12 9 6'%3%3E%3C/polyline%3E%3C/svg%3E") !important;
+    -webkit-mask-size: contain !important;
+    mask-size: contain !important;
+    -webkit-mask-repeat: no-repeat !important;
+    mask-repeat: no-repeat !important;
+    -webkit-mask-position: center !important;
+    mask-position: center !important;
 }
 
-/* PLAN B: If the arrow is a hardcoded background image that refuses to turn dark, 
-   we will invert the button to be dark so the light arrow pops! */
-.slider-arrow {
-    background-color: #1e293b !important; /* Dark slate background */
-    border: 1px solid #334155 !important;
+/* 4. Flipping the Left Arrow (Don't use a separate image, just rotate) */
+#prevFeature::after,
+[class*="prev"]::after { /* Catches classes like .slider-prev */
+    transform: rotate(180deg) !important;
+}
+
+/* 5. DYNAMIC DARK MODE INTEGRATION (Assuming body.theme-dark is your active class) */
+/* We flip the background circle, the button hover circle, and most importantly, the arrow itself */
+body.theme-dark #prevFeature,
+body.theme-dark #nextFeature,
+body.theme-dark .slider-arrow {
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Faint white circle */
+}
+
+body.theme-dark #prevFeature:hover,
+body.theme-dark #nextFeature:hover,
+body.theme-dark .slider-arrow:hover {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.theme-dark #prevFeature::after,
+body.theme-dark #nextFeature::after,
+body.theme-dark .slider-arrow::after {
+    background-color: #f8fafc !important; /* DARK MODE ARROW COLOR (Light Slate) */
 }
