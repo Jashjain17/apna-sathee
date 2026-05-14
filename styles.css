@@ -3124,12 +3124,21 @@ body.theme-dark .toast {
   box-shadow: 0 8px 24px rgba(122, 92, 255, 0.4);
 }
 
-/* --- UI HOTFIX: Fix Invisible Slider Arrows --- */
-#prevFeature, #nextFeature {
+/* --- UI HOTFIX: Force ALL slider arrows to be visible --- */
+.slider-arrow {
     color: #0f172a !important; 
 }
 
-#prevFeature svg, #nextFeature svg {
-    stroke: #0f172a !important;
-    fill: #0f172a !important;
+/* If the AI drew the arrow using pseudo-elements */
+.slider-arrow::before, 
+.slider-arrow::after {
+    color: #0f172a !important;
+    border-color: #0f172a !important;
+}
+
+/* PLAN B: If the arrow is a hardcoded background image that refuses to turn dark, 
+   we will invert the button to be dark so the light arrow pops! */
+.slider-arrow {
+    background-color: #1e293b !important; /* Dark slate background */
+    border: 1px solid #334155 !important;
 }
