@@ -6,7 +6,8 @@
     { "src": "script.js", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
     { "src": "public/*.json", "use": "@vercel/static" },
-    { "src": "logo.png", "use": "@vercel/static" }
+    { "src": "logo.png", "use": "@vercel/static" },
+    { "src": "legal.html", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
