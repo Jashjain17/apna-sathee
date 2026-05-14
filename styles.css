@@ -349,7 +349,10 @@ textarea {
 .minimal-toggle .slider {
   position: absolute;
   cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background-color: var(--line);
   transition: .4s;
   border-radius: 20px;
@@ -367,11 +370,11 @@ textarea {
   border-radius: 50%;
 }
 
-.minimal-toggle input:checked + .slider {
+.minimal-toggle input:checked+.slider {
   background-color: var(--violet);
 }
 
-.minimal-toggle input:checked + .slider:before {
+.minimal-toggle input:checked+.slider:before {
   transform: translateX(16px);
 }
 
@@ -447,7 +450,9 @@ textarea {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .side-card {
@@ -517,7 +522,7 @@ h2 {
   margin-bottom: 16px;
 }
 
-.hero-panel > div {
+.hero-panel>div {
   border: 1px solid #d8dffd;
   border-radius: var(--radius-card);
   background: linear-gradient(150deg, #ffffff 0%, #f4f6ff 100%);
@@ -695,7 +700,8 @@ h2 {
   min-height: 680px;
 }
 
-.chat-sidebar, .chat-sidebar * {
+.chat-sidebar,
+.chat-sidebar * {
   box-sizing: border-box;
 }
 
@@ -762,7 +768,7 @@ h2 {
 }
 
 .chat-sidebar .mini-btn:hover {
-  background: rgba(0,0,0,0.04);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .mini-btn {
@@ -1140,7 +1146,7 @@ h2 {
   line-height: 1.2;
 }
 
-.insights-card > p {
+.insights-card>p {
   margin: 8px 0 0;
   color: var(--muted);
 }
@@ -1448,11 +1454,13 @@ h2 {
 }
 
 @keyframes bubbleIn {
+
   0%,
   100% {
     transform: translateY(0);
     opacity: 0.9;
   }
+
   45% {
     transform: translateY(-4px);
     opacity: 1;
@@ -1460,12 +1468,14 @@ h2 {
 }
 
 @keyframes pulseDot {
+
   0%,
   80%,
   100% {
     opacity: 0.3;
     transform: translateY(0);
   }
+
   40% {
     opacity: 1;
     transform: translateY(-3px);
@@ -1473,33 +1483,51 @@ h2 {
 }
 
 @keyframes rowGlow {
+
   0%,
   100% {
     transform: translateX(0);
   }
+
   50% {
     transform: translateX(4px);
   }
 }
 
 @keyframes meterMove {
+
   0%,
   100% {
     width: 48%;
   }
+
   50% {
     width: 82%;
   }
 }
 
 @keyframes liveBlink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 @keyframes supportPulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 182, 122, 0.25); }
-  50% { box-shadow: 0 0 0 10px rgba(0, 182, 122, 0); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 182, 122, 0.25);
+  }
+
+  50% {
+    box-shadow: 0 0 0 10px rgba(0, 182, 122, 0);
+  }
 }
 
 .quick-strip {
@@ -1662,7 +1690,7 @@ h2 {
   border-color: var(--violet);
 }
 
-.quick-strip > div {
+.quick-strip>div {
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--paper);
@@ -2485,7 +2513,7 @@ b.history-title {
   opacity: 1 !important;
 }
 
-.history-item > span {
+.history-item>span {
   display: block;
   margin-top: 4px;
   color: var(--muted);
@@ -2562,6 +2590,7 @@ b.history-title {
 }
 
 @media (max-width: 1120px) {
+
   .workspace,
   .workspace.two-col,
   .chat-app,
@@ -2766,7 +2795,7 @@ body.theme-dark .compare-better {
   border-color: #2a3555 !important;
 }
 
-body.theme-dark .hero-panel > div {
+body.theme-dark .hero-panel>div {
   background: linear-gradient(150deg, #151d33 0%, #12192d 100%);
   border-color: #2a3555;
 }
@@ -2827,7 +2856,8 @@ body.theme-dark .warning-chip {
 /* Segmented Control (Toggle) */
 .segmented-control {
   display: flex;
-  gap: 8px; /* Gap so individual buttons can have full borders */
+  gap: 8px;
+  /* Gap so individual buttons can have full borders */
   margin: 0 16px 16px;
 }
 
@@ -2878,7 +2908,8 @@ body.theme-dark .segment-btn.active {
 
 @media (max-width: 600px) {
   .segment-btn {
-    padding: 14px 16px; /* easier to tap on phone */
+    padding: 14px 16px;
+    /* easier to tap on phone */
   }
 }
 
@@ -2975,7 +3006,7 @@ body.theme-dark .toast {
 
 .prompt-card {
   background: var(--surface);
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   padding: 15px;
   font-size: 14px;
@@ -2991,7 +3022,7 @@ body.theme-dark .toast {
 .prompt-card:hover {
   background: var(--nav-hover);
   border-color: var(--violet);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transform: translateY(-1px);
 }
 
@@ -3032,8 +3063,15 @@ body.theme-dark .toast {
 }
 
 @keyframes paywallIn {
-  from { opacity: 0; transform: scale(0.92) translateY(20px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .paywall-close {
@@ -3130,26 +3168,27 @@ body.theme-dark .toast {
 #prevFeature,
 #nextFeature,
 .slider-arrow {
-    background-color: rgba(0, 0, 0, 0.05) !important; /* Extremely subtle circle */
-    border: none !important;
-    width: 44px !important;
-    height: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 50% !important;
-    cursor: pointer !important;
-    transition: all 0.2s ease-in-out !important;
-    outline: none !important;
-    position: relative !important;
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  /* Extremely subtle circle */
+  border: none !important;
+  width: 44px !important;
+  height: 44px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease-in-out !important;
+  outline: none !important;
+  position: relative !important;
 }
 
 /* 2. Hover/Active State Styling */
 #prevFeature:hover,
 #nextFeature:hover,
 .slider-arrow:hover {
-    background-color: rgba(0, 0, 0, 0.1) !important;
-    transform: scale(1.05) !important;
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  transform: scale(1.05) !important;
 }
 
 /* 3. The Magic: Injecting the Chevron Arrow using CSS Masks */
@@ -3157,27 +3196,30 @@ body.theme-dark .toast {
 #prevFeature::after,
 #nextFeature::after,
 .slider-arrow::after {
-    content: '' !important;
-    display: block !important;
-    width: 20px !important;  /* Controls arrow size */
-    height: 20px !important;
-    background-color: #0f172a; /* DEFAULT LIGHT MODE ARROW COLOR (Dark Slate) */
-    
-    /* Using modern masking for predictable vectors */
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3%3E%3Cpolyline points='9 18 15 12 9 6'%3%3E%3C/polyline%3E%3C/svg%3E") !important;
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3%3E%3Cpolyline points='9 18 15 12 9 6'%3%3E%3C/polyline%3E%3C/svg%3E") !important;
-    -webkit-mask-size: contain !important;
-    mask-size: contain !important;
-    -webkit-mask-repeat: no-repeat !important;
-    mask-repeat: no-repeat !important;
-    -webkit-mask-position: center !important;
-    mask-position: center !important;
+  content: '' !important;
+  display: block !important;
+  width: 20px !important;
+  /* Controls arrow size */
+  height: 20px !important;
+  background-color: #0f172a;
+  /* DEFAULT LIGHT MODE ARROW COLOR (Dark Slate) */
+
+  /* Using modern masking for predictable vectors */
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3%3E%3Cpolyline points='9 18 15 12 9 6'%3%3E%3C/polyline%3E%3C/svg%3E") !important;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='feather feather-chevron-right'%3%3E%3Cpolyline points='9 18 15 12 9 6'%3%3E%3C/polyline%3E%3C/svg%3E") !important;
+  -webkit-mask-size: contain !important;
+  mask-size: contain !important;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-position: center !important;
+  mask-position: center !important;
 }
 
 /* 4. Flipping the Left Arrow (Don't use a separate image, just rotate) */
 #prevFeature::after,
-[class*="prev"]::after { /* Catches classes like .slider-prev */
-    transform: rotate(180deg) !important;
+[class*="prev"]::after {
+  /* Catches classes like .slider-prev */
+  transform: rotate(180deg) !important;
 }
 
 /* 5. DYNAMIC DARK MODE INTEGRATION (Assuming body.theme-dark is your active class) */
@@ -3185,18 +3227,254 @@ body.theme-dark .toast {
 body.theme-dark #prevFeature,
 body.theme-dark #nextFeature,
 body.theme-dark .slider-arrow {
-    background-color: rgba(255, 255, 255, 0.1) !important; /* Faint white circle */
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  /* Faint white circle */
 }
 
 body.theme-dark #prevFeature:hover,
 body.theme-dark #nextFeature:hover,
 body.theme-dark .slider-arrow:hover {
-    background-color: rgba(255, 255, 255, 0.2) !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
 body.theme-dark #prevFeature::after,
 body.theme-dark #nextFeature::after,
 body.theme-dark .slider-arrow::after {
-    background-color: #f8fafc !important; /* DARK MODE ARROW COLOR (Light Slate) */
+  background-color: #f8fafc !important;
+  /* DARK MODE ARROW COLOR (Light Slate) */
 }
 
+/* ========================================= */
+/* MOBILE UI FIXES (Under 768px)             */
+/* ========================================= */
+
+@media (max-width: 768px) {
+  /* Hide the hardcoded HTML header if present, we rely on the JS one */
+  header.mobile-header { display: none !important; }
+  
+  /* 1. True Off-Canvas Sidebar */
+  .app-shell {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .app-main {
+    width: 100%;
+    padding: 16px !important;
+    box-sizing: border-box;
+  }
+
+  /* Target the dynamically created JS header */
+  div.mobile-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    position: sticky;
+    top: 0;
+    z-index: 900;
+  }
+
+  .hamburger-btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--navy);
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  /* Completely hide sidebar off-canvas */
+  .app-sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%) !important;
+    width: 280px !important;
+    height: 100vh !important;
+    z-index: 1000 !important;
+    background: var(--paper);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease !important;
+    padding-top: 20px;
+    margin: 0 !important;
+  }
+
+  /* Triggered by JS */
+  .app-sidebar.open, .app-sidebar.mobile-open {
+    transform: translateX(0) !important;
+  }
+
+  /* Target both the JS overlay and the manual backdrop */
+  .sidebar-overlay, .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar-overlay.open, .sidebar-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* 2. Full Width Content & Stacked Grids */
+  .workspace,
+  .workspace.two-col,
+  .panel,
+  .tool-grid,
+  .quick-access-grid,
+  .profile-grid {
+    display: flex !important;
+    flex-direction: column;
+    gap: 16px;
+    width: 100% !important;
+  }
+
+  .tool-card {
+    width: 100%;
+    min-height: auto;
+    padding: 24px 20px;
+    margin: 0;
+  }
+
+  .feature-slider {
+    display: block;
+  }
+
+  .slider-arrow {
+    display: none !important;
+  }
+
+  /* Scrollable Tables */
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: block !important;
+  }
+
+  .chances-table,
+  .compare-table {
+    min-width: 650px !important;
+    width: 100%;
+  }
+
+  /* 3. Fix Ask Sathee Chat Overflow & Drawer */
+  .chip-row,
+  .prompt-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  .bubble {
+    word-break: break-word;
+    white-space: pre-wrap;
+    max-width: 95%;
+  }
+
+  /* Pinned Chat Input */
+  .chat-app {
+    display: flex !important;
+    flex-direction: column;
+    /* Use dynamic viewport height minus roughly the header height */
+    height: calc(100vh - 80px) !important; 
+    position: relative;
+    overflow: hidden;
+    padding: 0 !important;
+  }
+
+  .mobile-chat-toggle {
+    display: inline-block !important;
+    padding: 8px 14px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    cursor: pointer;
+    align-self: flex-start;
+    flex-shrink: 0;
+  }
+
+  /* Hidden Sidebar Drawer */
+  .chat-sidebar {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    transform: translateX(-100%) !important;
+    width: 85% !important;
+    max-width: 320px;
+    height: 100% !important;
+    z-index: 500;
+    background: var(--paper);
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .chat-sidebar.open {
+    transform: translateX(0) !important;
+  }
+
+  .chat-panel {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1;
+    height: 100%;
+    width: 100%;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+  }
+
+  .composer {
+    position: sticky !important;
+    bottom: 0 !important;
+    left: 0;
+    width: 100% !important;
+    background: var(--paper);
+    padding: 12px;
+    border-top: 1px solid var(--line);
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  /* 4. Preference List Filters Ordered to Top */
+  .preference-panel {
+    display: flex !important;
+    flex-direction: column;
+  }
+
+  .preference-panel > .panel-head { order: 1; }
+  .preference-panel > .preference-intro { order: 2; }
+  .preference-panel > .preference-meta { order: 3; }
+  
+  #systemFilterContainer {
+    order: -1 !important; /* Force to absolute top */
+    margin-top: 10px !important;
+    margin-bottom: 20px !important;
+    width: 100%;
+    display: flex !important;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .preference-panel > .pref-layout { order: 5; }
+}
