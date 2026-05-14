@@ -2790,3 +2790,23 @@ setTimeout(() => {
     compareTitle.style.alignItems = 'center';
   }
 }, 100);
+
+// --- APNA SATHEE GLOBAL AI DISCLAIMER ---
+document.addEventListener('DOMContentLoaded', () => {
+  const disclaimerHTML = `
+    <div style="text-align: center; padding: 12px 20px; font-size: 11px; color: #64748b; display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; border-top: 1px solid rgba(150, 150, 150, 0.1); margin-top: auto; opacity: 0.8;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+      Apna Sathee uses AI to predict trends and can make mistakes. Always verify critical decisions, rules, and deadlines with official JoSAA documentation.
+    </div>
+  `;
+
+  // The 4 feature screens you want to protect
+  const targetScreens = ['chatScreen', 'chancesScreen', 'preferenceScreen', 'compareScreen'];
+  
+  targetScreens.forEach(id => {
+    const screen = document.getElementById(id);
+    if (screen) {
+      screen.insertAdjacentHTML('beforeend', disclaimerHTML);
+    }
+  });
+});
