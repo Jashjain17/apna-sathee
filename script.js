@@ -1,9 +1,9 @@
-// â”€â”€â”€ Firebase CDN Imports â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Firebase CDN Imports ---------------------------------------------------
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
 
-// â”€â”€â”€ Firebase Config & Initialization â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Firebase Config & Initialization ---------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyCh1MJ9gLfcw0qnXIIyBm_HZPdsYP8X6AQ",
   authDomain: "apna-sathee.firebaseapp.com",
@@ -17,7 +17,7 @@ const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 const provider = new GoogleAuthProvider();
 
-// â”€â”€â”€ Global User Subscription State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Global User Subscription State -----------------------------------------
 let currentUserTier = null;      // null = logged out, 'Free', or 'Pro'
 let currentMessagesUsed = 0;
 let currentUserUid = null;
@@ -36,7 +36,7 @@ function isPremiumLocked() {
   return !currentUserTier || currentUserTier === 'Free';
 }
 
-// â”€â”€â”€ Auth UI Wiring â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Auth UI Wiring ---------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      console.log("ðŸ‘¤ User logged in:", user.uid);
+      console.log("👤 User logged in:", user.uid);
 
       // Show profile, hide login
       if (loginBtn) loginBtn.style.display = 'none';
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const userData = userSnap.data();
           tier = userData.subscription_tier || 'Free';
           currentMessagesUsed = userData.free_messages_used || 0;
-          console.log("ðŸ“Š User subscription tier from DB:", tier);
+          console.log("📊 User subscription tier from DB:", tier);
         } else {
           // Brand new user - initialize Firestore document
           await setDoc(userRef, {
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
             createdAt: new Date()
           });
           currentMessagesUsed = 0;
-          console.log("ðŸ†• New user profile initialized in Firestore.");
+          console.log("🆕 New user profile initialized in Firestore.");
         }
       } catch (err) {
         console.error('Firestore profile error:', err);
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // â”€â”€â”€ Upgrade Now Button (Razorpay Checkout) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // --- Upgrade Now Button (Razorpay Checkout) -------------------------------
   const upgradeBtn = document.getElementById('upgradeBtn');
   if (upgradeBtn) {
     upgradeBtn.addEventListener('click', () => {
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "description": "Unlock Pro Access",
         "image": "logo.png",
         "handler": function (response) {
-          console.log("âœ… Razorpay Payment Success:", response.razorpay_payment_id);
+          console.log("✅ Razorpay Payment Success:", response.razorpay_payment_id);
           try {
             const user = auth.currentUser;
             if (!user) {
@@ -176,17 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const badge = document.querySelector('.pro-badge') || document.getElementById('proBadge');
             if (badge) badge.style.display = 'inline-block';
 
-            alert('ðŸŽ‰ Payment Successful! Welcome to Apna Sathee Pro.');
+            alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
 
             // 2. BACKGROUND FIREBASE SYNC (Don't await, let it run in background)
-            console.log("ðŸ”„ Updating Firebase for user:", user.uid);
+            console.log("🔄 Updating Firebase for user:", user.uid);
             const userRef = doc(db, 'users', user.uid);
             updateDoc(userRef, { subscription_tier: 'Pro' })
-              .then(() => console.log("âœ… Firebase Updated to Pro!"))
+              .then(() => console.log("✅ Firebase Updated to Pro!"))
               .catch((error) => console.error("Firebase sync error (background):", error));
 
           } catch (error) {
-            console.error("âŒ CRITICAL ERROR in Payment Handler UI:", error);
+            console.error("❌ CRITICAL ERROR in Payment Handler UI:", error);
           }
         },
         "prefill": {
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// â”€â”€â”€ Existing Application Code â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Existing Application Code ----------------------------------------------
 const $ = (id) => document.getElementById(id);
 const listen = (id, event, fn) => {
   const el = $(id);
@@ -436,11 +436,11 @@ function matchStrictProfile(record, profile, instState) {
  * instituteType field (which can be wrong or missing after extraction).
  *
  * Rules:
- *  - 'IIT Bombay', 'IIT (BHU) Varanasi', 'IIT (ISM) Dhanbad' â†’ true
- *  - 'IIIT Pune', 'IIIT Dharwad' â†’ false  (triple-I)
- *  - 'NIT Trichy', 'BIT Mesra', 'IIEST Shibpur' â†’ false
- *  - 'Indian Institute of Technology Madras' â†’ true
- *  - 'Indian Institute of Information Technology Allahabad' â†’ false
+ * - 'IIT Bombay', 'IIT (BHU) Varanasi', 'IIT (ISM) Dhanbad' -> true
+ * - 'IIIT Pune', 'IIIT Dharwad' -> false  (triple-I)
+ * - 'NIT Trichy', 'BIT Mesra', 'IIEST Shibpur' -> false
+ * - 'Indian Institute of Technology Madras' -> true
+ * - 'Indian Institute of Information Technology Allahabad' -> false
  */
 function isStrictlyIIT(instituteName) {
   const name = (instituteName || '').trim();
@@ -498,7 +498,7 @@ async function clientRecommend(p) {
     // Name-based IIT detection - robust against missing/wrong instituteType
     const isIIT = isStrictlyIIT(record.institute);
 
-    // â”€â”€ 1. EXAM GUARD & DYNAMIC RANK ROUTING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- 1. EXAM GUARD & DYNAMIC RANK ROUTING -------------------------------
     let targetRank;
     if (exam === 'JEE Main') {
       if (isIIT) continue;
@@ -519,7 +519,7 @@ async function clientRecommend(p) {
       programLower.includes('landscape')
     ) continue;
 
-    // â”€â”€ 2. STRICT BRANCH GUARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- 2. STRICT BRANCH GUARD ---------------------------------------------
     if (preferredBranches.length > 0) {
       const matchesBranch = preferredBranches.some(br => programLower.includes(br));
       if (!matchesBranch) continue;
@@ -598,7 +598,7 @@ async function clientRecommend(p) {
   }
   categorizedResults = Array.from(dedupMap.values());
 
-  // â”€â”€ EXTREME RANK FALLBACK â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // --- EXTREME RANK FALLBACK ------------------------------------------------
   if (categorizedResults.length === 0 && results.length > 0) {
     results.sort((a, b) => (b.avgClosingRank || 0) - (a.avgClosingRank || 0));
     categorizedResults = results.slice(0, 30).map(r => ({ ...r, band: 'AMBITIOUS' }));
@@ -646,7 +646,7 @@ let preferenceState = {
 };
 const savedComparisonsKey = "apnaSaathiSavedComparisons";
 
-// â”€â”€ Preference localStorage helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// --- Preference localStorage helpers ----------------------------------------
 function savePreferenceToStorage() {
   try {
     localStorage.setItem(PREF_STORAGE_KEY, JSON.stringify(preferenceState.rows));
@@ -988,8 +988,8 @@ function renderHistory() {
             <b class="history-title">${escapeHtml(session.title)}</b>
           </div>
           <div style="display: flex; align-items: center; gap: 4px;">
-            <div class="rename-btn" data-rename="${session.id}" aria-label="Rename chat" title="Rename" role="button" tabindex="0">âœï¸</div>
-            <span class="pin" data-pin="${session.id}" aria-label="Pin chat">${session.pinned ? "ðŸ“Œ" : "ðŸ“"}</span>
+            <div class="rename-btn" data-rename="${session.id}" aria-label="Rename chat" title="Rename" role="button" tabindex="0">✏️</div>
+            <span class="pin" data-pin="${session.id}" aria-label="Pin chat">${session.pinned ? "📌" : "📍"}</span>
           </div>
         </div>
         <span>${new Date(session.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}</span>
@@ -1045,19 +1045,30 @@ function addMessage(role, text, persist = true, messageObj) {
   box.dataset.messageId = messageId;
   const label = document.createElement("span");
   label.textContent = role === "user" ? "You" : "Apna Saathi";
-  const body = document.createElement("p");
-  body.textContent = text;
+  
+  // MARDKOWN TRANSLATOR FIX ------------------------------------------
+  const body = document.createElement("div"); 
+  body.className = "message-body";
+  if (role === "bot" && typeof marked !== 'undefined') {
+    body.innerHTML = marked.parse(text); 
+  } else {
+    body.textContent = text;
+  }
+  // ------------------------------------------------------------------
+
   box.append(label, body);
 
   if (role === "bot") {
     const actions = document.createElement("div");
     actions.className = "message-actions";
+    // ALIEN EMOJI FIX ------------------------------------------------
     actions.innerHTML = `
-      <button class="action-btn" data-action="up" type="button">ðŸ‘</button>
-      <button class="action-btn" data-action="down" type="button">ðŸ‘Ž</button>
+      <button class="action-btn" data-action="up" type="button">👍</button>
+      <button class="action-btn" data-action="down" type="button">👎</button>
       <button class="action-btn" data-action="save" type="button">Save</button>
       <button class="action-btn" data-action="share" type="button">Share</button>
     `;
+    // ----------------------------------------------------------------
     const followups = document.createElement("div");
     followups.className = "followups";
     followups.innerHTML = buildFollowupChips(text).map((t) => `<button class="chip" type="button" data-followup="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join("");
@@ -1287,7 +1298,7 @@ async function askBot(message) {
     if (currentMessagesUsed >= 5) {
       // Remove typing indicator
       if (typingBubble.parentNode) typingBubble.remove();
-      addMessage("bot", "ðŸ”’ You have reached your 5 free messages. Upgrade to Apna Sathee Pro to continue chatting with unlimited AI counselling.");
+      addMessage("bot", "🔒 You have reached your 5 free messages. Upgrade to Apna Sathee Pro to continue chatting with unlimited AI counselling.");
       showPaywall();
       if (confEl) confEl.textContent = "locked";
       return;
@@ -1322,7 +1333,7 @@ async function askBot(message) {
       if (currentUserUid) {
         const userRef = doc(db, 'users', currentUserUid);
         updateDoc(userRef, { free_messages_used: currentMessagesUsed })
-          .then(() => console.log("ðŸ“Š Message count updated:", currentMessagesUsed))
+          .then(() => console.log("📊 Message count updated:", currentMessagesUsed))
           .catch((err) => console.error("Failed to update message count:", err));
       }
     }
@@ -1332,7 +1343,7 @@ async function askBot(message) {
     if (typingBubble.parentNode) typingBubble.remove();
 
     console.error("Chat fetch error:", error);
-    addMessage("bot", "âš ï¸ Connection error. Please ensure your backend server is running at localhost:8000.");
+    addMessage("bot", "⚠️ Connection error. Please ensure your backend server is running at localhost:8000.");
     if (confEl) confEl.textContent = "error";
   }
 }
@@ -1648,7 +1659,7 @@ function calculateAdmissionChance(userRank, closingRank) {
 }
 
 function trendArrow() {
-  const arrows = ["â–²", "â–¼", "â†’"];
+  const arrows = ["▲", "▼", "→"];
   return arrows[Math.floor(Math.random() * arrows.length)];
 }
 
@@ -1959,10 +1970,10 @@ function showToast(message) {
 }
 
 function addToPreference(item, btn) {
-  // â”€â”€ 1. Read latest from localStorage before writing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // --- 1. Read latest from localStorage before writing ------------------------
   loadPreferenceFromStorage();
 
-  // â”€â”€ 2. Duplicate check against the live list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // --- 2. Duplicate check against the live list -------------------------------
   const isDuplicate = preferenceState.rows.some(
     (r) => r.institute === item.institute && r.program === item.program
   );
@@ -1973,29 +1984,29 @@ function addToPreference(item, btn) {
       btn.classList.add("already");
       btn.disabled = true;
     }
-    showToast("âš ï¸ This college + branch combo is already in your preference list.");
+    showToast("⚠️ This college + branch combo is already in your preference list.");
     return;
   }
 
-  // â”€â”€ 3. Push to the bottom (no auto-sort, no cap) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // --- 3. Push to the bottom (no auto-sort, no cap) ---------------------------
   pushPrefUndoSnapshot();
   preferenceState.rows.push({ ...item, at: new Date().toISOString() });
   pushPreferenceSnapshot("Added manually");
   syncLastChoiceList();   // this also calls savePreferenceToStorage()
 
-  // â”€â”€ 4. Force re-render if Preference List tab is active â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // --- 4. Force re-render if Preference List tab is active --------------------
   if ($("preferenceScreen").classList.contains("active")) {
     renderPreferenceBoard();
   }
 
-  // â”€â”€ 5. UI feedback â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // --- 5. UI feedback ---------------------------------------------------------
   if (btn) {
     btn.textContent = "Added ✓";
     btn.classList.add("added");
     btn.disabled = true;
   }
 
-  showToast(`âœ… Added to your preference list (${preferenceState.rows.length} total). You can sort it later!`);
+  showToast(`✅ Added to your preference list (${preferenceState.rows.length} total). You can sort it later!`);
 }
 
 listen("chatForm", "submit", (event) => {
@@ -2259,7 +2270,7 @@ async function runCompare() {
 
     renderCompareTable(options);
 
-    // â”€â”€â”€ PART 3: AI Verdict Integration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- PART 3: AI Verdict Integration ---------------------------------------
     if (options.length >= 2) {
       // Dynamically inject verdict container below compare table
       let verdictContainer = document.getElementById('aiVerdictContainer');
@@ -2275,7 +2286,7 @@ async function runCompare() {
       // Show typing indicator
       verdictContainer.innerHTML = `
         <div style="margin-top: 16px; padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.05);">
-          <strong style="color: #fbbf24; font-size: 14px;">âœ¦ Sathee's Final Verdict</strong>
+          <strong style="color: #fbbf24; font-size: 14px;">✦ Sathee's Final Verdict</strong>
           <p style="color: var(--muted); margin: 8px 0 0; font-size: 13px;">Sathee is analyzing the placements...</p>
         </div>`;
 
@@ -2296,7 +2307,7 @@ async function runCompare() {
           const verdictText = data.verdict || data.reply || data.answer || 'No verdict available at this time.';
           verdictContainer.innerHTML = `
             <div style="margin-top: 16px; padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.05); box-shadow: 0 0 12px rgba(251, 191, 36, 0.08);">
-              <strong style="color: #fbbf24; font-size: 14px;">âœ¦ Sathee's Final Verdict</strong>
+              <strong style="color: #fbbf24; font-size: 14px;">✦ Sathee's Final Verdict</strong>
               <p style="color: var(--fg); margin: 8px 0 0; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(verdictText)}</p>
             </div>`;
         })
@@ -2463,7 +2474,7 @@ document.querySelectorAll(".nav-item").forEach((button) => {
     const target = button.dataset.target;
     if (!target) return;
 
-    // â”€â”€â”€ Paywall gate for premium tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+    // --- Paywall gate for premium tabs --------------------------------------
     const premiumScreens = ["chancesScreen", "preferenceScreen", "compareScreen"];
     if (premiumScreens.includes(target) && isPremiumLocked()) {
       showPaywall();
@@ -2550,9 +2561,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
-
-  // The .sys-sort-btn handlers have been removed from here to prevent duplicate execution
-  // Sorting is now exclusively handled by triggerSortByRank and triggerSortByBuckets
 
   try {
     loadProfile();
