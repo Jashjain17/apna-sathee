@@ -297,20 +297,23 @@
             <button id="mobileChatToggle" class="mobile-history-btn">🕒 History</button>
 
 
-            <div id="messages" class="messages" aria-live="polite">
-              <div id="chatEmpty" class="chat-empty" hidden>
-                <div class="empty-copy" style="text-align: center; margin: 40px auto; max-width: 700px;">
-                  <h2
-                    style="font-size: 24px; font-weight: 500; color: var(--navy); margin-bottom: 30px; line-height: 1.3;">
-                    Hi, I am Apna Sathee. Ask me anything about counselling.</h2>
-                  <div class="chip-row prompt-grid" id="emptyChips" aria-label="Suggested questions">
+            <div id="messages" class="messages" aria-live="polite" style="width: 100%; overflow-x: hidden; box-sizing: border-box;">
+              <div id="chatEmpty" class="chat-empty" style="width: 100%; box-sizing: border-box;" hidden>
+                <div class="empty-copy" style="text-align: center; margin: 40px auto; width: 100%; padding: 0 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center;">
+                  
+                  <h2 style="font-size: clamp(1.2rem, 5vw, 24px); font-weight: 500; color: var(--navy); margin-bottom: 30px; line-height: 1.4; white-space: normal !important; word-wrap: break-word; overflow-wrap: break-word; width: 100%; max-width: 100%;">
+                    Hi, I am Apna Sathee. Ask me anything about counselling.
+                  </h2>
+                  
+                  <div class="chip-row prompt-grid" id="emptyChips" aria-label="Suggested questions" style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
                   </div>
+                  
                 </div>
               </div>
             </div>
 
-            <form id="chatForm" class="composer">
-              <textarea id="messageInput" rows="2" placeholder="Ask a counselling doubt..."></textarea>
+            <form id="chatForm" class="composer" style="width: 100%; max-width: 100%; box-sizing: border-box; overflow-x: hidden;">
+              <textarea id="messageInput" rows="2" placeholder="Ask a counselling doubt..." style="box-sizing: border-box; width: 100%;"></textarea>
               <button class="send" aria-label="Send">Send</button>
             </form>
           </section>
