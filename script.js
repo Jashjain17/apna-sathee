@@ -56,6 +56,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (loginBtn) {
     loginBtn.addEventListener('click', async () => {
+      // Check if the user ticked the consent box
+      const isAgreed = document.getElementById('legalAgreeCheckbox')?.checked;
+      
+      if (!isAgreed) {
+        alert('Please read and agree to the Privacy Policy and Terms & Conditions to proceed.');
+        return; // Stops the login execution right here!
+      }
+
       try {
         await signInWithPopup(auth, provider);
       } catch (err) {
