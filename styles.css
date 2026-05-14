@@ -3341,20 +3341,81 @@ body.theme-dark .slider-arrow::after {
 
     /* --- 8. ASK SATHEE TAB (Fix Chat Screen) --- */
     .chat-app {
+        display: flex !important;
         flex-direction: column !important;
-        height: 100% !important;
+        height: calc(100vh - 140px) !important; /* Locks height so the input box CANNOT be pushed off screen */
+        width: 100% !important;
+        overflow: hidden !important;
     }
+    
     .chat-panel {
         width: 100% !important;
-        max-height: 150px !important; /* Shrink history list on phone */
+        max-height: 120px !important; /* Keeps history small so chat has room */
+        min-height: 80px !important;
         border-right: none !important;
         border-bottom: 1px solid #334155 !important;
+        overflow-y: auto !important;
     }
-    .chat-main { width: 100% !important; }
+    
+    .chat-main { 
+        display: flex !important;
+        flex-direction: column !important;
+        flex: 1 !important; 
+        width: 100% !important; 
+        overflow: hidden !important;
+    }
+
+    #messages {
+        flex: 1 !important;
+        overflow-y: auto !important; /* Lets you scroll messages... */
+        padding-bottom: 10px !important;
+    }
+
+    /* Fix the text spilling off the sides */
+    .chat-empty {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 10px !important;
+        overflow-x: hidden !important;
+    }
+
+    .chat-empty h2, 
+    .chat-empty h1 {
+        font-size: 1.4rem !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        text-align: center !important;
+    }
+
+    /* Force the prompt boxes to stack vertically */
+    .empty-chips { 
+        display: flex !important; 
+        flex-direction: column !important; 
+        gap: 10px !important; 
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .prompt-card { 
+        width: 100% !important; 
+        height: auto !important; 
+        white-space: normal !important; 
+        text-align: left !important; 
+        padding: 14px !important; 
+        box-sizing: border-box !important;
+    }
+
+    /* Pin the input box to the bottom safely */
+    #chatForm {
+        position: relative !important;
+        width: 100% !important;
+        padding-bottom: 10px !important;
+        box-sizing: border-box !important;
+        z-index: 10 !important;
+    }
+
     .message { max-width: 95% !important; box-sizing: border-box !important; }
     .message-actions { flex-wrap: wrap !important; gap: 8px !important; }
-    .empty-chips { display: flex !important; flex-direction: column !important; gap: 10px !important; }
-    .prompt-card { height: auto !important; white-space: normal !important; text-align: left !important; padding: 12px !important; }
 
     /* --- 9. GLOBAL TEXT FIXES --- */
     h1, h2, h3, .page-title, .chat-empty h2 {
