@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Apna Sathee | JEE Counselling Copilot</title>
   <link rel="stylesheet" href="styles.css" />
-  
+
 </head>
 
 <body>
@@ -44,26 +44,44 @@
         </button>
       </nav>
       <div class="auth-container" id="authContainer">
-        <div class="legal-consent-wrap" style="margin-bottom: 16px; font-size: 12px; color: #cbd5e1; text-align: left; display: flex; align-items: flex-start; gap: 8px; max-width: 280px;">
-    <input type="checkbox" id="legalAgreeCheckbox" style="margin-top: 3px; cursor: pointer;">
-    <label for="legalAgreeCheckbox" style="cursor: pointer; line-height: 1.4; color: #94a3b8;">
-        I read and agree to the 
-        <a href="/legal.html" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Privacy Policy</a> and 
-        <a href="/legal.html" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Terms & Conditions</a>.
-    </label>
-</div>
+        <div class="legal-consent-wrap"
+          style="margin-bottom: 16px; font-size: 12px; color: #cbd5e1; text-align: left; display: flex; align-items: flex-start; gap: 8px; max-width: 280px;">
+          <input type="checkbox" id="legalAgreeCheckbox" style="margin-top: 3px; cursor: pointer;">
+          <label for="legalAgreeCheckbox" style="cursor: pointer; line-height: 1.4; color: #94a3b8;">
+            I read and agree to the
+            <a href="/legal.html" target="_blank"
+              style="color: #38bdf8; text-decoration: none; font-weight: 600;">Privacy Policy</a> and
+            <a href="/legal.html" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Terms
+              & Conditions</a>.
+          </label>
+        </div>
         <!-- Login UI -->
         <button id="loginBtn" class="auth-login-btn">
-          <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/><path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/><path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/><path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/></svg>
+          <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <path fill="#FFC107"
+              d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+            <path fill="#FF3D00"
+              d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+            <path fill="#4CAF50"
+              d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+            <path fill="#1976D2"
+              d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+          </svg>
           <span class="nav-text">Login with Google</span>
         </button>
         <!-- Logged In UI -->
         <div id="userProfile" class="auth-profile" style="display: none;">
-          <img id="userAvatar" src="" alt="Profile" class="profile-pic" referrerpolicy="no-referrer" onerror="this.style.display='none'">
+          <img id="userAvatar" src="" alt="Profile" class="profile-pic" referrerpolicy="no-referrer"
+            onerror="this.style.display='none'">
           <span id="userName" class="profile-name nav-text"></span>
           <span id="proBadge" class="pro-badge" style="display: none;">PRO</span>
           <button id="logoutBtn" class="logout-btn" title="Sign Out">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
           </button>
         </div>
       </div>
@@ -74,11 +92,20 @@
         </label>
         <span class="theme-label nav-text">Theme</span>
       </div>
-      </div> <div style="margin-top: auto; padding: 20px; text-align: center;">
-            <a href="/legal.html" style="color: #64748b; font-size: 12px; text-decoration: none;">Privacy & Terms</a>
-        </div>
-        
+      </div>
+      <div style="margin-top: auto; padding: 20px; text-align: center;">
+        <a href="/legal.html" style="color: #64748b; font-size: 12px; text-decoration: none;">Privacy & Terms</a>
+      </div>
+
     </aside>
+    <!-- Add this Mobile Header for Sidebar -->
+    <header class="mobile-header">
+      <div class="mobile-brand">
+        <img src="/logo.png" alt="Logo" class="mobile-logo">
+        <span class="mobile-brand-text">Apna Sathee</span>
+      </div>
+      <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open Menu">☰</button>
+    </header>
 
     <section class="app-main">
 
@@ -250,8 +277,12 @@
             <div class="chat-sidebar-head">
               <p>Chats</p>
               <div class="mini-actions">
-                <button id="toggleHistoryBtn" class="mini-btn" aria-label="Hide history" style="display:flex; align-items:center; justify-content:center; padding:4px;">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <button id="toggleHistoryBtn" class="mini-btn" aria-label="Hide history"
+                  style="display:flex; align-items:center; justify-content:center; padding:4px;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
                 </button>
                 <button id="newChatBtn" class="mini-btn">New</button>
               </div>
@@ -262,11 +293,16 @@
             <div id="chatHistory" class="history-list"></div>
           </aside>
           <section class="chat-panel">
+            <!-- Add this toggle button for mobile chat history -->
+            <button id="mobileChatToggle" class="mobile-chat-toggle">🕒 History</button>
+
 
             <div id="messages" class="messages" aria-live="polite">
               <div id="chatEmpty" class="chat-empty" hidden>
                 <div class="empty-copy" style="text-align: center; margin: 40px auto; max-width: 700px;">
-                  <h2 style="font-size: 24px; font-weight: 500; color: var(--navy); margin-bottom: 30px; line-height: 1.3;">Hi, I am Apna Sathee. Ask me anything about counselling.</h2>
+                  <h2
+                    style="font-size: 24px; font-weight: 500; color: var(--navy); margin-bottom: 30px; line-height: 1.3;">
+                    Hi, I am Apna Sathee. Ask me anything about counselling.</h2>
                   <div class="chip-row prompt-grid" id="emptyChips" aria-label="Suggested questions">
                   </div>
                 </div>
@@ -479,7 +515,8 @@
       <button id="paywallCloseBtn" class="paywall-close" aria-label="Close">&times;</button>
       <div class="paywall-badge">PRO</div>
       <h2 class="paywall-headline">Unlock Apna Sathee Pro</h2>
-      <p class="paywall-subtext">Get unlimited AI counselling, admission chances, preference lists, and college comparisons.</p>
+      <p class="paywall-subtext">Get unlimited AI counselling, admission chances, preference lists, and college
+        comparisons.</p>
       <ul class="paywall-features">
         <li>✦ Unlimited AI chat messages</li>
         <li>✦ Full access to My Chances</li>
