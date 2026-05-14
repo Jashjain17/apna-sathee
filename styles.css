@@ -3203,9 +3203,12 @@ body.theme-dark .slider-arrow::after {
 /* ==========================================================================
    APNA SATHEE MOBILE RESPONSIVE ENGINE (Screens 768px and smaller)
    ========================================================================== */
+/* ==========================================================================
+   APNA SATHEE MOBILE RESPONSIVE ENGINE (App-Style UI for Phones)
+   ========================================================================== */
 @media (max-width: 768px) {
     
-    /* 1. Stack layout vertically instead of side-by-side columns */
+    /* 1. Prevent layout breakage and handle independent view scrolling */
     .app-shell {
         display: flex !important;
         flex-direction: column !important;
@@ -3213,44 +3216,105 @@ body.theme-dark .slider-arrow::after {
         overflow: hidden !important;
     }
 
-    /* 2. Convert Left Sidebar into a Sleek Top Header Bar */
+    /* 2. Top Header Bar: Clean & Minimalist */
     .app-sidebar {
         width: 100% !important;
-        height: auto !important;
-        min-height: 60px !important;
+        height: 64px !important;
         flex-direction: row !important;
         justify-content: space-between !important;
         align-items: center !important;
-        padding: 10px 16px !important;
+        padding: 0 16px !important;
+        background-color: #1e293b !important;
         border-right: none !important;
-        border-bottom: 1px solid #1e293b !important;
-        position: relative !important;
+        border-bottom: 1px solid #334155 !important;
+        box-sizing: border-box !important;
     }
 
-    /* Hide the long vertical text menu items on mobile header to save space */
-    .app-sidebar .side-nav {
-        display: none !important; 
+    /* Hide long title text wrapping to make space for layout elements */
+    .brand-text-wrap,
+    #collapseSidebarBtn {
+        display: none !important;
     }
-    
-    /* Keep branding and toggle matching beautifully */
+
     .brand-lockup {
         margin: 0 !important;
     }
-    
+
+    /* Shift theme switcher neatly next to profile pic */
     .theme-toggle-container {
+        margin: 0 12px 0 auto !important;
+    }
+
+    /* Hide the sidebar legal footer container on mobile view */
+    .app-sidebar div[style*="margin-top: auto"] {
+        display: none !important;
+    }
+
+    /* 3. The Ultimate Upgrade: Fixed Bottom Navigation Tab Bar */
+    .app-sidebar .side-nav {
+        display: flex !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 64px !important;
+        background-color: #1e293b !important;
+        border-top: 1px solid #334155 !important;
+        flex-direction: row !important;
+        justify-content: space-around !important;
+        align-items: center !important;
+        padding: 4px 0 !important;
+        margin: 0 !important;
+        z-index: 9999 !important;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    /* Target specific navbar tabs */
+    .app-sidebar .side-nav .nav-item {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: transparent !important;
+        border: none !important;
+        color: #94a3b8 !important;
+        gap: 2px !important;
+        flex: 1 !important;
+        width: auto !important;
+        margin: 0 !important;
+        height: 100% !important;
+        padding: 4px 0 !important;
+    }
+
+    /* Style active tab link highlights */
+    .app-sidebar .side-nav .nav-item.active {
+        color: #38bdf8 !important; /* Active Apna Sathee blue */
+        background: transparent !important;
+    }
+
+    .app-sidebar .side-nav .nav-item .nav-icon {
+        font-size: 18px !important;
         margin: 0 !important;
     }
 
-    /* 3. Make the Main Content Panel independent & smoothly scrollable */
+    .app-sidebar .side-nav .nav-item .nav-text {
+        font-size: 9px !important;
+        font-weight: 600 !important;
+        display: block !important;
+        letter-spacing: 0.2px !important;
+    }
+
+    /* 4. Independent Main Panel Body scroll window */
     .app-main {
         flex: 1 !important;
         overflow-y: auto !important;
         padding: 16px !important;
+        padding-bottom: 80px !important; /* Crucial padding so elements don't get trapped under the tab bar */
         width: 100% !important;
         box-sizing: border-box !important;
     }
 
-    /* 4. Crush all multi-column desktop grids into perfect 1-column mobile cards */
+    /* 5. Force standard desktop multi-columns into clean vertical stacked boxes */
     .tool-grid, 
     .quick-access-grid, 
     .three-tools,
@@ -3261,8 +3325,7 @@ body.theme-dark .slider-arrow::after {
         gap: 16px !important;
     }
 
-    /* 5. FIX THE CUTOFF TABLES (Crucial for "My Chances" & "Compare")
-       This stops the page from stretching sideways and lets tables scroll horizontally inside their container */
+    /* 6. Fix Horizontal Table Overflow for "My Chances" and "Compare" */
     .table-responsive-wrapper,
     table {
         display: block !important;
@@ -3271,16 +3334,16 @@ body.theme-dark .slider-arrow::after {
         -webkit-overflow-scrolling: touch !important;
     }
 
-    /* Make sure inputs and text boxes don't overflow screen boundaries */
+    /* Stop input panels from running outside mobile viewpoints */
     input, select, textarea, .message-body {
         max-width: 100% !important;
         box-sizing: border-box !important;
     }
 
-    /* 6. Fix Chatbot Bubble sizing for mobile thumbs */
+    /* Tweak chat bubble spacing parameters */
     .message {
-        max-width: 90% !important;
-        padding: 12px 14px !important;
+        max-width: 88% !important;
+        padding: 10px 14px !important;
     }
     
     .message.bot .message-actions {
