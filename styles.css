@@ -27,12 +27,14 @@
    ========================================================================== */
 
 /* 1. Force hide mobile-only elements when on a computer */
-.mobile-header, 
-.hamburger-btn, 
-.sidebar-overlay, 
-.mobile-history-btn,
-.mobile-nav-toggle {
-    display: none !important;
+@media (min-width: 769px) {
+  .mobile-header, 
+  .hamburger-btn, 
+  .sidebar-overlay, 
+  .mobile-history-btn,
+  .mobile-nav-toggle {
+      display: none !important;
+  }
 }
 
 /* 2. Restore Desktop Layout Grid */
@@ -3341,6 +3343,18 @@ body.theme-dark .slider-arrow::after {
   /* Triggered by JS */
   .app-sidebar.open, .app-sidebar.mobile-open {
     transform: translateX(0) !important;
+  }
+
+  /* Explicitly style the Close Button inside the sidebar for mobile */
+  #collapseSidebarBtn {
+    display: block !important;
+    background: none;
+    border: none;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--navy);
+    cursor: pointer;
+    padding: 4px 8px;
   }
 
   /* Target both the JS overlay and the manual backdrop */
