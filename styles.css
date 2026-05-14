@@ -22,7 +22,43 @@
   --space-3: 16px;
   --space-4: 22px;
 }
+/* ==========================================================================
+   DESKTOP RESTORATION (Fixes the Giant Logo & Mobile Spills)
+   ========================================================================== */
 
+/* 1. Force hide mobile-only elements when on a computer */
+.mobile-header, 
+.hamburger-btn, 
+.sidebar-overlay, 
+.mobile-history-btn,
+.mobile-nav-toggle {
+    display: none !important;
+}
+
+/* 2. Restore Desktop Layout Grid */
+@media (min-width: 769px) {
+    .app-shell {
+        display: grid !important;
+        grid-template-columns: 260px 1fr !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+
+    .app-sidebar {
+        position: relative !important;
+        left: 0 !important;
+        width: 260px !important;
+        display: flex !important;
+        transform: none !important;
+    }
+
+    /* Keep the logo from going Godzilla-sized */
+    .brand-logo img, 
+    .sidebar-header img {
+        max-width: 50px !important;
+        height: auto !important;
+    }
+}
 body.theme-dark {
   --bg: #0e1220;
   --paper: #141a2d;
