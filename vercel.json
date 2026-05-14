@@ -5,7 +5,8 @@
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "script.js", "use": "@vercel/static" },
     { "src": "styles.css", "use": "@vercel/static" },
-    { "src": "public/*.json", "use": "@vercel/static" }
+    { "src": "public/*.json", "use": "@vercel/static" },
+    { "src": "logo.png", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/api/chat", "dest": "/api/chat.js" },
@@ -20,6 +21,7 @@
     { "src": "/institutes_master.json", "dest": "/public/institutes_master.json" },
     { "src": "/script.js", "dest": "/script.js" },
     { "src": "/styles.css", "dest": "/styles.css" },
+    { "src": "/logo.png", "dest": "/logo.png" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
