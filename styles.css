@@ -3409,4 +3409,67 @@ body.theme-dark .slider-arrow::after {
         overflow-x: auto !important;
         -webkit-overflow-scrolling: touch !important;
     }
+    /* =========================================
+       SURGICAL MOBILE FIXES 
+       ========================================= */
+
+    /* 1. FIX THE GIANT CHAT TEXT OVERFLOW */
+    .chat-empty h2, 
+    .chat-empty h1, 
+    .page-title,
+    [class*="title"] {
+        font-size: 1.4rem !important;
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        text-align: center !important;
+        line-height: 1.3 !important;
+        padding: 0 10px !important;
+    }
+
+    /* Fix the chat suggestion buttons cutting off */
+    .prompt-card {
+        height: auto !important;
+        white-space: normal !important;
+        padding: 12px !important;
+        font-size: 13px !important;
+    }
+
+    /* 2. FORCE PREFERENCE FILTERS TO THE TOP */
+    /* We turn the whole screen into a flex column, then use 'order' to move things around */
+    #preferenceScreen .app-main,
+    #preferenceScreen {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    /* Pull the filters up */
+    #systemFilterContainer,
+    #instituteFilterGroup,
+    .filter-group,
+    .sys-filter-btn {
+        order: -1 !important; /* The negative number forces it to the absolute top! */
+        margin-bottom: 12px !important;
+        width: 100% !important;
+        justify-content: center !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Push the actual list down */
+    #preferenceDnDList {
+        order: 2 !important;
+    }
+
+    /* 3. FIX THE HEADER CONSENT BOX */
+    .app-sidebar {
+        height: auto !important;
+        min-height: 80px !important;
+        padding-bottom: 15px !important;
+    }
+
+    .legal-consent-wrap {
+        margin: 10px auto !important;
+        text-align: center !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
 }
