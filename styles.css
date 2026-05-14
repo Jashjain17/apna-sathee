@@ -3199,3 +3199,92 @@ body.theme-dark #nextFeature::after,
 body.theme-dark .slider-arrow::after {
     background-color: #f8fafc !important; /* DARK MODE ARROW COLOR (Light Slate) */
 }
+
+/* ==========================================================================
+   APNA SATHEE MOBILE RESPONSIVE ENGINE (Screens 768px and smaller)
+   ========================================================================== */
+@media (max-width: 768px) {
+    
+    /* 1. Stack layout vertically instead of side-by-side columns */
+    .app-shell {
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+
+    /* 2. Convert Left Sidebar into a Sleek Top Header Bar */
+    .app-sidebar {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 60px !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 10px 16px !important;
+        border-right: none !important;
+        border-bottom: 1px solid #1e293b !important;
+        position: relative !important;
+    }
+
+    /* Hide the long vertical text menu items on mobile header to save space */
+    .app-sidebar .side-nav {
+        display: none !important; 
+    }
+    
+    /* Keep branding and toggle matching beautifully */
+    .brand-lockup {
+        margin: 0 !important;
+    }
+    
+    .theme-toggle-container {
+        margin: 0 !important;
+    }
+
+    /* 3. Make the Main Content Panel independent & smoothly scrollable */
+    .app-main {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        padding: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 4. Crush all multi-column desktop grids into perfect 1-column mobile cards */
+    .tool-grid, 
+    .quick-access-grid, 
+    .three-tools,
+    .panel-row {
+        grid-template-columns: 1fr !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+    }
+
+    /* 5. FIX THE CUTOFF TABLES (Crucial for "My Chances" & "Compare")
+       This stops the page from stretching sideways and lets tables scroll horizontally inside their container */
+    .table-responsive-wrapper,
+    table {
+        display: block !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    /* Make sure inputs and text boxes don't overflow screen boundaries */
+    input, select, textarea, .message-body {
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 6. Fix Chatbot Bubble sizing for mobile thumbs */
+    .message {
+        max-width: 90% !important;
+        padding: 12px 14px !important;
+    }
+    
+    .message.bot .message-actions {
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+}
