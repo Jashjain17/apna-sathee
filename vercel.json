@@ -22,6 +22,7 @@
     { "src": "/script.js", "dest": "/script.js" },
     { "src": "/styles.css", "dest": "/styles.css" },
     { "src": "/logo.png", "dest": "/logo.png" },
+    { "src": "/legal.html", "dest": "/legal.html" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
