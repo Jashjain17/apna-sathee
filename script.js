@@ -86,8 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       console.log("👤 User logged in:", user.uid);
 
-      // Show profile, hide login
+      // Show profile, hide login & consent UI
       if (loginBtn) loginBtn.style.display = 'none';
+      
+      const consentWrap = document.querySelector('.legal-consent-wrap');
+      if (consentWrap) consentWrap.style.display = 'none';
+
       if (userProfile) userProfile.style.display = 'flex';
       if (userAvatar) {
         userAvatar.style.display = '';
@@ -109,13 +113,15 @@ document.addEventListener('DOMContentLoaded', () => {
           currentMessagesUsed = userData.free_messages_used || 0;
           console.log("📊 User subscription tier from DB:", tier);
         } else {
-          // Brand new user - initialize Firestore document
+          // Brand new user - initialize Firestore document with legal audit trails
           await setDoc(userRef, {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
             subscription_tier: 'Free',
             free_messages_used: 0,
+            agreedToTerms: true,
+            agreedToTermsAt: new Date(),
             createdAt: new Date()
           });
           currentMessagesUsed = 0;
@@ -138,6 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // User is logged out
       if (loginBtn) loginBtn.style.display = 'flex';
+      
+      const consentWrap = document.querySelector('.legal-consent-wrap');
+      if (consentWrap) consentWrap.style.display = 'flex';
+
       if (userProfile) userProfile.style.display = 'none';
 
       const badge = document.querySelector('.pro-badge') || document.getElementById('proBadge');
