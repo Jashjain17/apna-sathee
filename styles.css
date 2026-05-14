@@ -3201,226 +3201,148 @@ body.theme-dark .slider-arrow::after {
 }
 
 /* ==========================================================================
-   APNA SATHEE COMPLETE MOBILE UI (Off-Canvas Slide-Out Sidebar + All Tabs)
+   APNA SATHEE MASTER MOBILE UI (Built from actual index.html DOM)
    ========================================================================== */
 @media (max-width: 768px) {
     
-    /* --- 1. BASE LAYOUT --- */
+    /* 1. BASE SHELL & INJECTED TOP BAR */
     .app-shell {
-        display: flex !important;
         flex-direction: column !important;
         height: 100vh !important;
-        height: 100dvh !important; /* Mobile browser height fix */
+        height: 100dvh !important;
         overflow: hidden !important;
     }
 
-    /* --- 2. INJECTED MOBILE TOP BAR (Holds the Hamburger Button) --- */
-    .mobile-header {
+    .mobile-top-bar {
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
-        padding: 16px 20px !important;
+        padding: 12px 16px !important;
         background-color: #1e293b !important;
         border-bottom: 1px solid #334155 !important;
+        flex-shrink: 0 !important;
         z-index: 900 !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-    .hamburger-btn {
-        background: none !important;
-        border: none !important;
-        color: #f8fafc !important;
-        font-size: 28px !important;
-        cursor: pointer !important;
-        padding: 0 !important;
     }
 
-    /* --- 3. THE SLIDE-OUT SIDEBAR --- */
+    /* 2. THE SLIDE-OUT SIDEBAR */
     .app-sidebar {
         position: fixed !important;
         top: 0 !important;
-        left: -100% !important; /* Hidden off-screen by default */
+        left: -320px !important; /* Hidden completely off-screen */
         width: 280px !important;
         height: 100% !important;
-        background-color: #0f172a !important; /* Dark background */
+        background-color: #0f172a !important;
         z-index: 9999 !important;
-        transition: left 0.3s ease-in-out !important; /* Smooth slide animation */
+        transition: left 0.3s ease-in-out !important;
         display: flex !important;
         flex-direction: column !important;
         padding: 20px 16px !important;
-        box-shadow: 4px 0 15px rgba(0,0,0,0.5) !important;
-        overflow-y: auto !important; /* Allow scrolling inside sidebar */
+        box-shadow: 4px 0 20px rgba(0,0,0,0.7) !important;
+        overflow-y: auto !important;
     }
 
-    /* This class is added by JS when hamburger is clicked */
     .app-sidebar.open {
-        left: 0 !important; 
+        left: 0 !important; /* JS will trigger this to slide it in */
     }
 
-    /* Dark background overlay behind the open sidebar */
-    .sidebar-overlay {
-        display: none;
-        position: fixed !important;
-        top: 0 !important; left: 0 !important;
-        width: 100vw !important; height: 100vh !important;
-        background: rgba(0, 0, 0, 0.6) !important;
-        z-index: 9998 !important;
-        backdrop-filter: blur(2px) !important;
-    }
-    .sidebar-overlay.open {
-        display: block !important;
-    }
-
-    /* Sidebar Content Fixes */
+    /* Fix Sidebar internals */
     .brand-text-wrap { display: block !important; }
-    .side-nav { display: flex !important; flex-direction: column !important; margin-bottom: 20px !important; }
+    .side-nav { margin-top: 20px !important; display: flex !important; flex-direction: column !important; }
     .nav-item { width: 100% !important; justify-content: flex-start !important; padding: 12px !important; }
     .auth-container { margin-top: auto !important; padding-top: 20px !important; }
-    .legal-consent-wrap { max-width: 100% !important; }
+    #collapseSidebarBtn { display: block !important; position: absolute !important; right: 16px !important; top: 16px !important; font-size: 28px !important; }
 
-    /* The "Close" button inside the sidebar */
-    #collapseSidebarBtn {
-        display: block !important;
-        position: absolute !important;
-        top: 20px !important;
-        right: 20px !important;
-        background: none !important;
-        border: none !important;
-        color: #94a3b8 !important;
-        font-size: 28px !important;
-        padding: 5px !important;
+    /* Dark background overlay behind the menu */
+    .sidebar-overlay {
+        display: none;
+        position: fixed !important; top: 0 !important; left: 0 !important;
+        width: 100vw !important; height: 100vh !important;
+        background: rgba(0,0,0,0.6) !important;
+        z-index: 9998 !important;
     }
+    .sidebar-overlay.open { display: block !important; }
 
-    /* --- 4. MAIN APP AREA --- */
+    /* 3. MAIN WORKSPACE */
     .app-main {
         flex: 1 !important;
-        width: 100% !important;
-        max-width: 100vw !important;
-        padding: 16px !important;
+        padding: 12px !important;
         overflow-y: auto !important;
-        overflow-x: hidden !important; /* Stop horizontal scroll breaking */
+        overflow-x: hidden !important; /* Prevents side-scrolling bugs */
+        width: 100% !important;
         box-sizing: border-box !important;
     }
 
-    /* --- 5. DASHBOARD & PROFILE TABS (Fix Grids) --- */
-    .tool-grid, 
-    .quick-access-grid, 
-    .three-tools,
-    .panel-row,
-    .profile-form-grid {
+    /* 4. CHAT TAB FIX (Two-Layer System) */
+    .chat-app {
+        flex-direction: column !important;
+        height: 100% !important; 
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    /* Make History a slide-out drawer inside the chat */
+    .chat-sidebar {
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 260px !important;
+        height: 100% !important;
+        z-index: 100 !important;
+        background-color: #0f172a !important;
+        border-right: 1px solid #334155 !important;
+        transition: left 0.3s ease !important;
+    }
+    .chat-sidebar.open { left: 0 !important; }
+
+    /* Lock main chat so input stays at the bottom */
+    .chat-panel {
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        border: none !important;
+    }
+
+    #messages { flex: 1 !important; overflow-y: auto !important; }
+    #chatForm { flex-shrink: 0 !important; padding-bottom: 10px !important; }
+
+    /* Fix the Chat Text Overflow */
+    .chat-empty h2 {
+        font-size: 1.2rem !important;
+        white-space: normal !important;
+        line-height: 1.4 !important;
+    }
+    .empty-chips { flex-direction: column !important; }
+    .prompt-card { width: 100% !important; height: auto !important; white-space: normal !important; text-align: left !important; }
+    .message { max-width: 90% !important; }
+
+    /* 5. PREFERENCE TAB FIX (Filters at top) */
+    .preference-panel { display: flex !important; flex-direction: column !important; }
+    
+    /* Using Order to force the bottom div to the top */
+    #systemFilterContainer {
+        order: -1 !important; 
+        margin-top: 0 !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+    }
+    #instituteFilterGroup { flex-wrap: wrap !important; width: 100% !important; }
+    .pref-layout { flex-direction: column !important; }
+
+    /* 6. GENERAL GRIDS & TABLES */
+    .tool-grid, .quick-access-grid, .three-tools, .panel-row, .profile-grid, .compare-actions {
         grid-template-columns: 1fr !important;
         display: flex !important;
         flex-direction: column !important;
-        gap: 16px !important;
-        width: 100% !important;
+        gap: 12px !important;
     }
-
-    /* --- 6. CHANCES & COMPARE TABS (Fix Tables) --- */
-    .table-responsive-wrapper,
-    table {
+    
+    .table-wrap, table {
         display: block !important;
         width: 100% !important;
-        overflow-x: auto !important; /* Makes tables swipeable horizontally */
-        -webkit-overflow-scrolling: touch !important;
+        overflow-x: auto !important;
         white-space: nowrap !important;
-    }
-
-    /* --- 7. PREFERENCE LIST TAB (Fix Sorting & Filters) --- */
-    #preferenceScreen.active{ display: flex !important; flex-direction: column !important; }
-    
-    #systemFilterContainer,
-    #instituteFilterGroup,
-    .filter-group {
-        order: -1 !important; /* Forces filters to the top of the screen */
-        flex-wrap: wrap !important;
-        justify-content: center !important;
-        margin-bottom: 16px !important;
-        width: 100% !important;
-    }
-    #preferenceDnDList { order: 2 !important; width: 100% !important; }
-
-    /* --- 8. ASK SATHEE TAB (Fix Chat Screen) --- */
-    .chat-app {
-        display: flex !important;
-        flex-direction: column !important;
-        height: calc(100vh - 140px) !important; /* Locks height so the input box CANNOT be pushed off screen */
-        width: 100% !important;
-        overflow: hidden !important;
-    }
-    
-    .chat-panel {
-        width: 100% !important;
-        max-height: 120px !important; /* Keeps history small so chat has room */
-        min-height: 80px !important;
-        border-right: none !important;
-        border-bottom: 1px solid #334155 !important;
-        overflow-y: auto !important;
-    }
-    
-    .chat-main { 
-        display: flex !important;
-        flex-direction: column !important;
-        flex: 1 !important; 
-        width: 100% !important; 
-        overflow: hidden !important;
-    }
-
-    #messages {
-        flex: 1 !important;
-        overflow-y: auto !important; /* Lets you scroll messages... */
-        padding-bottom: 10px !important;
-    }
-
-    /* Fix the text spilling off the sides */
-    .chat-empty {
-        width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 10px !important;
-        overflow-x: hidden !important;
-    }
-
-    .chat-empty h2, 
-    .chat-empty h1 {
-        font-size: 1.4rem !important;
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        text-align: center !important;
-    }
-
-    /* Force the prompt boxes to stack vertically */
-    .empty-chips { 
-        display: flex !important; 
-        flex-direction: column !important; 
-        gap: 10px !important; 
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-    
-    .prompt-card { 
-        width: 100% !important; 
-        height: auto !important; 
-        white-space: normal !important; 
-        text-align: left !important; 
-        padding: 14px !important; 
-        box-sizing: border-box !important;
-    }
-
-    /* Pin the input box to the bottom safely */
-    #chatForm {
-        position: relative !important;
-        width: 100% !important;
-        padding-bottom: 10px !important;
-        box-sizing: border-box !important;
-        z-index: 10 !important;
-    }
-
-    .message { max-width: 95% !important; box-sizing: border-box !important; }
-    .message-actions { flex-wrap: wrap !important; gap: 8px !important; }
-
-    /* --- 9. GLOBAL TEXT FIXES --- */
-    h1, h2, h3, .page-title, .chat-empty h2 {
-        white-space: normal !important;
-        word-wrap: break-word !important;
-        line-height: 1.3 !important;
+        -webkit-overflow-scrolling: touch !important;
     }
 }
