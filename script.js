@@ -2828,3 +2828,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+// --- APNA SATHEE MOBILE SIDEBAR LOGIC ---
+document.addEventListener('DOMContentLoaded', () => {
+    const appShell = document.querySelector('.app-shell');
+    const sidebar = document.querySelector('.app-sidebar');
+    
+    if (appShell && sidebar) {
+        // 1. Create the Top Mobile Header (Hamburger + Logo)
+        const mobileHeader = document.createElement('div');
+        mobileHeader.className = 'mobile-header';
+        mobileHeader.style.display = 'none'; // Hidden on desktop
+        mobileHeader.innerHTML = `
+            <div style="font-weight: 700; font-size: 1.2rem; color: #f8fafc; display: flex; align-items: center; gap: 10px;">
+                <img src="/logo.png" style="width: 30px; height: 30px;" onerror="this.style.display='none'"> 
+                Apna Sathee
+            </div>
+            <button class="hamburger-btn" aria-label="Open Menu">☰</button>
+        `;
+
+        // 2. Create the Dark Overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+
+        // Inject them into the DOM
+        appShell.insertBefore(mobileHeader, appShell.firstChild);
+        appShell.appendChild(overlay);
+
+        const hamburgerBtn = mobileHeader.querySelector('.hamburger-btn');
+        const closeBtn = document.getElementById('collapseSidebarBtn');
+
+        // 3. Open Sidebar Action
+        hamburgerBtn.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('open');
+        });
+
+        // 4. Close Sidebar Action
+        const closeSidebar = () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('open');
+        };
+
+        // Close when X is clicked, or background is clicked
+        if (closeBtn) {
+            // Change the standard collapse icon to an "X" on mobile
+            if(window.innerWidth <= 768) closeBtn.innerHTML = "✕"; 
+            closeBtn.addEventListener('click', closeSidebar);
+        }
+        overlay.addEventListener('click', closeSidebar);
+
+        // 5. Auto-Close sidebar when a user clicks a menu link!
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    closeSidebar();
+                }
+            });
+        });
+    }
+});
