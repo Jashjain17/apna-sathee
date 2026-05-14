@@ -3565,3 +3565,40 @@ body.theme-dark .slider-arrow::after {
   }
 
   .preference-panel > .pref-layout { order: 5; }
+/* ==========================================================================
+   THE FINAL CHATBOT WRAP FIX (Overrides all previous AI mistakes)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* 1. Force the giant heading to break into multiple lines */
+    .chat-empty h1, 
+    .chat-empty h2, 
+    .chat-empty p {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        font-size: 1.4rem !important; /* Shrink slightly for mobile */
+        text-align: center !important;
+        width: 100% !important;
+        display: block !important;
+        box-sizing: border-box !important;
+    }
+
+    /* 2. Stack the suggestion boxes vertically instead of side-by-side */
+    .empty-chips {
+        display: flex !important;
+        flex-direction: column !important; /* Stacks them like a tower */
+        width: 100% !important;
+        gap: 12px !important;
+        box-sizing: border-box !important;
+        padding: 0 10px !important;
+    }
+
+    /* 3. Make sure the individual boxes wrap their text too */
+    .prompt-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        white-space: normal !important;
+        height: auto !important;
+        box-sizing: border-box !important;
+    }
+}
