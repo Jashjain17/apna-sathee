@@ -1406,12 +1406,7 @@ async function askBot(message) {
   }
 }
 
-const contactUsBtn = $("contactUsBtn");
-if (contactUsBtn) {
-  contactUsBtn.addEventListener("click", () => {
-    window.open("https://wa.me/919479923607?text=Hi,%20I%20need%20help%20with%20my%20counselling", "_blank");
-  });
-}
+// Contact Us button logic moved to nav-item handler for paywall integration
 
 
 async function handleGeneratePreferenceList(targetId = "preferenceDnDList") {
@@ -2555,7 +2550,7 @@ document.querySelectorAll(".nav-item").forEach((button) => {
 
     // --- Paywall gate for premium tabs --------------------------------------
     // --- Paywall gate for premium tabs --------------------------------------
-    const premiumScreens = ["chancesScreen", "preferenceScreen", "compareScreen"];
+    const premiumScreens = ["chancesScreen", "preferenceScreen", "compareScreen", "contactUs"];
     if (premiumScreens.includes(target) && isPremiumLocked()) {
       
       // 1. Close mobile menus so the Paywall isn't hidden behind them!
@@ -2570,6 +2565,11 @@ document.querySelectorAll(".nav-item").forEach((button) => {
       if (typeof showPaywall === "function") {
           showPaywall();
       }
+      return;
+    }
+
+    if (target === "contactUs") {
+      window.open("https://wa.me/919479923607?text=Hi,%20I%20need%20help%20with%20my%20counselling", "_blank");
       return;
     }
 
@@ -2990,7 +2990,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         // 🚨 THE IMMUNITY CHECK: If free user clicks a paid tab, DO NOT CLOSE!
-        const premiumTabs = ["chancesScreen", "preferenceScreen", "compareScreen"];
+        const premiumTabs = ["chancesScreen", "preferenceScreen", "compareScreen", "contactUs"];
         const isPremiumTab = premiumTabs.includes(item.dataset.target);
         const isLocked = !currentUserTier || currentUserTier === 'Free';
 
