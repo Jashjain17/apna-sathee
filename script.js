@@ -216,8 +216,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      const rzp1 = new window.Razorpay(options);
-      rzp1.open();
+      window.rzp1 = new window.Razorpay(options);
+      window.rzp1.open();
     });
   }
 });
