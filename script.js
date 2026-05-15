@@ -140,6 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (badge) {
         badge.style.display = tier === 'Pro' ? 'inline-block' : 'none';
       }
+      // SMART BUTTON: Hide "Upgrade to Pro" if they already paid
+const upgradeBtn = document.getElementById('getProBtn');
+if (upgradeBtn) {
+    upgradeBtn.style.display = tier === 'Pro' ? 'none' : 'flex';
+}
 
     } else {
       // User is logged out
@@ -2959,4 +2964,29 @@ document.addEventListener('click', function(e) {
     }
 });
 
+// ==========================================
+// THE PAYWALL BOUNCER (Updated with Firebase)
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all buttons that have the 'locked-feature' class
+    const lockedButtons = document.querySelectorAll('.locked-feature');
 
+    lockedButtons.forEach(function(btn) {
+        // We use 'mousedown' to catch the click BEFORE the tab tries to open
+        btn.addEventListener('mousedown', function(e) {
+            
+            // Check the exact global variable your database uses
+            if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro') {
+                e.preventDefault();       // Stop the click
+                e.stopPropagation();      // Stop the tab from switching
+                
+                // Pop the Razorpay checkout instead!
+                if (typeof window.openProCheckout === "function") {
+                    window.openProCheckout(); 
+                } else {
+                    alert("Payment system initializing, please try again in a moment.");
+                }
+            }
+        }, true); // The 'true' makes sure this runs before any other click events
+    });
+});

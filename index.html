@@ -46,12 +46,11 @@
         <script>
     document.getElementById('getProBtn').addEventListener('click', function(e) {
         e.preventDefault();
-        
-        try {
-            window.rzp1.open(); // Now it uses the global key!
-        } catch(err) {
-            alert("The payment gateway is still loading. Please wait a second and click again.");
-            console.error(err);
+        // This calls the Master Function we built in script.js!
+        if (typeof window.openProCheckout === "function") {
+            window.openProCheckout(); 
+        } else {
+            alert("Payment system initializing, please try again in a moment.");
         }
     });
   </script>
