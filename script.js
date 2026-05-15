@@ -166,68 +166,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- Upgrade Now Button (Razorpay Checkout) -------------------------------
+  // --- Global Razorpay Checkout Function --------------------------------------
+  window.openProCheckout = function() {
+    if (!currentUserUid) {
+      alert('Please login first to upgrade.');
+      return;
+    }
+
+    const options = {
+      "key": "rzp_live_SpLnehjbh9ZfBW",
+      "amount": 24900,
+      "currency": "INR",
+      "name": "Apna Sathee",
+      "description": "Unlock Pro Access",
+      "image": "logo.png",
+      "handler": function (response) {
+        console.log("✅ Razorpay Payment Success:", response.razorpay_payment_id);
+        try {
+          const user = auth.currentUser;
+          if (!user) {
+            alert("Payment successful, but please log in to claim Pro status.");
+            return;
+          }
+
+          // 1. OPTIMISTIC UI UPDATE (Do this instantly)
+          if (typeof currentUserTier !== 'undefined') {
+            currentUserTier = 'Pro';
+          }
+          const modal = document.querySelector('.paywall-modal') || document.getElementById('paywallModal') || document.querySelector('[class*="paywall"]');
+          if (modal) modal.style.display = 'none';
+
+          const badge = document.getElementById('proBadge');
+          const upgradeToProBtn = document.getElementById('upgradeToProBtn');
+          if (badge) badge.style.display = 'inline-block';
+          if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
+
+          alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
+
+          // 2. BACKGROUND FIREBASE SYNC (Don't await, let it run in background)
+          console.log("🔄 Updating Firebase for user:", user.uid);
+          const userRef = doc(db, 'users', user.uid);
+          updateDoc(userRef, { subscription_tier: 'Pro' })
+            .then(() => console.log("✅ Firebase Updated to Pro!"))
+            .catch((error) => console.error("Firebase sync error (background):", error));
+
+        } catch (error) {
+          console.error("❌ CRITICAL ERROR in Payment Handler UI:", error);
+        }
+      },
+      "prefill": {
+        "name": auth.currentUser ? auth.currentUser.displayName : "",
+        "email": auth.currentUser ? auth.currentUser.email : ""
+      },
+      "theme": {
+        "color": "#1E293B"
+      }
+    };
+
+    window.rzp1 = new window.Razorpay(options);
+    window.rzp1.open();
+  };
+
+  // --- Upgrade Now Button (Razorpay Checkout from Paywall Modal) -------------
   const upgradeBtn = document.getElementById('upgradeBtn');
   if (upgradeBtn) {
-    upgradeBtn.addEventListener('click', () => {
-      if (!currentUserUid) {
-        alert('Please login first to upgrade.');
-        return;
-      }
-
-      const options = {
-        "key": "rzp_live_SpLnehjbh9ZfBW",
-        "amount": 24900,
-        "currency": "INR",
-        "name": "Apna Sathee",
-        "description": "Unlock Pro Access",
-        "image": "logo.png",
-        "handler": function (response) {
-          console.log("✅ Razorpay Payment Success:", response.razorpay_payment_id);
-          try {
-            const user = auth.currentUser;
-            if (!user) {
-              alert("Payment successful, but please log in to claim Pro status.");
-              return;
-            }
-
-            // 1. OPTIMISTIC UI UPDATE (Do this instantly)
-            if (typeof currentUserTier !== 'undefined') {
-              currentUserTier = 'Pro';
-            }
-            const modal = document.querySelector('.paywall-modal') || document.getElementById('paywallModal') || document.querySelector('[class*="paywall"]');
-            if (modal) modal.style.display = 'none';
-
-            const badge = document.getElementById('proBadge');
-            const upgradeToProBtn = document.getElementById('upgradeToProBtn');
-            if (badge) badge.style.display = 'inline-block';
-            if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
-
-            alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
-
-            // 2. BACKGROUND FIREBASE SYNC (Don't await, let it run in background)
-            console.log("🔄 Updating Firebase for user:", user.uid);
-            const userRef = doc(db, 'users', user.uid);
-            updateDoc(userRef, { subscription_tier: 'Pro' })
-              .then(() => console.log("✅ Firebase Updated to Pro!"))
-              .catch((error) => console.error("Firebase sync error (background):", error));
-
-          } catch (error) {
-            console.error("❌ CRITICAL ERROR in Payment Handler UI:", error);
-          }
-        },
-        "prefill": {
-          "name": auth.currentUser ? auth.currentUser.displayName : "",
-          "email": auth.currentUser ? auth.currentUser.email : ""
-        },
-        "theme": {
-          "color": "#1E293B"
-        }
-      };
-
-      window.rzp1 = new window.Razorpay(options);
-      window.rzp1.open();
-    });
+    upgradeBtn.addEventListener('click', window.openProCheckout);
   }
 });
 
