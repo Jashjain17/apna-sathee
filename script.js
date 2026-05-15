@@ -171,25 +171,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!currentUserUid) {
       alert('Please login first so we can link the Pro upgrade to your account!');
       
-      // 1. Close the Paywall Modal so it's out of the way
       const modal = document.getElementById('paywallModal') || document.querySelector('.paywall-modal');
       if (modal) modal.style.display = 'none';
 
-      // 2. Automatically slide open the mobile sidebar
-      const sidebar = document.querySelector('.app-sidebar');
-      const overlay = document.querySelector('.sidebar-overlay');
-      const backdrop = document.querySelector('.sidebar-backdrop');
-      
-      if (sidebar) sidebar.classList.add('open', 'mobile-open');
-      if (overlay) overlay.classList.add('open');
-      if (backdrop) backdrop.classList.add('active');
+      // 1. DELAY THE OPENING (Bypasses the auto-close click conflict)
+      setTimeout(() => {
+          const sidebar = document.querySelector('.app-sidebar');
+          const overlay = document.querySelector('.sidebar-overlay');
+          const backdrop = document.querySelector('.sidebar-backdrop');
+          
+          // Open the menus
+          if (sidebar) sidebar.classList.add('open', 'mobile-open');
+          if (overlay) overlay.classList.add('open');
+          if (backdrop) backdrop.classList.add('active');
 
-      // 3. Scroll to the very bottom of the sidebar so the Login & Checkbox are front and center
-      if (sidebar) {
+          // 2. DELAY THE SCROLL (Waits for the slide animation to finish)
           setTimeout(() => {
-              sidebar.scrollTo({ top: sidebar.scrollHeight, behavior: 'smooth' });
-          }, 100); // Tiny delay ensures the sidebar is fully open before scrolling
-      }
+              const bottomSection = document.querySelector('.legal-consent-wrap') || document.getElementById('loginBtn');
+              
+              if (bottomSection) {
+                  bottomSection.scrollIntoView({ behavior: 'smooth', block: 'end' });
+              } else if (sidebar) {
+                  sidebar.scrollTop = sidebar.scrollHeight; 
+              }
+          }, 300); 
+
+      }, 150); // 150ms wait ensures the user's "click" event is fully over
+
       return;
     }
 
