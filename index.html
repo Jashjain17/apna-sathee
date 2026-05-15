@@ -42,6 +42,7 @@
         <button class="nav-item" id="contactUsBtn">
           <span class="nav-icon">💬</span> <span class="nav-text">Contact Us</span>
         </button>
+        <a href="#pro-checkout" id="getProBtn" class="pro-badge sidebar-pro">✨ Upgrade to Pro</a>
       </nav>
       <div class="auth-container" id="authContainer">
         <div class="legal-consent-wrap"
@@ -341,6 +342,34 @@
       box-sizing: border-box !important;
     }
   }
+  /* --- 2. GET PRO BUTTON STYLING --- */
+.side-nav {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+}
+
+.pro-badge.sidebar-pro {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: #1e293b !important;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 15px;
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  
+  /* Pushes it to the bottom */
+  margin-top: auto !important; 
+  margin-bottom: 20px !important; 
+  margin-left: 15px !important;
+  margin-right: 15px !important;
+  
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
   <div id="chatEmpty" class="chat-empty" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;" hidden>
