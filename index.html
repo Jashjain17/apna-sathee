@@ -525,6 +525,16 @@ body, html {
     flex-shrink: 0 !important;
     min-height: max-content;
 }
+
+/* Segmented Control Styles */
+.controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 24px; width: 100%; }
+.segmented-control { display: inline-flex; background-color: #0f172a; padding: 6px; border-radius: 999px; border: 1px solid #1e293b; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+.segmented-control button { background: transparent; color: #94a3b8; border: none; padding: 10px 24px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+.segmented-control button.active { background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%); color: #ffffff; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4); }
+@media (max-width: 768px) {
+    .segmented-control { width: 100%; display: flex; }
+    .segmented-control button { flex: 1; padding: 10px 8px; font-size: 0.85rem; white-space: nowrap; }
+}
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
   <div id="chatEmpty" class="chat-empty" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;" hidden>
@@ -627,23 +637,23 @@ body, html {
               <div id="preferenceHistory" class="preference-history"></div>
             </aside>
           </div>
-          <div id="systemFilterContainer"
-            style="display:none; margin-top:24px; margin-bottom:16px; display:flex; flex-wrap:wrap; gap:24px; align-items:center;">
-            <div id="instituteFilterGroup" style="display:flex; gap:8px;">
-              <button class="sys-filter-btn secondary active" data-sys="all">Show All</button>
-              <button class="sys-filter-btn secondary subtle" data-sys="iit">IITs Only</button>
-              <button class="sys-filter-btn secondary subtle" data-sys="nit">NITs & Others</button>
+          <div id="systemFilterContainer" class="controls-wrapper" style="display:none;">
+            <div id="instituteFilterGroup" class="segmented-control">
+              <button class="sys-filter-btn active" data-sys="all">Show All</button>
+              <button class="sys-filter-btn" data-sys="iit">IITs Only</button>
+              <button class="sys-filter-btn" data-sys="nit">NITs & Others</button>
             </div>
-            <div style="display:flex; gap:8px; align-items:center;">
-              <span style="color:var(--muted); font-size:13px; font-weight:500;">Sort View:</span>
-              <button id="sortBucketsBtn" class="sys-sort-btn secondary active" data-sort="buckets">
-                Group by Safety Buckets
-                <span class="info-tooltip-trigger"
-                  title="🔴 Ambitious = Reach&#10;🟡 Balanced = Target&#10;🟢 Safe = Backup"
-                  style="margin-left:6px; display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:var(--muted); color:var(--bg); font-size:10px; cursor:help;">i</span>
-              </button>
-              <button id="sortRankBtn" class="sys-sort-btn secondary subtle" data-sort="rank">Sort by Closing
-                Rank</button>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Sort View:</span>
+              <div class="segmented-control">
+                <button id="sortBucketsBtn" class="sys-sort-btn active" data-sort="buckets">
+                  Group by Safety Buckets
+                  <span class="info-tooltip-trigger"
+                    title="🔴 Ambitious = Reach&#10;🟡 Balanced = Target&#10;🟢 Safe = Backup"
+                    style="margin-left:6px; display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:var(--muted); color:var(--bg); font-size:10px; cursor:help;">i</span>
+                </button>
+                <button id="sortRankBtn" class="sys-sort-btn" data-sort="rank">Sort by Closing Rank</button>
+              </div>
             </div>
           </div>
         </section>
