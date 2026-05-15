@@ -169,7 +169,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Global Razorpay Checkout Function --------------------------------------
   window.openProCheckout = function() {
     if (!currentUserUid) {
-      alert('Please login first to upgrade.');
+      alert('Please login first so we can link the Pro upgrade to your account!');
+      
+      // 1. Close the Paywall Modal so it's out of the way
+      const modal = document.getElementById('paywallModal') || document.querySelector('.paywall-modal');
+      if (modal) modal.style.display = 'none';
+
+      // 2. Automatically slide open the mobile sidebar
+      const sidebar = document.querySelector('.app-sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+      const backdrop = document.querySelector('.sidebar-backdrop');
+      
+      if (sidebar) sidebar.classList.add('open', 'mobile-open');
+      if (overlay) overlay.classList.add('open');
+      if (backdrop) backdrop.classList.add('active');
+
+      // 3. Scroll to the very bottom of the sidebar so the Login & Checkbox are front and center
+      if (sidebar) {
+          setTimeout(() => {
+              sidebar.scrollTo({ top: sidebar.scrollHeight, behavior: 'smooth' });
+          }, 100); // Tiny delay ensures the sidebar is fully open before scrolling
+      }
       return;
     }
 
