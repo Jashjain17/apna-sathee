@@ -1369,7 +1369,7 @@ async function askBot(message) {
 const contactUsBtn = $("contactUsBtn");
 if (contactUsBtn) {
   contactUsBtn.addEventListener("click", () => {
-    window.open("https://wa.me/917011751573?text=Hi,%20I%20need%20help%20with%20my%20counselling", "_blank");
+    window.open("https://wa.me/919479923607?text=Hi,%20I%20need%20help%20with%20my%20counselling", "_blank");
   });
 }
 
