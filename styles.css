@@ -37,8 +37,14 @@
   }
 }
 
-/* 2. Restore Desktop Layout Grid */
+/* 2. Restore Desktop Layout Grid & Dual-Scroll Dashboard */
 @media (min-width: 769px) {
+    /* Lock the whole page so the main browser window doesn't scroll */
+    html, body {
+        height: 100vh !important;
+        overflow: hidden !important;
+    }
+
     .app-shell {
         display: grid !important;
         grid-template-columns: 260px 1fr !important;
@@ -51,7 +57,10 @@
         left: 0 !important;
         width: 260px !important;
         display: flex !important;
+        flex-direction: column !important;
         transform: none !important;
+        height: 100vh !important;
+        overflow-y: auto !important;
     }
 
     /* Keep the logo from going Godzilla-sized */
@@ -59,6 +68,20 @@
     .sidebar-header img {
         max-width: 50px !important;
         height: auto !important;
+    }
+
+    /* Main dashboard area independent scroll */
+    .app-main {
+        height: 100vh !important;
+        overflow-y: auto !important;
+    }
+
+    /* Armor for bottom elements so they don't squish when the sidebar fills up */
+    .auth-container,
+    #loginBtn, 
+    .legal-consent-wrap, 
+    #upgradeToProBtn {
+        flex-shrink: 0 !important;
     }
 }
 body.theme-dark {
