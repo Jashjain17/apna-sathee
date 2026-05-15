@@ -3014,32 +3014,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ==========================================
-// ==========================================
-// THE PAYWALL BOUNCER (The Silver Bullet)
+// THE PAYWALL BOUNCER (Fixed Modal View)
 // ==========================================
 document.addEventListener('DOMContentLoaded', function() {
-    // Find all buttons that have the 'locked-feature' class
     const lockedButtons = document.querySelectorAll('.locked-feature');
 
     lockedButtons.forEach(function(btn) {
-        // CHANGE 1: We are now using 'click' instead of 'mousedown'
         btn.addEventListener('click', function(e) {
             
-            // Check the exact global variable your database uses
             if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro') {
-                e.preventDefault();       // Stop the default link action
-                
-                // CHANGE 2: THE NUKE! This instantly kills the mobile "auto-close" script
+                e.preventDefault();       
                 e.stopImmediatePropagation();
                 e.stopPropagation();      
                 
-                // Pop the Checkout / Login Slider instead!
-                if (typeof window.openProCheckout === "function") {
-                    window.openProCheckout(); 
-                } else {
-                    alert("Payment system initializing, please try again in a moment.");
+                // 1. Close the mobile sidebar so they can actually see the Paywall Modal
+                const sidebar = document.querySelector('.app-sidebar');
+                const backdrop = document.querySelector('.sidebar-backdrop');
+                const overlay = document.querySelector('.sidebar-overlay');
+                if (sidebar) sidebar.classList.remove('mobile-open', 'open');
+                if (backdrop) backdrop.classList.remove('active');
+                if (overlay) overlay.classList.remove('open');
+
+                // 2. Show the Paywall Modal (NOT the direct checkout)
+                if (typeof showPaywall === "function") {
+                    showPaywall(); 
                 }
             }
-        }, true); // The 'true' forces this to intercept before anything else
+        }, true); 
     });
 });
