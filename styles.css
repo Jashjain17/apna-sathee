@@ -3602,3 +3602,19 @@ body.theme-dark .slider-arrow::after {
         box-sizing: border-box !important;
     }
 }
+/* ==========================================================================
+   MOBILE CHATBOT CLEANUP (Hides extra boxes, fixes layout)
+   ========================================================================== */
+@media (max-width: 768px) {
+    /* 1. Force the container into a single vertical column */
+    #emptyChips {
+        display: flex !important;
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+
+    /* 2. Hide any suggestion boxes after the first 2 on phones */
+    #emptyChips > *:nth-child(n+3) {
+        display: none !important;
+    }
+}
