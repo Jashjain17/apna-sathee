@@ -433,19 +433,22 @@
 .message-body li {
     margin-bottom: 6px;
 }
-/* 1. Make the sidebar scrollable */
-.app-sidebar {
-    height: 100vh; /* Takes full height of the screen */
-    display: flex;
-    flex-direction: column;
-    overflow-y: auto; /* ALLOWS SCROLLING */
-    padding-bottom: 30px; /* Adds space so the bottom checkbox isn't touching the edge */
-    scrollbar-width: none; /* Hides scrollbar on Firefox for a cleaner look */
+/* 1. Prevent buttons from squishing on any device */
+#loginBtn, .legal-consent-wrap, #upgradeToProBtn {
+    flex-shrink: 0 !important;
 }
 
-/* Hides scrollbar on Chrome/Safari/S24 so it looks like a clean app */
-.app-sidebar::-webkit-scrollbar {
-    display: none;
+/* 2. ONLY make sidebar scrollable on mobile phones (Protects laptop layout!) */
+@media (max-width: 768px) {
+    .app-sidebar {
+        height: 100vh; 
+        overflow-y: auto; 
+        padding-bottom: 30px; 
+        scrollbar-width: none; 
+    }
+    .app-sidebar::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* 2. Tighten up the "Upgrade" button for mobile */
@@ -460,6 +463,35 @@
     margin-top: auto; /* Pushes it to the bottom of the list */
     padding: 15px;
     flex-shrink: 0;
+}
+/* Blurs the content for free users */
+.blurred-row {
+    filter: blur(5px);
+    pointer-events: none; /* Prevents clicking on blurred links */
+    user-select: none;    /* Prevents copying the text */
+    opacity: 0.6;
+}
+
+/* Container for the 'Unlock' button over the blurred list */
+.paywall-overlay-container {
+    position: relative;
+    margin-top: -100px; /* Pulls it up over the blurred rows */
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(to top, var(--bg) 60%, transparent);
+    z-index: 10;
+}
+
+.unlock-btn-massive {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: #1e293b;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.4);
 }
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">

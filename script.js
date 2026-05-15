@@ -2554,9 +2554,22 @@ document.querySelectorAll(".nav-item").forEach((button) => {
     if (!target) return;
 
     // --- Paywall gate for premium tabs --------------------------------------
+    // --- Paywall gate for premium tabs --------------------------------------
     const premiumScreens = ["chancesScreen", "preferenceScreen", "compareScreen"];
     if (premiumScreens.includes(target) && isPremiumLocked()) {
-      showPaywall();
+      
+      // 1. Close mobile menus so the Paywall isn't hidden behind them!
+      const sidebar = document.querySelector('.app-sidebar');
+      const backdrop = document.querySelector('.sidebar-backdrop');
+      const overlay = document.querySelector('.sidebar-overlay');
+      if (sidebar) sidebar.classList.remove('mobile-open', 'open');
+      if (backdrop) backdrop.classList.remove('active');
+      if (overlay) overlay.classList.remove('open');
+
+      // 2. Show the Paywall Modal 
+      if (typeof showPaywall === "function") {
+          showPaywall();
+      }
       return;
     }
 
