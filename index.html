@@ -297,25 +297,25 @@
             <button id="mobileChatToggle" class="mobile-history-btn">🕒 History</button>
 
 
-            <div id="messages" class="messages" aria-live="polite" style="width: 100%; overflow-x: hidden; box-sizing: border-box;">
-              <div id="chatEmpty" class="chat-empty" style="width: 100%; box-sizing: border-box;" hidden>
-                <div class="empty-copy" style="text-align: center; margin: 40px auto; width: 100%; padding: 0 15px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center;">
-                  
-                  <h2 style="font-size: clamp(1.2rem, 5vw, 24px); font-weight: 500; color: var(--navy); margin-bottom: 30px; line-height: 1.4; white-space: normal !important; word-wrap: break-word; overflow-wrap: break-word; width: 100%; max-width: 100%;">
-                    Hi, I am Apna Sathee. Ask me anything about counselling.
-                  </h2>
-                  
-                  <div class="chip-row prompt-grid flex flex-col md:grid md:grid-cols-2 gap-[10px] w-full" id="emptyChips" aria-label="Suggested questions">
+            <div id="messages" class="messages w-full overflow-x-hidden" aria-live="polite">
+  <div id="chatEmpty" class="chat-empty w-full" hidden>
+    <div class="empty-copy w-full max-w-3xl mx-auto px-4 mt-10 flex flex-col items-center text-center">
+      
+      <h2 class="text-xl md:text-[24px] font-medium text-[var(--navy)] mb-8 w-full whitespace-normal break-words">
+        Hi, I am Apna Sathee. Ask me anything about counselling.
+      </h2>
+      
+      <div class="chip-row prompt-grid grid grid-cols-1 md:grid-cols-2 gap-4 w-full" id="emptyChips" aria-label="Suggested questions">
+      </div>
+      
+    </div>
+  </div>
 </div>
-                  
-                </div>
-              </div>
-            </div>
 
-            <form id="chatForm" class="composer" style="width: 100%; max-width: 100%; box-sizing: border-box; overflow-x: hidden;">
-              <textarea id="messageInput" rows="2" placeholder="Ask a counselling doubt..." style="box-sizing: border-box; width: 100%;"></textarea>
-              <button class="send" aria-label="Send">Send</button>
-            </form>
+<form id="chatForm" class="composer w-full max-w-full overflow-x-hidden">
+  <textarea id="messageInput" rows="2" placeholder="Ask a counselling doubt..." class="w-full"></textarea>
+  <button class="send" aria-label="Send">Send</button>
+</form>
           </section>
         </section>
       </section>
