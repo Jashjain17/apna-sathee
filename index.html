@@ -296,7 +296,19 @@
             <!-- Add this toggle button for mobile chat history -->
             <button id="mobileChatToggle" class="mobile-history-btn">🕒 History</button>
 
-
+          <style>
+  @media (max-width: 768px) {
+    #emptyChips {
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    /* Kills the 3rd and 4th boxes immediately */
+    #emptyChips > div:nth-child(n+3),
+    #emptyChips > button:nth-child(n+3) {
+      display: none !important;
+    }
+  }
+</style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
   <div id="chatEmpty" class="chat-empty" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;" hidden>
 
