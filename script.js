@@ -2982,28 +2982,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ==========================================
-// THE PAYWALL BOUNCER (Updated with Firebase)
+// ==========================================
+// THE PAYWALL BOUNCER (The Silver Bullet)
 // ==========================================
 document.addEventListener('DOMContentLoaded', function() {
     // Find all buttons that have the 'locked-feature' class
     const lockedButtons = document.querySelectorAll('.locked-feature');
 
     lockedButtons.forEach(function(btn) {
-        // We use 'mousedown' to catch the click BEFORE the tab tries to open
-        btn.addEventListener('mousedown', function(e) {
+        // CHANGE 1: We are now using 'click' instead of 'mousedown'
+        btn.addEventListener('click', function(e) {
             
             // Check the exact global variable your database uses
             if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro') {
-                e.preventDefault();       // Stop the click
-                e.stopPropagation();      // Stop the tab from switching
+                e.preventDefault();       // Stop the default link action
                 
-                // Pop the Razorpay checkout instead!
+                // CHANGE 2: THE NUKE! This instantly kills the mobile "auto-close" script
+                e.stopImmediatePropagation();
+                e.stopPropagation();      
+                
+                // Pop the Checkout / Login Slider instead!
                 if (typeof window.openProCheckout === "function") {
                     window.openProCheckout(); 
                 } else {
                     alert("Payment system initializing, please try again in a moment.");
                 }
             }
-        }, true); // The 'true' makes sure this runs before any other click events
+        }, true); // The 'true' forces this to intercept before anything else
     });
 });
