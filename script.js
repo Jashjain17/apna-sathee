@@ -137,8 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Update PRO badge visibility based on database truth
       const badge = document.getElementById('proBadge');
-      if (badge) {
-        badge.style.display = tier === 'Pro' ? 'inline-block' : 'none';
+      const upgradeToProBtn = document.getElementById('upgradeToProBtn');
+      if (tier === 'Pro') {
+        if (badge) badge.style.display = 'inline-block';
+        if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
+      } else {
+        if (badge) badge.style.display = 'none';
+        if (upgradeToProBtn) upgradeToProBtn.style.display = 'flex';
       }
 
     } else {
@@ -151,7 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (userProfile) userProfile.style.display = 'none';
 
       const badge = document.getElementById('proBadge');
+      const upgradeToProBtn = document.getElementById('upgradeToProBtn');
       if (badge) badge.style.display = 'none';
+      if (upgradeToProBtn) upgradeToProBtn.style.display = 'flex';
 
       currentUserTier = null;
       currentMessagesUsed = 0;
@@ -192,7 +199,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (modal) modal.style.display = 'none';
 
             const badge = document.getElementById('proBadge');
+            const upgradeToProBtn = document.getElementById('upgradeToProBtn');
             if (badge) badge.style.display = 'inline-block';
+            if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
 
             alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
 
