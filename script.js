@@ -2950,6 +2950,7 @@ if (mobileHistoryBtn && chatSidebar) {
     // 1. Open/Close when the History button is clicked
     mobileHistoryBtn.addEventListener('click', (e) => {
         e.stopPropagation(); // Prevents the click from instantly closing it
+        alert("The JavaScript is working! The button was clicked.");
         chatSidebar.classList.toggle('open');
     });
 
