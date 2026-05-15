@@ -46,8 +46,8 @@
     }
 
     .app-shell {
-        display: grid !important;
-        grid-template-columns: 260px 1fr !important;
+        display: flex !important;
+        flex-direction: row !important;
         height: 100vh !important;
         overflow: hidden !important;
     }
@@ -61,6 +61,8 @@
         transform: none !important;
         height: 100vh !important;
         overflow-y: auto !important;
+        flex-shrink: 0 !important;
+        transition: width 0.3s ease !important;
     }
 
     /* Keep the logo from going Godzilla-sized */
@@ -74,6 +76,8 @@
     .app-main {
         height: 100vh !important;
         overflow-y: auto !important;
+        flex-grow: 1 !important;
+        min-width: 0 !important;
     }
 
     /* Armor for bottom elements so they don't squish when the sidebar fills up */
@@ -3628,7 +3632,13 @@ body.theme-dark .slider-arrow::after {
 
 /* ==========================================
    COLLAPSED SIDEBAR STATE
+/* ==========================================
+   COLLAPSED SIDEBAR STATE
    ========================================== */
+.app-sidebar.collapsed {
+    width: 80px !important;
+}
+
 .app-sidebar.collapsed .brand-text-wrap {
     display: none !important;
 }
