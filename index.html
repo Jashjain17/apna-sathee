@@ -433,6 +433,34 @@
 .message-body li {
     margin-bottom: 6px;
 }
+/* 1. Make the sidebar scrollable */
+.app-sidebar {
+    height: 100vh; /* Takes full height of the screen */
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* ALLOWS SCROLLING */
+    padding-bottom: 30px; /* Adds space so the bottom checkbox isn't touching the edge */
+    scrollbar-width: none; /* Hides scrollbar on Firefox for a cleaner look */
+}
+
+/* Hides scrollbar on Chrome/Safari/S24 so it looks like a clean app */
+.app-sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* 2. Tighten up the "Upgrade" button for mobile */
+#upgradeToProBtn {
+    margin-top: 10px !important;
+    margin-bottom: 10px !important;
+    flex-shrink: 0; /* Prevents the button from getting squashed */
+}
+
+/* 3. Ensure the legal wrap stays visible */
+.legal-consent-wrap {
+    margin-top: auto; /* Pushes it to the bottom of the list */
+    padding: 15px;
+    flex-shrink: 0;
+}
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
   <div id="chatEmpty" class="chat-empty" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;" hidden>
