@@ -493,6 +493,38 @@
     cursor: pointer;
     box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.4);
 }
+/* ==========================================
+   THE DUAL-SCROLL DASHBOARD FIX
+   ========================================== */
+
+/* 1. Force the Main Dashboard to scroll vertically on all devices */
+body, html {
+    overflow-y: auto !important; 
+    overflow-x: hidden !important; /* Prevents annoying side-to-side wobble */
+}
+
+/* 2. Force the Sidebar to scroll independently on all devices */
+.app-sidebar {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto !important; /* The magic unlock */
+    padding-bottom: 30px;
+}
+
+/* Hide the ugly scrollbar on the sidebar so it looks clean */
+.app-sidebar::-webkit-scrollbar {
+    display: none;
+}
+.app-sidebar {
+    scrollbar-width: none; /* For Firefox */
+}
+
+/* 3. Create armor for your buttons so they never shrink or squish */
+#loginBtn, .legal-consent-wrap, #upgradeToProBtn {
+    flex-shrink: 0 !important;
+    min-height: max-content;
+}
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
   <div id="chatEmpty" class="chat-empty" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;" hidden>
