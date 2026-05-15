@@ -2940,4 +2940,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// --- 3. TRIGGER FOR THE GET PRO BUTTON ---
+const getProBtn = document.getElementById('getProBtn');
+
+if (getProBtn) {
+    getProBtn.onclick = function(e) {
+        e.preventDefault(); // Stops the page from jumping
+        if (typeof rzp1 !== 'undefined') {
+            rzp1.open(); // Opens the Razorpay payment window
+        } else {
+            console.error("Razorpay is not ready.");
+        }
+    }
+}
+
 
