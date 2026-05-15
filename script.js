@@ -1902,9 +1902,14 @@ function renderChances() {
       return;
     }
 
-    body.innerHTML = rows.map((r) => {
+    // --- NEW BLURRED RENDER LOGIC ---
+    body.innerHTML = rows.map((r, index) => {
+      // 🚨 The Lock: Free users only see the first 3 rows clearly
+      const isLocked = (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro' && index >= 3); 
+      
       const v = verdictFromBand(r.band === "ambitious" ? "ambitious" : r.band);
-      const rowClass = v.key === "safe" ? "row-safe" : v.key === "borderline" ? "row-borderline" : "row-reach";
+      const rowClass = isLocked ? "blurred-row" : (v.key === "safe" ? "row-safe" : v.key === "borderline" ? "row-borderline" : "row-reach");
+
       const type = getBadgeText(r.institute);
       const round1 = r.round1 ?? "-";
       const final = r.final ?? "-";
@@ -1913,7 +1918,6 @@ function renderChances() {
       const finalRankNum = parseInt(String(r.final).replace(/,/g, ''), 10);
       const group = instituteGroup(r.instituteType, r.institute);
       let uRankNum = group === 'iit' ? advNum : mainNum;
-
       if (!uRankNum) {
         uRankNum = p.exam === 'JEE Advanced' ? advNum : mainNum;
       }
@@ -1935,7 +1939,7 @@ function renderChances() {
       }
 
       let trendUI = "-";
-      if (cutoffsCache && r.quota && r.seatType && r.gender) {
+      if (typeof cutoffsCache !== 'undefined' && cutoffsCache && r.quota && r.seatType && r.gender) {
         const historyData = cutoffsCache.filter(c =>
           c.institute === r.institute &&
           c.program === r.program &&
@@ -1962,12 +1966,17 @@ function renderChances() {
       }
 
       const id = `${r.institute}__${r.program}`.replace(/\s+/g, "_");
-      const alreadyAdded = preferenceState.rows.some(
-        (p) => p.institute === r.institute && p.program === r.program
-      );
+      
+      // Safety check for preferenceState
+      let alreadyAdded = false;
+      if (typeof preferenceState !== 'undefined' && preferenceState.rows) {
+          alreadyAdded = preferenceState.rows.some((pref) => pref.institute === r.institute && pref.program === r.program);
+      }
+      
       const btnClass = alreadyAdded ? "add-pref added" : "add-pref";
       const btnText = alreadyAdded ? "Added ✓" : "Add to preference";
       const btnDisabled = alreadyAdded ? "disabled" : "";
+
       return `<tr class="${rowClass}">
         <td><span class="inst-badge"><b>${escapeHtml(r.institute)}</b> <span class="inst-type">${escapeHtml(type)}</span></span></td>
         <td>${escapeHtml(r.program)}</td>
@@ -1976,9 +1985,21 @@ function renderChances() {
         <td>${trendUI}</td>
         <td>${escapeHtml(seats)}</td>
         <td>${probUI}</td>
-        <td class="row-action"><button class="${btnClass}" type="button" data-add-pref="${escapeHtml(id)}" ${btnDisabled}>${btnText}</button></td>
+        <td class="row-action">
+            ${isLocked ? '🔒' : `<button class="${btnClass}" type="button" data-add-pref="${escapeHtml(id)}" ${btnDisabled}>${btnText}</button>`}
+        </td>
       </tr>`;
     }).join("");
+
+    // --- ADD THE UNLOCK BUTTON OVERLAY ---
+    if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro' && rows.length > 3) {
+        body.insertAdjacentHTML('afterend', `
+            <div class="paywall-overlay-container">
+                <p style="margin-bottom: 15px; font-weight: 600; color: var(--fg);">+ ${rows.length - 3} more matching options found</p>
+                <button class="unlock-btn-massive" onclick="window.openProCheckout()">Unlock Full List for ₹249</button>
+            </div>
+        `);
+    }
 
     body.querySelectorAll("[data-add-pref]").forEach((btn) => {
       btn.addEventListener("click", () => {
