@@ -1534,27 +1534,13 @@ function renderPreferenceBoard() {
   if (preferenceState.rows.length === 0) {
     host.innerHTML = '<div class="rec-card">Fill your profile to see personalized chances.</div>';
     warnings.innerHTML = "";
-    
-    // Cleanup overlay if list becomes empty
-    const existingOverlay = host.parentElement.querySelector('.paywall-overlay-container');
-    if (existingOverlay) existingOverlay.remove();
     return;
   }
-  
   host.innerHTML = preferenceState.rows
     .map((row, index) => {
       const band = prefBand(row);
-      
-      // 🚨 The Lock: Free users only see the first 3 rows clearly
-      const isLocked = (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro' && index >= 3);
-      const articleClass = isLocked ? `pref-item sys-row ${band} blurred-row` : `pref-item sys-row ${band}`;
-      
-      // Hide drag handle and remove button, replace with lock icon if locked
-      const dragHandle = isLocked ? `<div class="drag-handle" style="cursor: not-allowed; opacity: 0.5;" title="Locked">🔒</div>` : `<div class="drag-handle" title="Drag to reorder">⋮</div>`;
-      const actionBtn = isLocked ? `<span style="padding: 6px;">🔒</span>` : `<button class="mini-btn remove-pref" type="button" data-remove-pref="${index}">Remove</button>`;
-
-      return `<article class="${articleClass}" draggable="${!isLocked}" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'IIT' : 'NIT'}">
-        ${dragHandle}
+      return `<article class="pref-item sys-row ${band}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'IIT' : 'NIT'}">
+        <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
             <b>${index + 1}. ${escapeHtml(row.institute || "Institute")}</b>
@@ -1562,26 +1548,10 @@ function renderPreferenceBoard() {
           </div>
           <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || "-")} • Round ${escapeHtml(row.round || "-")}</p>
         </div>
-        ${actionBtn}
+        <button class="mini-btn remove-pref" type="button" data-remove-pref="${index}">Remove</button>
       </article>`;
     })
     .join("");
-
-  // --- OVERLAY CLEANUP & INJECTION ---
-  const existingOverlay = host.parentElement.querySelector('.paywall-overlay-container');
-  if (existingOverlay) {
-      existingOverlay.remove();
-  }
-
-  if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro' && preferenceState.rows.length > 3) {
-      const hiddenCount = preferenceState.rows.length - 3;
-      host.insertAdjacentHTML('afterend', `
-          <div class="paywall-overlay-container">
-              <p style="margin-bottom: 15px; font-weight: 600; color: var(--fg);">+ ${hiddenCount} more saved preferences hidden</p>
-              <button class="unlock-btn-massive" onclick="window.openProCheckout()">Unlock Full List for ₹249</button>
-          </div>
-      `);
-  }
 
   const warningList = buildPreferenceWarnings();
   warnings.innerHTML = warningList.map((w) => `<div class="warning-chip">${escapeHtml(w)}</div>`).join("");
@@ -1594,7 +1564,6 @@ function renderPreferenceBoard() {
     )
     .join("");
 
-  // Event Listeners (Locked items don't have these buttons so they won't trigger)
   host.querySelectorAll("[data-remove-pref]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const i = Number(btn.dataset.removePref);
@@ -1617,12 +1586,6 @@ function renderPreferenceBoard() {
     item.addEventListener("drop", () => {
       const to = Number(item.dataset.prefIdx);
       if (!Number.isInteger(dragIndex) || dragIndex === to) return;
-      
-      // Additional safety to prevent dragging/dropping onto locked rows
-      if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro') {
-          if (dragIndex >= 3 || to >= 3) return; // Disallow dragging to or from the locked zone
-      }
-
       pushPrefUndoSnapshot();
       const [moved] = preferenceState.rows.splice(dragIndex, 1);
       preferenceState.rows.splice(to, 0, moved);
