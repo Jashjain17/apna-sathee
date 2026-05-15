@@ -578,26 +578,36 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script type="module" src="script.js"></script>
   <script>
-  // This forces the JavaScript to wait until the screen is fully drawn
   document.addEventListener("DOMContentLoaded", function() {
     const historyBtn = document.getElementById('mobileChatToggle');
     const sidebar = document.querySelector('.chat-sidebar');
 
+    // 1. The Sidebar Logic
     if (historyBtn && sidebar) {
-      // 1. Listen for the button click
       historyBtn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         sidebar.classList.toggle('open');
       });
 
-      // 2. Listen for clicks outside to close it
       document.addEventListener('click', function(e) {
-        if (sidebar.classList.contains('open') && !sidebar.contains(e.target)) {
+        if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && !historyBtn.contains(e.target)) {
           sidebar.classList.remove('open');
         }
       });
     }
+
+    // 2. THE UI SNIPER (Kills "Show previous chats" instantly)
+    // This runs in the background and hides that button whenever the system tries to generate it
+    setInterval(function() {
+      const allElements = document.querySelectorAll('button, div, span');
+      allElements.forEach(function(el) {
+        if (el.textContent && el.textContent.trim() === "Show previous chats") {
+          // Hide it completely, and hide its parent box if it has one
+          el.style.display = "none"; 
+        }
+      });
+    }, 200); // Scans 5 times a second so the user never even sees it appear
   });
 </script>
 </body>
