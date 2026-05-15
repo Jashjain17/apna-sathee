@@ -297,23 +297,21 @@
             <button id="mobileChatToggle" class="mobile-history-btn">🕒 History</button>
 
 
-            <div id="messages" class="messages w-full overflow-x-hidden" aria-live="polite">
-  <div id="chatEmpty" class="chat-empty w-full" hidden>
-    <div class="empty-copy w-full max-w-3xl mx-auto px-4 mt-10 flex flex-col items-center text-center">
-      
-      <h2 class="text-xl md:text-[24px] font-medium text-[var(--navy)] mb-8 w-full whitespace-normal break-words">
+            <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
+  <div id="chatEmpty" class="chat-empty" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;" hidden>
+
+      <h2 style="font-size: clamp(1.2rem, 3vw, 28px); font-weight: 400; text-align: center; width: 100%; max-width: 800px; margin-bottom: 30px; line-height: 1.5; white-space: normal;">
         Hi, I am Apna Sathee. Ask me anything about counselling.
       </h2>
-      
-      <div class="chip-row prompt-grid grid grid-cols-1 md:grid-cols-2 gap-4 w-full" id="emptyChips" aria-label="Suggested questions">
+
+      <div class="prompt-grid" id="emptyChips" aria-label="Suggested questions" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; width: 100%; max-width: 800px; box-sizing: border-box;">
       </div>
-      
-    </div>
+
   </div>
 </div>
 
-<form id="chatForm" class="composer w-full max-w-full overflow-x-hidden">
-  <textarea id="messageInput" rows="2" placeholder="Ask a counselling doubt..." class="w-full"></textarea>
+<form id="chatForm" class="composer" style="width: 100%; box-sizing: border-box; display: flex; gap: 10px; overflow-x: hidden;">
+  <textarea id="messageInput" rows="2" placeholder="Ask a counselling doubt..." style="flex: 1; min-width: 0; box-sizing: border-box;"></textarea>
   <button class="send" aria-label="Send">Send</button>
 </form>
           </section>
