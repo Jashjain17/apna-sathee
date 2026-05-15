@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const options = {
         "key": "rzp_live_SpLnehjbh9ZfBW",
-        "amount": 100,
+        "amount": 24900,
         "currency": "INR",
         "name": "Apna Sathee",
         "description": "Unlock Pro Access",
