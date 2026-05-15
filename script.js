@@ -136,15 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
       currentUserTier = tier;
 
       // Update PRO badge visibility based on database truth
-      const badge = document.querySelector('.pro-badge') || document.getElementById('proBadge');
+      const badge = document.getElementById('proBadge');
       if (badge) {
         badge.style.display = tier === 'Pro' ? 'inline-block' : 'none';
       }
-      // SMART BUTTON: Hide "Upgrade to Pro" if they already paid
-const upgradeBtn = document.getElementById('getProBtn');
-if (upgradeBtn) {
-    upgradeBtn.style.display = tier === 'Pro' ? 'none' : 'flex';
-}
 
     } else {
       // User is logged out
@@ -155,7 +150,7 @@ if (upgradeBtn) {
 
       if (userProfile) userProfile.style.display = 'none';
 
-      const badge = document.querySelector('.pro-badge') || document.getElementById('proBadge');
+      const badge = document.getElementById('proBadge');
       if (badge) badge.style.display = 'none';
 
       currentUserTier = null;
@@ -196,7 +191,7 @@ if (upgradeBtn) {
             const modal = document.querySelector('.paywall-modal') || document.getElementById('paywallModal') || document.querySelector('[class*="paywall"]');
             if (modal) modal.style.display = 'none';
 
-            const badge = document.querySelector('.pro-badge') || document.getElementById('proBadge');
+            const badge = document.getElementById('proBadge');
             if (badge) badge.style.display = 'inline-block';
 
             alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
@@ -2945,24 +2940,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ==========================================
-// BULLETPROOF TRIGGER FOR 'GET PRO' BUTTON
-// ==========================================
-document.addEventListener('click', function(e) {
-    // 1. Check if what they clicked was the Pro button (or text inside it)
-    const clickedProBtn = e.target.closest('#getProBtn');
-    
-    if (clickedProBtn) {
-        e.preventDefault(); // Stop page from jumping
-        
-        // 2. Open Razorpay if the engine is ready
-        if (typeof rzp1 !== 'undefined') {
-            rzp1.open(); 
-        } else {
-            console.error("Razorpay engine hasn't loaded yet!");
-        }
-    }
-});
 
 // ==========================================
 // THE PAYWALL BOUNCER (Updated with Firebase)
