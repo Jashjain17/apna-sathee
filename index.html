@@ -327,6 +327,19 @@
     .chat-sidebar.open {
       left: 0 !important; /* Slides it into view */
     }
+    #chatHistory {
+      display: flex !important;
+      flex-direction: column !important; /* Forces them to stack downwards */
+      overflow-x: hidden !important; /* Kills the horizontal scroll */
+      overflow-y: auto !important; /* Keeps normal vertical scroll */
+      gap: 10px !important; /* Adds breathing room between chats */
+      padding-right: 10px !important;
+    }
+    #chatHistory > div {
+      width: 100% !important; /* Stops cards from shrinking */
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+    }
   }
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
