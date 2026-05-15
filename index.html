@@ -408,6 +408,31 @@
   align-items: center;
   justify-content: center;
 }
+/* Style the AI's rendered HTML */
+.ai-message-content p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+/* Change .ai-message-content to .message-body so it matches your script.js */
+.message-body strong {
+    color: #fbbf24; /* Make bold text pop in gold to match your brand */
+    font-weight: 700;
+}
+
+.message-body p {
+    margin-bottom: 12px;
+    line-height: 1.6;
+}
+
+.message-body ul {
+    margin-left: 20px;
+    margin-bottom: 12px;
+}
+
+.message-body li {
+    margin-bottom: 6px;
+}
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
   <div id="chatEmpty" class="chat-empty" style="width: 100%; display: flex; flex-direction: column; align-items: center; padding: 40px 20px; box-sizing: border-box;" hidden>
@@ -677,6 +702,7 @@
     }, 200); // Scans 5 times a second so the user never even sees it appear
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 
 </html>
