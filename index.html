@@ -47,11 +47,9 @@
     document.getElementById('getProBtn').addEventListener('click', function(e) {
         e.preventDefault();
         
-        // Try to open Razorpay
         try {
-            rzp1.open();
+            window.rzp1.open(); // Now it uses the global key!
         } catch(err) {
-            // If it fails, this alert tells us exactly why
             alert("The payment gateway is still loading. Please wait a second and click again.");
             console.error(err);
         }
