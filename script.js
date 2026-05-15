@@ -2940,18 +2940,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// --- 3. TRIGGER FOR THE GET PRO BUTTON ---
-const getProBtn = document.getElementById('getProBtn');
-
-if (getProBtn) {
-    getProBtn.onclick = function(e) {
-        e.preventDefault(); // Stops the page from jumping
+// ==========================================
+// BULLETPROOF TRIGGER FOR 'GET PRO' BUTTON
+// ==========================================
+document.addEventListener('click', function(e) {
+    // 1. Check if what they clicked was the Pro button (or text inside it)
+    const clickedProBtn = e.target.closest('#getProBtn');
+    
+    if (clickedProBtn) {
+        e.preventDefault(); // Stop page from jumping
+        
+        // 2. Open Razorpay if the engine is ready
         if (typeof rzp1 !== 'undefined') {
-            rzp1.open(); // Opens the Razorpay payment window
+            rzp1.open(); 
         } else {
-            console.error("Razorpay is not ready.");
+            console.error("Razorpay engine hasn't loaded yet!");
         }
     }
-}
+});
 
 
