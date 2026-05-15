@@ -2940,24 +2940,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// ==========================================
-// MOBILE CHAT HISTORY SIDEBAR LOGIC
-// ==========================================
-const mobileHistoryBtn = document.getElementById('mobileChatToggle');
-const chatSidebar = document.querySelector('.chat-sidebar');
 
-if (mobileHistoryBtn && chatSidebar) {
-    // 1. Open/Close when the History button is clicked
-    mobileHistoryBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevents the click from instantly closing it
-        alert("The JavaScript is working! The button was clicked.");
-        chatSidebar.classList.toggle('open');
-    });
-
-    // 2. Automatically close if the user taps anywhere outside the sidebar
-    document.addEventListener('click', (e) => {
-        if (chatSidebar.classList.contains('open') && !chatSidebar.contains(e.target)) {
-            chatSidebar.classList.remove('open');
-        }
-    });
-}

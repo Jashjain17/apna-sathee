@@ -564,6 +564,29 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script type="module" src="script.js"></script>
+  <script>
+  // This forces the JavaScript to wait until the screen is fully drawn
+  document.addEventListener("DOMContentLoaded", function() {
+    const historyBtn = document.getElementById('mobileChatToggle');
+    const sidebar = document.querySelector('.chat-sidebar');
+
+    if (historyBtn && sidebar) {
+      // 1. Listen for the button click
+      historyBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        sidebar.classList.toggle('open');
+      });
+
+      // 2. Listen for clicks outside to close it
+      document.addEventListener('click', function(e) {
+        if (sidebar.classList.contains('open') && !sidebar.contains(e.target)) {
+          sidebar.classList.remove('open');
+        }
+      });
+    }
+  });
+</script>
 </body>
 
 </html>
