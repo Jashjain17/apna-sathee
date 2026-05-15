@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loginBtn.addEventListener('click', async () => {
       // Check if the user ticked the consent box
       const isAgreed = document.getElementById('legalAgreeCheckbox')?.checked;
-      
+
       if (!isAgreed) {
         alert('Please read and agree to the Privacy Policy and Terms & Conditions to proceed.');
         return; // Stops the login execution right here!
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Show profile, hide login & consent UI
       if (loginBtn) loginBtn.style.display = 'none';
-      
+
       const consentWrap = document.querySelector('.legal-consent-wrap');
       if (consentWrap) consentWrap.style.display = 'none';
 
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // User is logged out
       if (loginBtn) loginBtn.style.display = 'flex';
-      
+
       const consentWrap = document.querySelector('.legal-consent-wrap');
       if (consentWrap) consentWrap.style.display = 'flex';
 
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const options = {
-        "key": "rzp_test_SokKSPJY1nQ38B",
+        "key": "rzp_live_SpLnehjbh9ZfBW",
         "amount": 24900,
         "currency": "INR",
         "name": "Apna Sathee",
@@ -1063,12 +1063,12 @@ function addMessage(role, text, persist = true, messageObj) {
   box.dataset.messageId = messageId;
   const label = document.createElement("span");
   label.textContent = role === "user" ? "You" : "Apna Saathi";
-  
+
   // MARDKOWN TRANSLATOR FIX ------------------------------------------
-  const body = document.createElement("div"); 
+  const body = document.createElement("div");
   body.className = "message-body";
   if (role === "bot" && typeof marked !== 'undefined') {
-    body.innerHTML = marked.parse(text); 
+    body.innerHTML = marked.parse(text);
   } else {
     body.textContent = text;
   }
@@ -2221,7 +2221,7 @@ async function runCompare() {
           } else {
             if (!normalizeName(c.institute).includes(normalizeName(institute))) return false;
           }
-          
+
           const rowCat = norm(c.seatType || c['Seat Type']);
           if (!validCats.includes(rowCat)) return false;
 
@@ -2251,7 +2251,7 @@ async function runCompare() {
           if (!label.includes(" - ")) {
             const branchCutoffs = filterBranches(targetSet, branch);
             if (branchCutoffs.length > 0) targetSet = branchCutoffs;
-            
+
             const programs = [...new Set(targetSet.map(c => c.program))];
             if (programs.length > 1) {
               programs.sort((a, b) => a.length - b.length);
@@ -2262,10 +2262,10 @@ async function runCompare() {
           // Prioritize Round 6 (final round) for realistic cutoffs
           const r6Set = targetSet.filter(c => String(c.round) === '6');
           const finalSet = r6Set.length > 0 ? r6Set : [...targetSet].sort((a, b) => b.round - a.round);
-          
+
           const r1Row = targetSet.find(c => String(c.round) === '1') || finalSet[0];
           const rLastRow = finalSet[0];
-          
+
           console.log('Compare Tool Match:', {
             inputLabel: label,
             r1Match: r1Row,
@@ -2735,7 +2735,7 @@ loadDataFiles().catch(console.error);
 
 function triggerSortByRank() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
-  
+
   preferenceState.rows.sort((a, b) => {
     const rankA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
     const rankB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
@@ -2744,7 +2744,7 @@ function triggerSortByRank() {
 
   const rankBtn = document.getElementById('sortRankBtn');
   const bucketBtn = document.getElementById('sortBucketsBtn');
-  
+
   if (rankBtn) {
     rankBtn.classList.add("active");
     rankBtn.classList.remove("subtle");
@@ -2753,7 +2753,7 @@ function triggerSortByRank() {
     bucketBtn.classList.remove("active");
     bucketBtn.classList.add("subtle");
   }
-  
+
   if (typeof syncLastChoiceList === "function") syncLastChoiceList();
   if (typeof renderPreferenceBoard === "function") renderPreferenceBoard();
 }
@@ -2820,7 +2820,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // The 4 feature screens you want to protect
   const targetScreens = ['chatScreen', 'chancesScreen', 'preferenceScreen', 'compareScreen'];
-  
+
   targetScreens.forEach(id => {
     const screen = document.getElementById(id);
     if (screen) {
@@ -2830,15 +2830,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // --- APNA SATHEE MOBILE SIDEBAR LOGIC ---
 document.addEventListener('DOMContentLoaded', () => {
-    const appShell = document.querySelector('.app-shell');
-    const sidebar = document.querySelector('.app-sidebar');
-    
-    if (appShell && sidebar) {
-        // 1. Create the Top Mobile Header (Hamburger + Logo)
-        const mobileHeader = document.createElement('div');
-        mobileHeader.className = 'mobile-header';
-        mobileHeader.style.display = 'none'; // Hidden on desktop
-        mobileHeader.innerHTML = `
+  const appShell = document.querySelector('.app-shell');
+  const sidebar = document.querySelector('.app-sidebar');
+
+  if (appShell && sidebar) {
+    // 1. Create the Top Mobile Header (Hamburger + Logo)
+    const mobileHeader = document.createElement('div');
+    mobileHeader.className = 'mobile-header';
+    mobileHeader.style.display = 'none'; // Hidden on desktop
+    mobileHeader.innerHTML = `
             <div style="font-weight: 700; font-size: 1.2rem; color: #f8fafc; display: flex; align-items: center; gap: 10px;">
                 <img src="/logo.png" style="width: 30px; height: 30px;" onerror="this.style.display='none'"> 
                 Apna Sathee
@@ -2846,45 +2846,117 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="hamburger-btn" aria-label="Open Menu">☰</button>
         `;
 
-        // 2. Create the Dark Overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'sidebar-overlay';
+    // 2. Create the Dark Overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
 
-        // Inject them into the DOM
-        appShell.insertBefore(mobileHeader, appShell.firstChild);
-        appShell.appendChild(overlay);
+    // Inject them into the DOM
+    appShell.insertBefore(mobileHeader, appShell.firstChild);
+    appShell.appendChild(overlay);
 
-        const hamburgerBtn = mobileHeader.querySelector('.hamburger-btn');
-        const closeBtn = document.getElementById('collapseSidebarBtn');
+    const hamburgerBtn = mobileHeader.querySelector('.hamburger-btn');
+    const closeBtn = document.getElementById('collapseSidebarBtn');
 
-        // 3. Open Sidebar Action
-        hamburgerBtn.addEventListener('click', () => {
-            sidebar.classList.add('open');
-            overlay.classList.add('open');
-        });
+    // 3. Open Sidebar Action
+    hamburgerBtn.addEventListener('click', () => {
+      sidebar.classList.add('open');
+      overlay.classList.add('open');
+    });
 
-        // 4. Close Sidebar Action
-        const closeSidebar = () => {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('open');
-        };
+    // 4. Close Sidebar Action
+    const closeSidebar = () => {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('open');
+    };
 
-        // Close when X is clicked, or background is clicked
-        if (closeBtn) {
-            // Change the standard collapse icon to an "X" on mobile
-            if(window.innerWidth <= 768) closeBtn.innerHTML = "✕"; 
-            closeBtn.addEventListener('click', closeSidebar);
-        }
-        overlay.addEventListener('click', closeSidebar);
-
-        // 5. Auto-Close sidebar when a user clicks a menu link!
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                if (window.innerWidth <= 768) {
-                    closeSidebar();
-                }
-            });
-        });
+    // Close when X is clicked, or background is clicked
+    if (closeBtn) {
+      // Change the standard collapse icon to an "X" on mobile
+      if (window.innerWidth <= 768) closeBtn.innerHTML = "✕";
+      closeBtn.addEventListener('click', closeSidebar);
     }
+    overlay.addEventListener('click', closeSidebar);
+
+    // 5. Auto-Close sidebar when a user clicks a menu link!
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          closeSidebar();
+        }
+      });
+    });
+  }
 });
 
+// =========================================
+// MOBILE UI FIXES (Under 768px)
+// =========================================
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Off-Canvas Main Sidebar Logic
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mainSidebar = document.querySelector('.app-sidebar');
+
+  if (mobileMenuBtn && mainSidebar) {
+    // Inject a backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'sidebar-backdrop';
+    document.body.appendChild(backdrop);
+
+    const toggleMainMenu = () => {
+      mainSidebar.classList.toggle('mobile-open');
+      backdrop.classList.toggle('active');
+    };
+
+    mobileMenuBtn.addEventListener('click', toggleMainMenu);
+    backdrop.addEventListener('click', toggleMainMenu);
+
+    // Auto-close main sidebar when a navigation link is clicked
+    const navItems = mainSidebar.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          mainSidebar.classList.remove('mobile-open');
+          backdrop.classList.remove('active');
+        }
+      });
+    });
+  }
+
+  // 2. Chat Sidebar Drawer Logic
+  const mobileChatToggle = document.getElementById('mobileChatToggle');
+  const chatSidebar = document.querySelector('.chat-sidebar');
+
+  if (mobileChatToggle && chatSidebar) {
+    mobileChatToggle.addEventListener('click', () => {
+      chatSidebar.classList.toggle('open');
+    });
+
+    // Auto-close chat drawer when a chat history item is clicked
+    chatSidebar.addEventListener('click', (e) => {
+      if (e.target.closest('.history-item') && window.innerWidth <= 768) {
+        chatSidebar.classList.remove('open');
+      }
+    });
+  }
+});
+
+// ==========================================
+// MOBILE CHAT HISTORY SIDEBAR LOGIC
+// ==========================================
+const mobileHistoryBtn = document.getElementById('mobileChatToggle');
+const chatSidebar = document.querySelector('.chat-sidebar');
+
+if (mobileHistoryBtn && chatSidebar) {
+    // 1. Open/Close when the History button is clicked
+    mobileHistoryBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevents the click from instantly closing it
+        chatSidebar.classList.toggle('open');
+    });
+
+    // 2. Automatically close if the user taps anywhere outside the sidebar
+    document.addEventListener('click', (e) => {
+        if (chatSidebar.classList.contains('open') && !chatSidebar.contains(e.target)) {
+            chatSidebar.classList.remove('open');
+        }
+    });
+}

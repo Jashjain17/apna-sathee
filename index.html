@@ -298,14 +298,34 @@
 
           <style>
   @media (max-width: 768px) {
+    /* --- 1. Chatbot Cleanup --- */
     #emptyChips {
       display: flex !important;
       flex-direction: column !important;
     }
-    /* Kills the 3rd and 4th boxes immediately */
     #emptyChips > div:nth-child(n+3),
     #emptyChips > button:nth-child(n+3) {
       display: none !important;
+    }
+
+    /* --- 2. Sliding History Sidebar --- */
+    .chat-app {
+      position: relative !important; 
+      overflow: hidden !important; 
+    }
+    .chat-sidebar {
+      position: absolute !important;
+      top: 0 !important;
+      left: -100% !important; /* Pushed off-screen */
+      width: 280px !important;
+      height: 100% !important;
+      background-color: #0f172a !important; /* Dark navy background */
+      z-index: 100 !important;
+      transition: left 0.3s ease-in-out !important; /* Smooth sliding animation */
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5) !important;
+    }
+    .chat-sidebar.open {
+      left: 0 !important; /* Slides it into view */
     }
   }
 </style>
