@@ -42,6 +42,10 @@
         <button class="nav-item" id="contactUsBtn">
           <span class="nav-icon">💬</span> <span class="nav-text">Contact Us</span>
         </button>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSfrkIBtdQ1Ctbi8WhRgYfjHQfpzw4muc7FkhfocFgTU86LwmA/viewform?usp=dialog" target="_blank" class="nav-item feedback-link" style="text-decoration: none; display: flex; align-items: center; padding: 10px 16px; color: inherit;">
+  <span class="nav-icon" style="margin-right: 12px; font-size: 1.2rem;">📝</span>
+  <span class="nav-text">Send Feedback</span>
+</a>
         <a href="#pro-checkout" id="upgradeToProBtn" class="sidebar-upgrade-link">UPGRADE TO PRO</a>
         <script>
     document.getElementById('upgradeToProBtn').addEventListener('click', function(e) {
@@ -379,6 +383,30 @@
   
   box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.feedback-link {
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  /* Matching the 15px margins from your Pro button screenshot */
+  margin: 5px 15px; 
+  /* 12px padding gives a better touch target for thumbs on mobile */
+  padding: 12px 16px; 
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #cbd5e1; 
+}
+
+.feedback-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+/* Ensure the icon stays centered with the text */
+.feedback-link .nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
             <div id="messages" class="messages" aria-live="polite" style="width: 100%; display: flex; flex-direction: column; overflow-x: hidden;">
