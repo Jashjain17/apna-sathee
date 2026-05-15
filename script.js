@@ -2951,9 +2951,20 @@ document.addEventListener('DOMContentLoaded', () => {
     backdrop.addEventListener('click', toggleMainMenu);
 
     // Auto-close main sidebar when a navigation link is clicked
+    // Auto-close main sidebar when a navigation link is clicked
     const navItems = mainSidebar.querySelectorAll('.nav-item');
     navItems.forEach(item => {
       item.addEventListener('click', () => {
+        // 🚨 THE IMMUNITY CHECK: If free user clicks a paid tab, DO NOT CLOSE!
+        const premiumTabs = ["chancesScreen", "preferenceScreen", "compareScreen"];
+        const isPremiumTab = premiumTabs.includes(item.dataset.target);
+        const isLocked = !currentUserTier || currentUserTier === 'Free';
+
+        if (isPremiumTab && isLocked) {
+            return; // Aborts the close script immediately. Lets the Paywall slider take over.
+        }
+
+        // Otherwise, close normally
         if (window.innerWidth <= 768) {
           mainSidebar.classList.remove('mobile-open');
           backdrop.classList.remove('active');
