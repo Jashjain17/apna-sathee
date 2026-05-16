@@ -174,29 +174,33 @@ document.addEventListener('DOMContentLoaded', () => {
       const modal = document.getElementById('paywallModal') || document.querySelector('.paywall-modal');
       if (modal) modal.style.display = 'none';
 
-      // 1. DELAY THE OPENING (Bypasses the auto-close click conflict)
+      // 1. Highlight the login button in the new dashboard header
       setTimeout(() => {
-          const sidebar = document.querySelector('.app-sidebar');
-          const overlay = document.querySelector('.sidebar-overlay');
-          const backdrop = document.querySelector('.sidebar-backdrop');
+          const loginBtnInHeader = document.getElementById('loginBtn');
+          const dashboardHeader = document.querySelector('.dashboard-header');
           
-          // Open the menus
-          if (sidebar) sidebar.classList.add('open', 'mobile-open');
-          if (overlay) overlay.classList.add('open');
-          if (backdrop) backdrop.classList.add('active');
-
-          // 2. DELAY THE SCROLL (Waits for the slide animation to finish)
-          setTimeout(() => {
-              const bottomSection = document.querySelector('.legal-consent-wrap') || document.getElementById('loginBtn');
-              
-              if (bottomSection) {
-                  bottomSection.scrollIntoView({ behavior: 'smooth', block: 'end' });
-              } else if (sidebar) {
-                  sidebar.scrollTop = sidebar.scrollHeight; 
+          if (dashboardHeader) {
+              // Scroll the main content to top so the header is visible
+              const appMain = document.querySelector('.app-main');
+              if (appMain) {
+                  appMain.scrollTop = 0;
+              } else {
+                  dashboardHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }
-          }, 300); 
+          }
 
-      }, 150); // 150ms wait ensures the user's "click" event is fully over
+          if (loginBtnInHeader) {
+              // Add a pulse effect to draw attention
+              loginBtnInHeader.style.transition = "transform 0.3s, box-shadow 0.3s";
+              loginBtnInHeader.style.transform = "scale(1.05)";
+              loginBtnInHeader.style.boxShadow = "0 0 20px rgba(56, 189, 248, 0.8)";
+              
+              setTimeout(() => {
+                  loginBtnInHeader.style.transform = "scale(1)";
+                  loginBtnInHeader.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
+              }, 800);
+          }
+      }, 150);
 
       return;
     }

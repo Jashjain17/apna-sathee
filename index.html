@@ -59,48 +59,7 @@
     });
   </script>
       </nav>
-      <div class="auth-container" id="authContainer">
-        <div class="legal-consent-wrap"
-          style="margin-bottom: 16px; font-size: 12px; color: #cbd5e1; text-align: left; display: flex; align-items: flex-start; gap: 8px; max-width: 280px;">
-          <input type="checkbox" id="legalAgreeCheckbox" style="margin-top: 3px; cursor: pointer;">
-          <label for="legalAgreeCheckbox" style="cursor: pointer; line-height: 1.4; color: #94a3b8;">
-            I read and agree to the
-            <a href="/legal.html" target="_blank"
-              style="color: #38bdf8; text-decoration: none; font-weight: 600;">Privacy Policy</a> and
-            <a href="/legal.html" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Terms
-              & Conditions</a>.
-          </label>
-        </div>
-        <!-- Login UI -->
-        <button id="loginBtn" class="auth-login-btn">
-          <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-            <path fill="#FFC107"
-              d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
-            <path fill="#FF3D00"
-              d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
-            <path fill="#4CAF50"
-              d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
-            <path fill="#1976D2"
-              d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
-          </svg>
-          <span class="nav-text">Login with Google</span>
-        </button>
-        <!-- Logged In UI -->
-        <div id="userProfile" class="auth-profile" style="display: none;">
-          <img id="userAvatar" src="" alt="Profile" class="profile-pic" referrerpolicy="no-referrer"
-            onerror="this.style.display='none'">
-          <span id="userName" class="profile-name nav-text"></span>
-          <span id="proBadge" class="pro-badge" style="display: none;">PRO</span>
-          <button id="logoutBtn" class="logout-btn" title="Sign Out">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-              <polyline points="16 17 21 12 16 7"></polyline>
-              <line x1="21" y1="12" x2="9" y2="12"></line>
-            </svg>
-          </button>
-        </div>
-      </div>
+
       <div class="theme-toggle-container">
         <label class="minimal-toggle">
           <input id="darkModeToggle" type="checkbox" />
@@ -124,6 +83,148 @@
     </header>
 
     <section class="app-main">
+      <style>
+        .dashboard-header {
+          position: sticky;
+          top: -32px;
+          z-index: 100;
+          background: rgba(15, 23, 42, 0.8);
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
+          border-bottom: 1px solid #1e293b;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px 24px;
+          margin: -32px -36px 32px -36px;
+        }
+
+        .dashboard-header .auth-container {
+          border-top: none;
+          margin-top: 0;
+          padding: 0;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .dashboard-header .legal-consent-wrap {
+          font-size: 11px;
+          color: #cbd5e1;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          max-width: 300px;
+          margin: 0;
+          line-height: 1.2;
+        }
+
+        .dashboard-header .auth-login-btn {
+          width: auto;
+          background: #ffffff;
+          border: none;
+          color: #0f172a;
+          padding: 8px 16px;
+          border-radius: 999px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .dashboard-header .auth-login-btn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+
+        .dashboard-header .auth-login-btn .nav-text {
+          color: #0f172a;
+          font-weight: 700;
+        }
+        
+        .dashboard-header .auth-profile {
+          padding: 4px 12px 4px 4px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 999px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+
+        .dashboard-header .profile-name {
+          color: #f8fafc;
+        }
+
+        @media (max-width: 768px) {
+          .dashboard-header {
+            top: -20px;
+            margin: -20px -20px 20px -20px;
+            padding: 12px 16px;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            border-radius: 0;
+          }
+          .dashboard-header .header-left {
+            display: none; /* Hide title on mobile to save space */
+          }
+          .dashboard-header .auth-container {
+            flex-direction: column;
+            width: 100%;
+          }
+          .dashboard-header .legal-consent-wrap {
+            max-width: 100%;
+            text-align: center;
+            justify-content: center;
+          }
+        }
+      </style>
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h2 id="dashboardTitle" style="margin: 0; color: #f8fafc; font-size: 1.2rem; font-weight: 600;">Dashboard</h2>
+        </div>
+        <div class="auth-container" id="authContainer">
+          <div class="legal-consent-wrap">
+            <input type="checkbox" id="legalAgreeCheckbox" style="margin-top: 3px; cursor: pointer;">
+            <label for="legalAgreeCheckbox" style="cursor: pointer; line-height: 1.4; color: #94a3b8;">
+              I read and agree to the
+              <a href="/legal.html" target="_blank"
+                style="color: #38bdf8; text-decoration: none; font-weight: 600;">Privacy Policy</a> and
+              <a href="/legal.html" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Terms
+                & Conditions</a>.
+            </label>
+          </div>
+          <!-- Login UI -->
+          <button id="loginBtn" class="auth-login-btn">
+            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+              <path fill="#FFC107"
+                d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+              <path fill="#FF3D00"
+                d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+              <path fill="#4CAF50"
+                d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+              <path fill="#1976D2"
+                d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+            </svg>
+            <span class="nav-text">Login with Google</span>
+          </button>
+          <!-- Logged In UI -->
+          <div id="userProfile" class="auth-profile" style="display: none;">
+            <img id="userAvatar" src="" alt="Profile" class="profile-pic" referrerpolicy="no-referrer"
+              onerror="this.style.display='none'">
+            <span id="userName" class="profile-name nav-text"></span>
+            <span id="proBadge" class="pro-badge" style="display: none;">PRO</span>
+            <button id="logoutBtn" class="logout-btn" title="Sign Out">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
 
       <section class="flowbar" aria-label="Progress">
         <div class="step active" data-step="1"><span>1</span> Profile</div>
