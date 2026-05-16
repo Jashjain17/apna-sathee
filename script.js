@@ -2409,6 +2409,17 @@ async function runCompare() {
 }
 
 listen("compareBtn", "click", async () => {
+  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+    let compareCount = parseInt(localStorage.getItem('sathee_compare_count') || '0', 10);
+    if (compareCount >= 3) {
+      alert("You've reached your limit of 3 free comparisons! Upgrade to Pro for unlimited AI verdicts.");
+      if (typeof window.openProCheckout === 'function') {
+        window.openProCheckout();
+      }
+      return;
+    }
+    localStorage.setItem('sathee_compare_count', compareCount + 1);
+  }
   await runCompare();
 });
 
