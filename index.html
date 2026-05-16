@@ -85,39 +85,35 @@
     <section class="app-main">
       <style>
         .dashboard-header {
-          position: sticky;
-          top: -32px;
-          z-index: 100;
-          background: rgba(15, 23, 42, 0.8);
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
-          border-bottom: 1px solid #1e293b;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 12px 24px;
-          margin: -32px -36px 32px -36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+            padding: 0 24px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: -32px; /* Adjusted to app-main padding */
+            margin: -32px -36px 32px -36px; /* Negate app-main padding for edge-to-edge */
+            z-index: 100;
         }
-
-        .dashboard-header .auth-container {
-          border-top: none;
-          margin-top: 0;
-          padding: 0;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          gap: 16px;
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px; /* Space between the legal text and the login button */
         }
-
-        .dashboard-header .legal-consent-wrap {
-          font-size: 11px;
-          color: #cbd5e1;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          max-width: 300px;
-          margin: 0;
-          line-height: 1.2;
+        .header-legal {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem; /* Small, sleek text */
+            color: #94a3b8;
+            white-space: nowrap; /* CRITICAL: Prevents the text from breaking into multiple lines */
+        }
+        .header-legal a {
+            color: #818cf8;
+            text-decoration: none;
         }
 
         .dashboard-header .auth-login-btn {
@@ -129,6 +125,10 @@
           border-radius: 999px;
           box-shadow: 0 4px 12px rgba(0,0,0,0.1);
           transition: transform 0.2s, box-shadow 0.2s;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          cursor: pointer;
         }
 
         .dashboard-header .auth-login-btn:hover {
@@ -159,23 +159,10 @@
           .dashboard-header {
             top: -20px;
             margin: -20px -20px 20px -20px;
-            padding: 12px 16px;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            border-radius: 0;
+            padding: 0 16px;
           }
           .dashboard-header .header-left {
             display: none; /* Hide title on mobile to save space */
-          }
-          .dashboard-header .auth-container {
-            flex-direction: column;
-            width: 100%;
-          }
-          .dashboard-header .legal-consent-wrap {
-            max-width: 100%;
-            text-align: center;
-            justify-content: center;
           }
         }
       </style>
@@ -183,20 +170,14 @@
         <div class="header-left">
           <h2 id="dashboardTitle" style="margin: 0; color: #f8fafc; font-size: 1.2rem; font-weight: 600;">Dashboard</h2>
         </div>
-        <div class="auth-container" id="authContainer">
-          <div class="legal-consent-wrap">
-            <input type="checkbox" id="legalAgreeCheckbox" style="margin-top: 3px; cursor: pointer;">
-            <label for="legalAgreeCheckbox" style="cursor: pointer; line-height: 1.4; color: #94a3b8;">
-              I read and agree to the
-              <a href="/legal.html" target="_blank"
-                style="color: #38bdf8; text-decoration: none; font-weight: 600;">Privacy Policy</a> and
-              <a href="/legal.html" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 600;">Terms
-                & Conditions</a>.
-            </label>
+        <div class="header-actions" id="authContainer">
+          <div class="header-legal">
+            <input type="checkbox" id="legalAgreeCheckbox" class="legal-checkbox" style="cursor: pointer;">
+            <label for="legalAgreeCheckbox" style="cursor: pointer;">I agree to <a href="/legal.html" target="_blank">Terms</a> & <a href="/legal.html" target="_blank">Privacy</a></label>
           </div>
           <!-- Login UI -->
           <button id="loginBtn" class="auth-login-btn">
-            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+            <svg class="google-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20">
               <path fill="#FFC107"
                 d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
               <path fill="#FF3D00"
@@ -214,9 +195,9 @@
               onerror="this.style.display='none'">
             <span id="userName" class="profile-name nav-text"></span>
             <span id="proBadge" class="pro-badge" style="display: none;">PRO</span>
-            <button id="logoutBtn" class="logout-btn" title="Sign Out">
+            <button id="logoutBtn" class="logout-btn" title="Sign Out" style="background: none; border: none; cursor: pointer; color: #94a3b8; display: flex; align-items: center;">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon">
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logout-icon" width="18" height="18">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
                 <polyline points="16 17 21 12 16 7"></polyline>
                 <line x1="21" y1="12" x2="9" y2="12"></line>
