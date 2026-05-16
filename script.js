@@ -235,6 +235,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
           alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
 
+          if (typeof renderPreferenceBoard === 'function') {
+            if (!lastChoiceList || lastChoiceList.length === 0) {
+              const savedList = sessionStorage.getItem('apnaSatheeLastChoiceList');
+              if (savedList) {
+                lastChoiceList = JSON.parse(savedList);
+                if (typeof preferenceState !== 'undefined' && preferenceState) {
+                  preferenceState.rows = clonePrefRows(lastChoiceList);
+                }
+              }
+            }
+            renderPreferenceBoard();
+            const exportPdfBtn = document.getElementById("exportPdfBtn");
+            if (exportPdfBtn) exportPdfBtn.disabled = (!lastChoiceList || lastChoiceList.length === 0);
+          }
+
           // 2. BACKGROUND FIREBASE SYNC (Don't await, let it run in background)
           console.log("🔄 Updating Firebase for user:", user.uid);
           const userRef = doc(db, 'users', user.uid);
@@ -1428,6 +1443,7 @@ async function handleGeneratePreferenceList(targetId = "preferenceDnDList") {
     const p = profile();
 
     lastChoiceList = generatePreferenceList(data.results, p);
+    sessionStorage.setItem('apnaSatheeLastChoiceList', JSON.stringify(lastChoiceList));
 
     // Save to explicit global buckets
     currentAmbitious = lastChoiceList.filter(r => (r.band || '').toUpperCase() === 'AMBITIOUS');
@@ -1631,6 +1647,7 @@ function buildPreferenceWarnings() {
 
 function syncLastChoiceList() {
   lastChoiceList = preferenceState.rows.map((row, idx) => ({ ...row, order: idx + 1 }));
+  sessionStorage.setItem('apnaSatheeLastChoiceList', JSON.stringify(lastChoiceList));
   savePreferenceToStorage();
   $("exportPdfBtn") && ($("exportPdfBtn").disabled = lastChoiceList.length === 0);
 }
@@ -1851,6 +1868,18 @@ function filterBranches(rows, query) {
 }
 
 function renderChances() {
+  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+    let count = parseInt(localStorage.getItem('sathee_chances_count') || '0', 10);
+    if (count >= 1) {
+      const textEl = document.getElementById('modalMessageText');
+      if (textEl) textEl.innerText = "You've used your 1 free chance prediction! Upgrade to Pro for ₹249 to check your probability for unlimited colleges.";
+      const modal = document.getElementById('limitReachedModal');
+      if (modal) modal.style.display = 'flex';
+      return;
+    }
+    localStorage.setItem('sathee_chances_count', (count + 1).toString());
+  }
+
   const body = $("chancesBody");
   if (!body) return;
 
@@ -2481,6 +2510,12 @@ listen("exportPdfBtn", "click", () => {
     if (modal) modal.style.display = 'flex';
     return;
   }
+  
+  if (!lastChoiceList || lastChoiceList.length === 0) {
+    const savedList = sessionStorage.getItem('apnaSatheeLastChoiceList');
+    if (savedList) lastChoiceList = JSON.parse(savedList);
+  }
+
   exportToPdf();
 });
 
@@ -2598,7 +2633,7 @@ document.querySelectorAll(".nav-item").forEach((button) => {
 
     // --- Paywall gate for premium tabs --------------------------------------
     // --- Paywall gate for premium tabs --------------------------------------
-    const premiumScreens = ["chancesScreen", "contactUs"];
+    const premiumScreens = ["contactUs"];
     if (premiumScreens.includes(target) && isPremiumLocked()) {
       
       // 1. Close mobile menus so the Paywall isn't hidden behind them!
@@ -3038,7 +3073,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         // 🚨 THE IMMUNITY CHECK: If free user clicks a paid tab, DO NOT CLOSE!
-        const premiumTabs = ["chancesScreen", "contactUs"];
+        const premiumTabs = ["contactUs"];
         const isPremiumTab = premiumTabs.includes(item.dataset.target);
         const isLocked = !currentUserTier || currentUserTier === 'Free';
 
