@@ -141,9 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tier === 'Pro') {
         if (badge) badge.style.display = 'inline-block';
         if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
+        const contactTxt = document.querySelector('#contactUsBtn .nav-text');
+        if (contactTxt) contactTxt.innerText = '1-on-1 Help';
       } else {
         if (badge) badge.style.display = 'none';
         if (upgradeToProBtn) upgradeToProBtn.style.display = 'flex';
+        const contactTxt = document.querySelector('#contactUsBtn .nav-text');
+        if (contactTxt) contactTxt.innerText = '1-on-1 Help 🔒';
       }
 
     } else {
@@ -159,6 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const upgradeToProBtn = document.getElementById('upgradeToProBtn');
       if (badge) badge.style.display = 'none';
       if (upgradeToProBtn) upgradeToProBtn.style.display = 'flex';
+      const contactTxt = document.querySelector('#contactUsBtn .nav-text');
+      if (contactTxt) contactTxt.innerText = '1-on-1 Help 🔒';
 
       currentUserTier = null;
       currentMessagesUsed = 0;
@@ -232,6 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const upgradeToProBtn = document.getElementById('upgradeToProBtn');
           if (badge) badge.style.display = 'inline-block';
           if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
+          const contactTxt = document.querySelector('#contactUsBtn .nav-text');
+          if (contactTxt) contactTxt.innerText = '1-on-1 Help';
 
           alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
 
@@ -1872,7 +1880,7 @@ function renderChances() {
     let count = parseInt(localStorage.getItem('sathee_chances_count') || '0', 10);
     if (count >= 1) {
       const textEl = document.getElementById('modalMessageText');
-      if (textEl) textEl.innerText = "You've used your 1 free chance prediction! Upgrade to Pro for ₹249 to check your probability for unlimited colleges.";
+      if (textEl) textEl.innerText = "You've used your 1 free chance prediction! Upgrade to Pro for ₹249 to check your probabilities for unlimited colleges.";
       const modal = document.getElementById('limitReachedModal');
       if (modal) modal.style.display = 'flex';
       return;
@@ -1939,13 +1947,12 @@ function renderChances() {
       return;
     }
 
-    // --- NEW BLURRED RENDER LOGIC ---
+    const existingOverlay = body.parentElement.querySelector('.paywall-overlay-container');
+    if (existingOverlay) existingOverlay.remove();
+
     body.innerHTML = rows.map((r, index) => {
-      // 🚨 The Lock: Free users only see the first 3 rows clearly
-      const isLocked = (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro' && index >= 3); 
-      
       const v = verdictFromBand(r.band === "ambitious" ? "ambitious" : r.band);
-      const rowClass = isLocked ? "blurred-row" : (v.key === "safe" ? "row-safe" : v.key === "borderline" ? "row-borderline" : "row-reach");
+      const rowClass = v.key === "safe" ? "row-safe" : v.key === "borderline" ? "row-borderline" : "row-reach";
 
       const type = getBadgeText(r.institute);
       const round1 = r.round1 ?? "-";
@@ -2023,20 +2030,12 @@ function renderChances() {
         <td>${escapeHtml(seats)}</td>
         <td>${probUI}</td>
         <td class="row-action">
-            ${isLocked ? '🔒' : `<button class="${btnClass}" type="button" data-add-pref="${escapeHtml(id)}" ${btnDisabled}>${btnText}</button>`}
+            <button class="${btnClass}" type="button" data-add-pref="${escapeHtml(id)}" ${btnDisabled}>${btnText}</button>
         </td>
       </tr>`;
     }).join("");
 
-    // --- ADD THE UNLOCK BUTTON OVERLAY ---
-    if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro' && rows.length > 3) {
-        body.insertAdjacentHTML('afterend', `
-            <div class="paywall-overlay-container">
-                <p style="margin-bottom: 15px; font-weight: 600; color: var(--fg);">+ ${rows.length - 3} more matching options found</p>
-                <button class="unlock-btn-massive" onclick="window.openProCheckout()">Unlock Full List for ₹249</button>
-            </div>
-        `);
-    }
+
 
     body.querySelectorAll("[data-add-pref]").forEach((btn) => {
       btn.addEventListener("click", () => {
