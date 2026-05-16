@@ -2420,6 +2420,8 @@ listen("compareBtn", "click", async () => {
   if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
     let compareCount = parseInt(localStorage.getItem('sathee_compare_count') || '0', 10);
     if (compareCount >= 3) {
+      const textEl = document.getElementById('modalMessageText');
+      if (textEl) textEl.innerText = "You've used your 3 free AI comparisons! Upgrade to Pro to unlock unlimited comparisons, personalized preference lists, and your exact admission chances.";
       const modal = document.getElementById('limitReachedModal');
       if (modal) modal.style.display = 'flex';
       return;
@@ -2471,7 +2473,16 @@ listen("exportBtn", "click", () => {
   URL.revokeObjectURL(url);
 });
 
-listen("exportPdfBtn", "click", exportToPdf);
+listen("exportPdfBtn", "click", () => {
+  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+    const textEl = document.getElementById('modalMessageText');
+    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹249 to download your complete, AI-optimized preference list.";
+    const modal = document.getElementById('limitReachedModal');
+    if (modal) modal.style.display = 'flex';
+    return;
+  }
+  exportToPdf();
+});
 
 listen("exportShareBtn", "click", async () => {
   if (!lastChoiceList.length) return;
