@@ -3669,3 +3669,22 @@ body.theme-dark .slider-arrow::after {
 .app-sidebar.collapsed > div:last-child {
     display: none !important;
 }
+
+/* ==========================================================================
+   SCROLLBAR HIDING LOGIC (Maintains scrollability but hides scrollbar UI)
+   ========================================================================== */
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.app-main::-webkit-scrollbar,
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.app-main,
+body,
+html {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
