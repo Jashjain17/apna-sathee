@@ -2447,9 +2447,9 @@ async function runCompare() {
 listen("compareBtn", "click", async () => {
   if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
     let compareCount = parseInt(localStorage.getItem('sathee_compare_count') || '0', 10);
-    if (compareCount >= 3) {
+    if (compareCount >= 2) {
       const textEl = document.getElementById('modalMessageText');
-      if (textEl) textEl.innerText = "You've used your 3 free AI comparisons! Upgrade to Pro to unlock unlimited comparisons, personalized preference lists, and your exact admission chances.";
+      if (textEl) textEl.innerText = "You've used your 2 free AI comparisons! Upgrade to Pro for unlimited verdicts, personalized preference lists, and your exact admission chances.";
       const modal = document.getElementById('limitReachedModal');
       if (modal) modal.style.display = 'flex';
       return;
