@@ -346,16 +346,7 @@ async function loadDataFiles() {
       }
     }
 
-    const cleanDisplayName = (name) => name.replace(/\s*\(.*?\)/g, '').trim();
-    const uniqueOptions = new Set();
-    cutoffsCache.forEach(row => uniqueOptions.add(`${row.institute} - ${row.program}`));
-    const datalist = $("collegeSuggestions");
-    if (datalist) {
-      datalist.style.cssText = "max-height: 250px; overflow-y: auto; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;";
-      datalist.innerHTML = Array.from(uniqueOptions)
-        .map(opt => `<option value="${escapeHtml(opt)}">${escapeHtml(cleanDisplayName(opt))}</option>`)
-        .join("");
-    }
+
   } catch (err) {
     console.error('Failed to load data files:', err);
     throw err;
