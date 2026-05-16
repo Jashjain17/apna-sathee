@@ -2554,7 +2554,7 @@ document.querySelectorAll(".nav-item").forEach((button) => {
 
     // --- Paywall gate for premium tabs --------------------------------------
     // --- Paywall gate for premium tabs --------------------------------------
-    const premiumScreens = ["chancesScreen", "preferenceScreen", "compareScreen", "contactUs"];
+    const premiumScreens = ["chancesScreen", "preferenceScreen", "contactUs"];
     if (premiumScreens.includes(target) && isPremiumLocked()) {
       
       // 1. Close mobile menus so the Paywall isn't hidden behind them!
@@ -2994,7 +2994,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         // 🚨 THE IMMUNITY CHECK: If free user clicks a paid tab, DO NOT CLOSE!
-        const premiumTabs = ["chancesScreen", "preferenceScreen", "compareScreen", "contactUs"];
+        const premiumTabs = ["chancesScreen", "preferenceScreen", "contactUs"];
         const isPremiumTab = premiumTabs.includes(item.dataset.target);
         const isLocked = !currentUserTier || currentUserTier === 'Free';
 
