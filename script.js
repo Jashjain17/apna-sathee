@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Show profile, hide login & consent UI
       if (loginBtn) loginBtn.style.display = 'none';
 
-      const consentWrap = document.querySelector('.legal-consent-wrap');
-      if (consentWrap) consentWrap.style.display = 'none';
+      const headerLegalWrapper = document.getElementById('headerLegalWrapper');
+      if (headerLegalWrapper) headerLegalWrapper.style.display = 'none';
 
       if (userProfile) userProfile.style.display = 'flex';
       if (userAvatar) {
@@ -150,8 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // User is logged out
       if (loginBtn) loginBtn.style.display = 'flex';
 
-      const consentWrap = document.querySelector('.legal-consent-wrap');
-      if (consentWrap) consentWrap.style.display = 'flex';
+      const headerLegalWrapper = document.getElementById('headerLegalWrapper');
+      if (headerLegalWrapper) headerLegalWrapper.style.display = 'flex';
 
       if (userProfile) userProfile.style.display = 'none';
 
