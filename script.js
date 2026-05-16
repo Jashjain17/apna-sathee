@@ -2193,7 +2193,7 @@ function renderCompareTable(options) {
 }
 
 function currentCompareInputs() {
-  return [$("compareA")?.value.trim(), $("compareB")?.value.trim(), $("compareC")?.value.trim()].filter(Boolean);
+  return [$("compareA")?.value.trim(), $("compareB")?.value.trim()].filter(Boolean);
 }
 
 function saveComparison(options, verdictText) {
@@ -2228,7 +2228,6 @@ function renderSavedComparisons() {
       if (!item) return;
       $("compareA").value = item.options[0] || "";
       $("compareB").value = item.options[1] || "";
-      $("compareC").value = item.options[2] || "";
       $("compareResult").innerHTML = `<div class="rec-card"><strong>Saved verdict</strong><p class="compare-analysis">${escapeHtml(item.verdictText || "No verdict saved.")}</p></div>`;
       runCompare();
     });
@@ -2704,8 +2703,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const url = new URL(window.location.href);
   const compare = url.searchParams.get("compare");
   if (!compare) return;
-  const parts = decodeURIComponent(compare).split("|").filter(Boolean).slice(0, 3);
-  ["compareA", "compareB", "compareC"].forEach((id, i) => {
+  const parts = decodeURIComponent(compare).split("|").filter(Boolean).slice(0, 2);
+  ["compareA", "compareB"].forEach((id, i) => {
     const el = $(id);
     if (el && parts[i]) el.value = parts[i];
   });
