@@ -1875,37 +1875,7 @@ function filterBranches(rows, query) {
   });
 }
 
-function renderChances(e) {
-  if (e && typeof e.preventDefault === 'function') e.preventDefault(); // Prevents double-firing if inside a form
-
-  // 1. Safely grab and parse the count (Handle null/NaN explicitly)
-  let rawCount = localStorage.getItem('sathee_chances_count');
-  let currentCount = rawCount ? parseInt(rawCount) : 0;
-  if (isNaN(currentCount)) currentCount = 0;
-  
-  // Hidden debug logs for the console
-  console.log("--- Chances Clicked ---");
-  console.log("Raw Storage:", rawCount);
-  console.log("Parsed Count:", currentCount);
-  
-  // 2. Pro User Bypass
-  if (typeof currentUserTier !== 'undefined' && currentUserTier === 'Pro') { 
-      console.log("User is PRO. Running.");
-  } 
-  // 3. Free User - 1st Attempt
-  else if (currentCount === 0) {
-      console.log("Free User 1st Try. Setting to 1 and running.");
-      localStorage.setItem('sathee_chances_count', '1');
-  } 
-  // 4. Free User - Limit Reached
-  else {
-      console.log("Limit reached. Showing modal.");
-      const textEl = document.getElementById('modalMessageText');
-      if (textEl) textEl.innerText = "You've used your 1 free chance prediction! Upgrade to Pro for ₹249 to check your probabilities for unlimited colleges.";
-      const modal = document.getElementById('limitReachedModal');
-      if (modal) modal.style.display = 'flex';
-      return; 
-  }
+function renderChances() {
 
   const body = $("chancesBody");
   if (!body) return;
@@ -2901,9 +2871,34 @@ document.querySelectorAll(".segment-btn").forEach((btn) => {
   });
 });
 
-["chBranch", "chCategoryFilter"].forEach((id) => {
-  listen(id, "input", renderChances);
-  listen(id, "change", renderChances);
+listen("chancesCheckBtn", "click", function(e) {
+  if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
+  let rawCount = localStorage.getItem('sathee_chances_count');
+  let currentCount = rawCount ? parseInt(rawCount) : 0;
+  if (isNaN(currentCount)) currentCount = 0;
+  
+  console.log("--- Chances Clicked ---");
+  console.log("Raw Storage:", rawCount);
+  console.log("Parsed Count:", currentCount);
+  
+  if (typeof currentUserTier !== 'undefined' && currentUserTier === 'Pro') { 
+      console.log("User is PRO. Running.");
+      renderChances();
+  } 
+  else if (currentCount === 0) {
+      console.log("Free User 1st Try. Setting to 1 and running.");
+      localStorage.setItem('sathee_chances_count', '1');
+      renderChances();
+  } 
+  else {
+      console.log("Limit reached. Showing modal.");
+      const textEl = document.getElementById('modalMessageText');
+      if (textEl) textEl.innerText = "You've used your 1 free chance prediction! Upgrade to Pro for ₹249 to check your probabilities for unlimited colleges.";
+      const modal = document.getElementById('limitReachedModal');
+      if (modal) modal.style.display = 'flex';
+      return; 
+  }
 });
 
 loadDataFiles().catch(console.error);
