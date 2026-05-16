@@ -3688,3 +3688,78 @@ html {
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
+
+/* ==========================================================================
+   LIMIT REACHED MODAL
+   ========================================================================== */
+.custom-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 16px;
+    padding: 32px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+.custom-modal-box h2 {
+    color: #f8fafc;
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+}
+
+.custom-modal-box p {
+    color: #94a3b8;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.modal-actions button {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-secondary {
+    background: #334155;
+    color: #e2e8f0;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}

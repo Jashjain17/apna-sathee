@@ -2412,15 +2412,29 @@ listen("compareBtn", "click", async () => {
   if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
     let compareCount = parseInt(localStorage.getItem('sathee_compare_count') || '0', 10);
     if (compareCount >= 3) {
-      alert("You've reached your limit of 3 free comparisons! Upgrade to Pro for unlimited AI verdicts.");
-      if (typeof window.openProCheckout === 'function') {
-        window.openProCheckout();
-      }
+      const modal = document.getElementById('limitReachedModal');
+      if (modal) modal.style.display = 'flex';
       return;
     }
     localStorage.setItem('sathee_compare_count', compareCount + 1);
   }
   await runCompare();
+});
+
+listen("closeLimitModal", "click", () => {
+  const modal = document.getElementById('limitReachedModal');
+  if (modal) modal.style.display = 'none';
+});
+
+listen("upgradeFromLimitBtn", "click", () => {
+  const modal = document.getElementById('limitReachedModal');
+  if (modal) modal.style.display = 'none';
+  if (typeof window.openProCheckout === 'function') {
+    window.openProCheckout();
+  } else {
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    if (upgradeBtn) upgradeBtn.click();
+  }
 });
 
 listen("saveCompareBtn", "click", async () => {
