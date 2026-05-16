@@ -2386,7 +2386,7 @@ async function runCompare() {
           verdictContainer.innerHTML = `
             <div style="margin-top: 16px; padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.05); box-shadow: 0 0 12px rgba(251, 191, 36, 0.08);">
               <strong style="color: #fbbf24; font-size: 14px;">✦ Sathee's Final Verdict</strong>
-              <p style="color: var(--fg); margin: 8px 0 0; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(verdictText)}</p>
+              <p style="color: var(--fg); margin: 8px 0 0; font-size: 13px; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(verdictText).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>
             </div>`;
         })
         .catch(err => {
