@@ -1526,10 +1526,12 @@ function renderPreferenceBoard() {
     warnings.innerHTML = "";
     return;
   }
+  const isFreeUser = (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro');
   host.innerHTML = preferenceState.rows
     .map((row, index) => {
       const band = prefBand(row);
-      return `<article class="pref-item sys-row ${band}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'IIT' : 'NIT'}">
+      const blurClass = (isFreeUser && index >= 3) ? 'blurred-list-item' : '';
+      return `<article class="pref-item sys-row ${band} ${blurClass}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'IIT' : 'NIT'}">
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
@@ -1542,6 +1544,22 @@ function renderPreferenceBoard() {
       </article>`;
     })
     .join("");
+
+  const container = host.closest('.preference-list-container');
+  if (container) {
+    const existingOverlay = container.querySelector('.premium-list-overlay');
+    if (existingOverlay) existingOverlay.remove();
+
+    if (isFreeUser && preferenceState.rows.length > 3) {
+      const overlay = document.createElement('div');
+      overlay.className = 'premium-list-overlay';
+      overlay.innerHTML = `
+        <p style="color: white; margin-bottom: 16px; font-weight: bold; text-align: center;">Want the full list? Unlock your complete, AI-optimized preference order.</p>
+        <button class="btn-primary" style="padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; background: #3b82f6; color: white;" onclick="if(typeof window.openProCheckout==='function'){window.openProCheckout();}else{document.getElementById('upgradeToProBtn')?.click();}">Upgrade for ₹249</button>
+      `;
+      container.appendChild(overlay);
+    }
+  }
 
   const warningList = buildPreferenceWarnings();
   warnings.innerHTML = warningList.map((w) => `<div class="warning-chip">${escapeHtml(w)}</div>`).join("");
@@ -2569,7 +2587,7 @@ document.querySelectorAll(".nav-item").forEach((button) => {
 
     // --- Paywall gate for premium tabs --------------------------------------
     // --- Paywall gate for premium tabs --------------------------------------
-    const premiumScreens = ["chancesScreen", "preferenceScreen", "contactUs"];
+    const premiumScreens = ["chancesScreen", "contactUs"];
     if (premiumScreens.includes(target) && isPremiumLocked()) {
       
       // 1. Close mobile menus so the Paywall isn't hidden behind them!
@@ -3009,7 +3027,7 @@ document.addEventListener('DOMContentLoaded', () => {
     navItems.forEach(item => {
       item.addEventListener('click', () => {
         // 🚨 THE IMMUNITY CHECK: If free user clicks a paid tab, DO NOT CLOSE!
-        const premiumTabs = ["chancesScreen", "preferenceScreen", "contactUs"];
+        const premiumTabs = ["chancesScreen", "contactUs"];
         const isPremiumTab = premiumTabs.includes(item.dataset.target);
         const isLocked = !currentUserTier || currentUserTier === 'Free';
 
