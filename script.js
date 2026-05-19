@@ -788,11 +788,14 @@ function hasRequiredProfile() {
   return Boolean(data.exam && data.rankMain && data.rankAdvanced && data.category && data.gender);
 }
 
-function saveProfile() {
-  const next = profile();
+function saveProfile(profileData = null) {
+  const next = profileData || profile();
   localStorage.setItem("apnaSaathiProfile", JSON.stringify(next));
   renderProfileSummary();
   chancesCache = null; // Invalidate cache so My Chances re-fetches with new profile
+  if (typeof updateEditLimitUI === "function") {
+    updateEditLimitUI(next);
+  }
 }
 
 function updateRankInputsVisibility() {
@@ -823,6 +826,30 @@ function updateRankInputsVisibility() {
   if (advSuffix) advSuffix.textContent = helperText;
 }
 
+function updateEditLimitUI(savedProfile) {
+  const coreProfileEditCount = savedProfile.core_profile_edit_count || 0;
+  const warningContainer = $("editLimitWarning");
+  if (!warningContainer) return;
+
+  if (coreProfileEditCount >= 2) {
+    warningContainer.textContent = "You have reached the maximum edits for core details.";
+    warningContainer.style.color = "#ef4444";
+    const coreFields = ["studentName", "rankMain", "rankAdvanced", "category", "gender", "homeState", "pwdStatus"];
+    coreFields.forEach(field => {
+      const el = $(field);
+      if (el) {
+        el.disabled = true;
+        el.style.opacity = "0.6";
+        el.style.cursor = "not-allowed";
+      }
+    });
+  } else {
+    const remaining = 2 - coreProfileEditCount;
+    warningContainer.textContent = `Note: Core details (Ranks, Category) can only be changed ${remaining} more time${remaining > 1 ? 's' : ''}.`;
+    warningContainer.style.color = "#f59e0b";
+  }
+}
+
 function loadProfile() {
   const saved = JSON.parse(localStorage.getItem("apnaSaathiProfile") || "{}");
   fields.forEach((field) => {
@@ -830,6 +857,7 @@ function loadProfile() {
   });
   updateRankInputsVisibility();
   renderProfileSummary();
+  updateEditLimitUI(saved);
   maybeLoadSharedProfile();
 }
 
@@ -2569,7 +2597,36 @@ listen("supportBtn", "click", async () => {
 });
 
 listen("continueBtn", "click", () => {
-  saveProfile();
+  const existingProfileRaw = localStorage.getItem("apnaSaathiProfile");
+  const existingProfile = existingProfileRaw ? JSON.parse(existingProfileRaw) : null;
+  const newProfile = profile();
+  
+  if (existingProfile) {
+    let coreProfileEditCount = existingProfile.core_profile_edit_count || 0;
+    const coreFields = ["studentName", "rankMain", "rankAdvanced", "category", "gender", "homeState", "pwdStatus"];
+    
+    let coreChanged = false;
+    for (const field of coreFields) {
+      if (existingProfile[field] !== newProfile[field]) {
+        coreChanged = true;
+        break;
+      }
+    }
+    
+    if (coreChanged) {
+      if (coreProfileEditCount >= 2) {
+        showToast("Account sharing prevention: You can only change core ranks/categories 2 times. You can still update Branch Preferences anytime.");
+        return;
+      } else {
+        coreProfileEditCount++;
+      }
+    }
+    newProfile.core_profile_edit_count = coreProfileEditCount;
+  } else {
+    newProfile.core_profile_edit_count = 0;
+  }
+
+  saveProfile(newProfile);
   const next = localStorage.getItem("apnaSaathiAfterProfile");
   localStorage.removeItem("apnaSaathiAfterProfile");
   showScreen(next || "choiceScreen", next ? 3 : 2);
