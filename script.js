@@ -1,7 +1,7 @@
 // --- Firebase CDN Imports ---------------------------------------------------
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
 
 // --- Firebase Config & Initialization ---------------------------------------
 const firebaseConfig = {
@@ -21,6 +21,14 @@ const provider = new GoogleAuthProvider();
 let currentUserTier = null;      // null = logged out, 'Free', or 'Pro'
 let currentMessagesUsed = 0;
 let currentUserUid = null;
+
+// --- Tier 1 Affiliate/Influencer Coupon State --------------------------------
+let appliedAffiliateCode = null;      // The validated affiliate referral_code
+let appliedAffiliateUid = null;       // The UID of the affiliate whose code was used
+let affiliateDiscountApplied = false; // Whether a 10% discount is active
+const BASE_PRICE_PAISE = 24900;       // ₹249 in paise
+const AFFILIATE_DISCOUNT_PERCENT = 10;
+const AFFILIATE_COMMISSION_PERCENT = 15;
 
 function showPaywall() {
   const modal = document.getElementById('paywallModal');
@@ -215,18 +223,29 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Grab stored referral code for checkout payload
+    // Grab stored referral code for checkout payload (Tier 2 peer referral)
     const storedRefCode = localStorage.getItem('apnaSathee_ref_code') || '';
+
+    // Calculate final checkout amount (with affiliate discount if applied)
+    const finalAmountPaise = affiliateDiscountApplied
+      ? Math.round(BASE_PRICE_PAISE * (1 - AFFILIATE_DISCOUNT_PERCENT / 100))
+      : BASE_PRICE_PAISE;
+
+    const checkoutDescription = affiliateDiscountApplied
+      ? `Unlock Pro Access (${AFFILIATE_DISCOUNT_PERCENT}% discount applied)`
+      : 'Unlock Pro Access';
 
     const options = {
       "key": "rzp_live_SpLnehjbh9ZfBW",
-      "amount": 24900,
+      "amount": finalAmountPaise,
       "currency": "INR",
       "name": "Apna Sathee",
-      "description": "Unlock Pro Access",
+      "description": checkoutDescription,
       "image": "logo.png",
       "notes": {
         "referral_code": storedRefCode,
+        "affiliate_code": appliedAffiliateCode || '',
+        "discount_applied": affiliateDiscountApplied ? `${AFFILIATE_DISCOUNT_PERCENT}%` : 'none',
         "user_uid": currentUserUid
       },
       "handler": function (response) {
@@ -276,10 +295,20 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(() => console.log("✅ Firebase Updated to Pro!"))
             .catch((error) => console.error("Firebase sync error (background):", error));
 
-          // 3. REFERRAL PROCESSING — credit the referrer
+          // 3. REFERRAL PROCESSING — credit the referrer (Tier 2 peer referral)
           if (storedRefCode) {
-            processReferralConversion(storedRefCode, user.uid);
+            processReferralConversion(storedRefCode, user.uid, finalAmountPaise);
           }
+
+          // 4. AFFILIATE COMMISSION — credit the influencer (Tier 1)
+          if (appliedAffiliateCode && appliedAffiliateUid) {
+            processAffiliateCommission(appliedAffiliateUid, user.uid, finalAmountPaise);
+          }
+
+          // Reset coupon state after successful payment
+          appliedAffiliateCode = null;
+          appliedAffiliateUid = null;
+          affiliateDiscountApplied = false;
 
         } catch (error) {
           console.error("❌ CRITICAL ERROR in Payment Handler UI:", error);
@@ -302,6 +331,80 @@ document.addEventListener('DOMContentLoaded', () => {
   const upgradeBtn = document.getElementById('upgradeBtn');
   if (upgradeBtn) {
     upgradeBtn.addEventListener('click', window.openProCheckout);
+  }
+
+  // --- Influencer Coupon Code: Apply Button -----------------------------------
+  const applyCouponBtn = document.getElementById('applyCouponBtn');
+  if (applyCouponBtn) {
+    applyCouponBtn.addEventListener('click', async () => {
+      const codeInput = document.getElementById('couponCodeInput');
+      const statusMsg = document.getElementById('couponStatusMsg');
+      const priceEl = document.querySelector('.paywall-price');
+      const enteredCode = (codeInput?.value || '').trim().toUpperCase();
+
+      if (!enteredCode) {
+        statusMsg.textContent = 'Please enter a coupon code.';
+        statusMsg.style.color = '#f87171';
+        statusMsg.style.display = 'block';
+        return;
+      }
+
+      // Disable button during validation
+      applyCouponBtn.textContent = 'Checking...';
+      applyCouponBtn.disabled = true;
+
+      try {
+        // Query Firestore: find a user where referral_code == enteredCode AND is_affiliate == true
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('referral_code', '==', enteredCode), where('is_affiliate', '==', true));
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
+          // Invalid code
+          statusMsg.textContent = 'Invalid coupon code. Please check and try again.';
+          statusMsg.style.color = '#f87171';
+          statusMsg.style.display = 'block';
+          appliedAffiliateCode = null;
+          appliedAffiliateUid = null;
+          affiliateDiscountApplied = false;
+          // Reset price display
+          if (priceEl) priceEl.innerHTML = '₹249 <span>/ one-time</span>';
+        } else {
+          // Valid affiliate code found
+          const affiliateDoc = snapshot.docs[0];
+          appliedAffiliateCode = enteredCode;
+          appliedAffiliateUid = affiliateDoc.id;
+          affiliateDiscountApplied = true;
+
+          const discountedPrice = Math.round(BASE_PRICE_PAISE * (1 - AFFILIATE_DISCOUNT_PERCENT / 100)) / 100;
+
+          statusMsg.textContent = `✅ ${AFFILIATE_DISCOUNT_PERCENT}% discount applied! You pay ₹${discountedPrice}.`;
+          statusMsg.style.color = '#34d399';
+          statusMsg.style.display = 'block';
+
+          // Update the visible price
+          if (priceEl) priceEl.innerHTML = `<s style="color:#64748b;font-size:0.85em;">₹249</s> ₹${discountedPrice} <span>/ one-time</span>`;
+
+          // Lock the input so they can't change it
+          codeInput.disabled = true;
+          codeInput.style.opacity = '0.6';
+          applyCouponBtn.textContent = '✓ Applied';
+          applyCouponBtn.style.background = 'rgba(16, 185, 129, 0.15)';
+          applyCouponBtn.style.color = '#34d399';
+          applyCouponBtn.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+          console.log(`🏷️ Affiliate coupon applied: ${enteredCode} (affiliate UID: ${appliedAffiliateUid})`);
+          return; // Keep button disabled in success state
+        }
+      } catch (error) {
+        console.error('Coupon validation error:', error);
+        statusMsg.textContent = 'Error validating code. Please try again.';
+        statusMsg.style.color = '#f87171';
+        statusMsg.style.display = 'block';
+      }
+
+      applyCouponBtn.textContent = 'Apply';
+      applyCouponBtn.disabled = false;
+    });
   }
 
   // --- Referral URL Catcher (First Click Wins) --------------------------------
@@ -3241,15 +3344,17 @@ document.addEventListener('DOMContentLoaded', function() {
 // =============================================================================
 
 /**
- * Process a referral conversion after a successful Pro payment.
- * Finds the referrer by their referral_code, increments their count,
+ * Process a Tier 2 (peer) referral conversion after a successful Pro payment.
+ * Finds the referrer by their referral_code (UID), increments their count,
  * and checks if they hit the Tier 2 milestone (2 referrals).
+ *
+ * @param {string} refCode    - The referrer's UID (used as referral code)
+ * @param {string} buyerUid   - The paying user's UID
+ * @param {number} paidAmount - The amount paid in paise (after any discount)
  */
-async function processReferralConversion(refCode, buyerUid) {
+async function processReferralConversion(refCode, buyerUid, paidAmount) {
   try {
     // Look up the referrer's Firestore document by referral_code
-    // Since Firestore doesn't natively support querying by a custom field efficiently
-    // without a composite index, we store the referral code as the user's UID-based code.
     // The ref code format is the referrer's UID itself (simple and collision-free).
     const referrerRef = doc(db, 'users', refCode);
     const referrerSnap = await getDoc(referrerRef);
@@ -3288,6 +3393,49 @@ async function processReferralConversion(refCode, buyerUid) {
 
   } catch (error) {
     console.error("❌ Referral processing error:", error);
+  }
+}
+
+/**
+ * Process a Tier 1 (Influencer/Affiliate) commission after a successful Pro payment.
+ * Increments the influencer's total_successful_referrals and adds 15% of the
+ * discounted final price to their unpaid_cash_balance.
+ *
+ * @param {string} affiliateUid  - The affiliate/influencer's UID
+ * @param {string} buyerUid      - The paying user's UID
+ * @param {number} paidAmountPaise - The final amount paid in paise (post-discount)
+ */
+async function processAffiliateCommission(affiliateUid, buyerUid, paidAmountPaise) {
+  try {
+    // Prevent self-referral via affiliate code
+    if (affiliateUid === buyerUid) {
+      console.warn("⚠️ Self-affiliate blocked.");
+      return;
+    }
+
+    const affiliateRef = doc(db, 'users', affiliateUid);
+
+    // Calculate 15% commission on the discounted price (convert paise to rupees)
+    const paidAmountRupees = paidAmountPaise / 100;
+    const commissionRupees = parseFloat((paidAmountRupees * AFFILIATE_COMMISSION_PERCENT / 100).toFixed(2));
+
+    // Atomically increment the influencer's counters
+    await updateDoc(affiliateRef, {
+      total_successful_referrals: increment(1),
+      unpaid_cash_balance: increment(commissionRupees)
+    });
+
+    // Link the referred user to the affiliate
+    const buyerRef = doc(db, 'users', buyerUid);
+    await updateDoc(buyerRef, {
+      referred_by_affiliate: affiliateUid
+    });
+
+    console.log(`💰 Affiliate commission processed: ₹${commissionRupees} credited to ${affiliateUid}`);
+    console.log(`📊 Affiliate ${affiliateUid} total_successful_referrals incremented.`);
+
+  } catch (error) {
+    console.error("❌ Affiliate commission error:", error);
   }
 }
 
