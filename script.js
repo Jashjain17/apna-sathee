@@ -828,12 +828,12 @@ function updateRankInputsVisibility() {
 
 function updateEditLimitUI(savedProfile) {
   const coreProfileEditCount = savedProfile.core_profile_edit_count || 0;
-  const warningContainer = $("editLimitWarning");
-  if (!warningContainer) return;
+  const badgeContainer = $("editLimitBadge");
+  if (!badgeContainer) return;
 
   if (coreProfileEditCount >= 2) {
-    warningContainer.textContent = "You have reached the maximum edits for core details.";
-    warningContainer.style.color = "#ef4444";
+    badgeContainer.textContent = "Core Profile Locked";
+    badgeContainer.style.color = "#ef4444";
     const coreFields = ["studentName", "rankMain", "rankAdvanced", "category", "gender", "homeState", "pwdStatus"];
     coreFields.forEach(field => {
       const el = $(field);
@@ -843,10 +843,12 @@ function updateEditLimitUI(savedProfile) {
         el.style.cursor = "not-allowed";
       }
     });
+  } else if (coreProfileEditCount === 1) {
+    badgeContainer.textContent = "1 Edit Remaining";
+    badgeContainer.style.color = "#f59e0b";
   } else {
-    const remaining = 2 - coreProfileEditCount;
-    warningContainer.textContent = `Note: Core details (Ranks, Category) can only be changed ${remaining} more time${remaining > 1 ? 's' : ''}.`;
-    warningContainer.style.color = "#f59e0b";
+    badgeContainer.textContent = "2 Edits Remaining";
+    badgeContainer.style.color = "#94a3b8";
   }
 }
 
