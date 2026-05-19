@@ -122,7 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
             free_messages_used: 0,
             agreedToTerms: true,
             agreedToTermsAt: new Date(),
-            createdAt: new Date()
+            createdAt: new Date(),
+            // Referral system fields
+            successful_referrals: 0,
+            referred_by: localStorage.getItem('apnaSathee_ref_code') || null,
+            upi_id: null
           });
           currentMessagesUsed = 0;
           console.log("🆕 New user profile initialized in Firestore.");
@@ -211,6 +215,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Grab stored referral code for checkout payload
+    const storedRefCode = localStorage.getItem('apnaSathee_ref_code') || '';
+
     const options = {
       "key": "rzp_live_SpLnehjbh9ZfBW",
       "amount": 24900,
@@ -218,6 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
       "name": "Apna Sathee",
       "description": "Unlock Pro Access",
       "image": "logo.png",
+      "notes": {
+        "referral_code": storedRefCode,
+        "user_uid": currentUserUid
+      },
       "handler": function (response) {
         console.log("✅ Razorpay Payment Success:", response.razorpay_payment_id);
         try {
@@ -265,6 +276,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(() => console.log("✅ Firebase Updated to Pro!"))
             .catch((error) => console.error("Firebase sync error (background):", error));
 
+          // 3. REFERRAL PROCESSING — credit the referrer
+          if (storedRefCode) {
+            processReferralConversion(storedRefCode, user.uid);
+          }
+
         } catch (error) {
           console.error("❌ CRITICAL ERROR in Payment Handler UI:", error);
         }
@@ -286,6 +302,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const upgradeBtn = document.getElementById('upgradeBtn');
   if (upgradeBtn) {
     upgradeBtn.addEventListener('click', window.openProCheckout);
+  }
+
+  // --- Referral URL Catcher (First Click Wins) --------------------------------
+  const urlParams = new URLSearchParams(window.location.search);
+  const incomingRefCode = urlParams.get('ref');
+  if (incomingRefCode && !localStorage.getItem('apnaSathee_ref_code')) {
+    localStorage.setItem('apnaSathee_ref_code', incomingRefCode);
+    console.log("🔗 Referral code captured:", incomingRefCode);
   }
 });
 
@@ -3210,4 +3234,236 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }, true); 
     });
+});
+
+// =============================================================================
+// REFERRAL SYSTEM — Processing, Dashboard Rendering, Event Handlers
+// =============================================================================
+
+/**
+ * Process a referral conversion after a successful Pro payment.
+ * Finds the referrer by their referral_code, increments their count,
+ * and checks if they hit the Tier 2 milestone (2 referrals).
+ */
+async function processReferralConversion(refCode, buyerUid) {
+  try {
+    // Look up the referrer's Firestore document by referral_code
+    // Since Firestore doesn't natively support querying by a custom field efficiently
+    // without a composite index, we store the referral code as the user's UID-based code.
+    // The ref code format is the referrer's UID itself (simple and collision-free).
+    const referrerRef = doc(db, 'users', refCode);
+    const referrerSnap = await getDoc(referrerRef);
+
+    if (!referrerSnap.exists()) {
+      console.warn("⚠️ Referral code not found in DB:", refCode);
+      return;
+    }
+
+    // Prevent self-referrals
+    if (refCode === buyerUid) {
+      console.warn("⚠️ Self-referral blocked.");
+      return;
+    }
+
+    const referrerData = referrerSnap.data();
+    const newRefCount = (referrerData.successful_referrals || 0) + 1;
+
+    // Update referrer's record
+    await updateDoc(referrerRef, {
+      successful_referrals: newRefCount
+    });
+
+    // Also mark who referred this buyer
+    const buyerRef = doc(db, 'users', buyerUid);
+    await updateDoc(buyerRef, {
+      referred_by: refCode
+    });
+
+    console.log(`🎯 Referral credited! ${refCode} now has ${newRefCount} successful referral(s).`);
+
+    // Tier 2 milestone check
+    if (newRefCount >= 2) {
+      console.log(`🏆 Referrer ${refCode} hit the 2-referral milestone! Reward unlocked.`);
+    }
+
+  } catch (error) {
+    console.error("❌ Referral processing error:", error);
+  }
+}
+
+/**
+ * Render the referral dashboard UI with current user data.
+ * Called when the referral screen becomes visible or after auth state changes.
+ */
+function renderReferralDashboard() {
+  const linkInput = document.getElementById('referralLinkInput');
+  const progressText = document.getElementById('referralProgressText');
+  const progressBar = document.getElementById('referralProgressBar');
+  const statusBadge = document.getElementById('referralStatusBadge');
+  const lockedSection = document.getElementById('referralLocked');
+  const unlockedSection = document.getElementById('referralUnlocked');
+  const lockedText = document.getElementById('referralLockedText');
+
+  if (!linkInput) return;
+
+  // If not logged in, show placeholder state
+  if (!currentUserUid) {
+    linkInput.value = 'Login to get your referral link';
+    if (statusBadge) statusBadge.textContent = 'Login required';
+    if (statusBadge) statusBadge.style.color = '#64748b';
+    return;
+  }
+
+  // Set the referral link (using UID as referral code)
+  const referralUrl = `https://apnasathee.co.in/?ref=${currentUserUid}`;
+  linkInput.value = referralUrl;
+
+  // Fetch referral data from Firestore and render
+  const userRef = doc(db, 'users', currentUserUid);
+  getDoc(userRef).then(snap => {
+    if (!snap.exists()) return;
+    const data = snap.data();
+    const successfulRefs = Math.min(data.successful_referrals || 0, 2);
+    const TARGET = 2;
+    const percentage = (successfulRefs / TARGET) * 100;
+
+    // Progress bar
+    if (progressBar) progressBar.style.width = `${percentage}%`;
+    if (progressText) {
+      progressText.innerHTML = `${successfulRefs} <span style="color: #64748b; font-size: 0.8rem; font-weight: 400;">/ ${TARGET}</span>`;
+    }
+
+    // Badge
+    if (statusBadge) {
+      if (successfulRefs >= TARGET) {
+        statusBadge.textContent = '🎉 Reward Unlocked';
+        statusBadge.style.color = '#fbbf24';
+      } else {
+        statusBadge.textContent = `${TARGET - successfulRefs} more to go`;
+        statusBadge.style.color = '#94a3b8';
+      }
+    }
+
+    // Conditional reward section
+    if (successfulRefs >= TARGET) {
+      if (lockedSection) lockedSection.style.display = 'none';
+      if (unlockedSection) unlockedSection.style.display = 'block';
+
+      // If already claimed, show success banner
+      if (data.upi_id) {
+        const claimForm = document.getElementById('referralClaimForm');
+        const claimSuccess = document.getElementById('referralClaimSuccess');
+        if (claimForm) claimForm.style.display = 'none';
+        if (claimSuccess) claimSuccess.style.display = 'block';
+      }
+    } else {
+      if (lockedSection) lockedSection.style.display = 'block';
+      if (unlockedSection) unlockedSection.style.display = 'none';
+      const remaining = TARGET - successfulRefs;
+      if (lockedText) lockedText.textContent = `Get ${remaining} more friend${remaining > 1 ? 's' : ''} to upgrade to Pro to unlock your ₹100 UPI Cashback!`;
+    }
+  }).catch(err => {
+    console.error("Referral dashboard fetch error:", err);
+  });
+}
+
+// --- Referral Dashboard Event Handlers ---------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+
+  // Copy referral link button
+  const copyBtn = document.getElementById('copyReferralBtn');
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const linkInput = document.getElementById('referralLinkInput');
+      if (!linkInput || !currentUserUid) {
+        if (typeof showToast === 'function') showToast('Please login first to get your referral link.');
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(linkInput.value);
+        copyBtn.textContent = '✓ Copied!';
+        copyBtn.style.background = 'rgba(16, 185, 129, 0.15)';
+        copyBtn.style.color = '#34d399';
+        copyBtn.style.border = '1px solid rgba(16, 185, 129, 0.4)';
+        setTimeout(() => {
+          copyBtn.textContent = 'Copy Link';
+          copyBtn.style.background = 'linear-gradient(135deg, #6366f1, #818cf8)';
+          copyBtn.style.color = '#fff';
+          copyBtn.style.border = 'none';
+        }, 2000);
+      } catch (err) {
+        // Fallback for older browsers
+        linkInput.select();
+        document.execCommand('copy');
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2000);
+      }
+    });
+  }
+
+  // Claim reward button
+  const claimBtn = document.getElementById('claimRewardBtn');
+  if (claimBtn) {
+    claimBtn.addEventListener('click', async () => {
+      const upiInput = document.getElementById('upiIdInput');
+      const errorEl = document.getElementById('referralClaimError');
+      const claimForm = document.getElementById('referralClaimForm');
+      const claimSuccess = document.getElementById('referralClaimSuccess');
+
+      if (!upiInput || !upiInput.value.trim()) {
+        if (typeof showToast === 'function') showToast('Please enter a valid UPI ID.');
+        return;
+      }
+
+      claimBtn.textContent = 'Submitting...';
+      claimBtn.disabled = true;
+      if (errorEl) errorEl.style.display = 'none';
+
+      try {
+        // Verify server-side: re-check referral count from Firestore
+        const userRef = doc(db, 'users', currentUserUid);
+        const snap = await getDoc(userRef);
+        if (!snap.exists()) throw new Error('User not found');
+
+        const data = snap.data();
+        if ((data.successful_referrals || 0) < 2) {
+          throw new Error('Ineligible — need at least 2 successful referrals.');
+        }
+        if (data.upi_id) {
+          throw new Error('Reward already claimed.');
+        }
+
+        // Save UPI ID to Firestore
+        await updateDoc(userRef, { upi_id: upiInput.value.trim() });
+
+        // Show success state
+        if (claimForm) claimForm.style.display = 'none';
+        if (claimSuccess) claimSuccess.style.display = 'block';
+        console.log("✅ Referral reward claimed with UPI:", upiInput.value.trim());
+
+      } catch (error) {
+        console.error("Claim error:", error);
+        if (errorEl) {
+          errorEl.textContent = error.message || 'Something went wrong. Please try again.';
+          errorEl.style.display = 'block';
+        }
+        claimBtn.textContent = 'Claim ₹100';
+        claimBtn.disabled = false;
+      }
+    });
+  }
+
+  // Render referral dashboard when the referral screen becomes active
+  // This hooks into the existing showScreen / nav-item click system
+  const observer = new MutationObserver(() => {
+    const referralScreen = document.getElementById('referralScreen');
+    if (referralScreen && referralScreen.classList.contains('active')) {
+      renderReferralDashboard();
+    }
+  });
+
+  const referralScreen = document.getElementById('referralScreen');
+  if (referralScreen) {
+    observer.observe(referralScreen, { attributes: true, attributeFilter: ['class'] });
+  }
 });
