@@ -31,9 +31,38 @@ const AFFILIATE_DISCOUNT_PERCENT = 10;
 const AFFILIATE_COMMISSION_PERCENT = 15;
 
 function showPaywall() {
+  openPaywallModal();
+}
+
+function openPaywallModal() {
+  // Reset coupon state every time the modal opens so stale codes don't carry over
+  appliedAffiliateCode = null;
+  appliedAffiliateUid = null;
+  affiliateDiscountApplied = false;
+
+  // Reset coupon UI elements
+  const codeInput = document.getElementById('couponCodeInput');
+  const statusMsg = document.getElementById('couponStatusMsg');
+  const priceEl  = document.querySelector('.paywall-price');
+  const applyBtn = document.getElementById('applyCouponBtn');
+
+  if (codeInput) { codeInput.value = ''; codeInput.disabled = false; codeInput.style.opacity = '1'; }
+  if (statusMsg) { statusMsg.style.display = 'none'; statusMsg.textContent = ''; }
+  if (priceEl)   { priceEl.innerHTML = '₹249 <span>/ one-time</span>'; }
+  if (applyBtn)  {
+    applyBtn.textContent = 'Apply';
+    applyBtn.disabled = false;
+    applyBtn.style.background = 'linear-gradient(135deg, #6366f1, #818cf8)';
+    applyBtn.style.color = '#fff';
+    applyBtn.style.border = 'none';
+  }
+
   const modal = document.getElementById('paywallModal');
   if (modal) modal.style.display = 'flex';
 }
+
+// Expose globally so inline onclick handlers and external scripts can use it
+window.openPaywallModal = openPaywallModal;
 
 function hidePaywall() {
   const modal = document.getElementById('paywallModal');
@@ -184,21 +213,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- Global Razorpay Checkout Function --------------------------------------
+  // --- Global Upgrade Entry Point (opens Paywall Modal) -----------------------
+  // ALL upgrade buttons across the site should call this function.
+  // This shows the paywall modal with coupon UI; Razorpay ONLY opens from
+  // the "Proceed to Payment" button inside the modal.
   window.openProCheckout = function() {
     if (!currentUserUid) {
       alert('Please login first so we can link the Pro upgrade to your account!');
-      
+
       const modal = document.getElementById('paywallModal') || document.querySelector('.paywall-modal');
       if (modal) modal.style.display = 'none';
 
-      // 1. Highlight the login button in the new dashboard header
+      // Highlight the login button in the dashboard header
       setTimeout(() => {
           const loginBtnInHeader = document.getElementById('loginBtn');
           const dashboardHeader = document.querySelector('.dashboard-header');
-          
+
           if (dashboardHeader) {
-              // Scroll the main content to top so the header is visible
               const appMain = document.querySelector('.app-main');
               if (appMain) {
                   appMain.scrollTop = 0;
@@ -208,11 +239,10 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (loginBtnInHeader) {
-              // Add a pulse effect to draw attention
               loginBtnInHeader.style.transition = "transform 0.3s, box-shadow 0.3s";
               loginBtnInHeader.style.transform = "scale(1.05)";
               loginBtnInHeader.style.boxShadow = "0 0 20px rgba(56, 189, 248, 0.8)";
-              
+
               setTimeout(() => {
                   loginBtnInHeader.style.transform = "scale(1)";
                   loginBtnInHeader.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)";
@@ -220,6 +250,17 @@ document.addEventListener('DOMContentLoaded', () => {
           }
       }, 150);
 
+      return;
+    }
+
+    // User is logged in — show the paywall modal (not Razorpay directly)
+    openPaywallModal();
+  };
+
+  // --- Internal: Launch Razorpay (ONLY called from Paywall Modal CTA) ---------
+  function _launchRazorpay() {
+    if (!currentUserUid) {
+      alert('Please login first!');
       return;
     }
 
@@ -325,12 +366,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.rzp1 = new window.Razorpay(options);
     window.rzp1.open();
-  };
+  }
 
-  // --- Upgrade Now Button (Razorpay Checkout from Paywall Modal) -------------
+  // --- "Proceed to Payment" Button (inside Paywall Modal → Razorpay) ----------
   const upgradeBtn = document.getElementById('upgradeBtn');
   if (upgradeBtn) {
-    upgradeBtn.addEventListener('click', window.openProCheckout);
+    upgradeBtn.addEventListener('click', _launchRazorpay);
   }
 
   // --- Influencer Coupon Code: Apply Button -----------------------------------
@@ -1736,7 +1777,7 @@ function renderPreferenceBoard() {
       overlay.className = 'premium-list-overlay';
       overlay.innerHTML = `
         <p style="color: white; margin-bottom: 16px; font-weight: bold; text-align: center;">Want the full list? Unlock your complete, AI-optimized preference order.</p>
-        <button class="btn-primary" style="padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; background: #3b82f6; color: white;" onclick="if(typeof window.openProCheckout==='function'){window.openProCheckout();}else{document.getElementById('upgradeToProBtn')?.click();}">Upgrade for ₹249</button>
+        <button class="btn-primary" style="padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; background: #3b82f6; color: white;" onclick="if(typeof window.openPaywallModal==='function'){window.openPaywallModal();}else if(typeof window.openProCheckout==='function'){window.openProCheckout();}else{document.getElementById('upgradeToProBtn')?.click();}">Upgrade for ₹249</button>
       `;
       container.appendChild(overlay);
     }
@@ -2613,11 +2654,11 @@ listen("closeLimitModal", "click", () => {
 listen("upgradeFromLimitBtn", "click", () => {
   const modal = document.getElementById('limitReachedModal');
   if (modal) modal.style.display = 'none';
+  // Route through the paywall modal (not directly to Razorpay)
   if (typeof window.openProCheckout === 'function') {
     window.openProCheckout();
   } else {
-    const upgradeBtn = document.getElementById('upgradeBtn');
-    if (upgradeBtn) upgradeBtn.click();
+    openPaywallModal();
   }
 });
 
