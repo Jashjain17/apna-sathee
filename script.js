@@ -3433,8 +3433,8 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('Reward already claimed.');
         }
 
-        // Save UPI ID to Firestore
-        await updateDoc(userRef, { upi_id: upiInput.value.trim() });
+        // Save UPI ID and mark payout as pending in Firestore
+        await updateDoc(userRef, { upi_id: upiInput.value.trim(), payout_status: "pending" });
 
         // Show success state
         if (claimForm) claimForm.style.display = 'none';
