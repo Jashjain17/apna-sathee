@@ -562,11 +562,22 @@ function normalizeName(value = '') {
 }
 
 function getSeatTypes(category, pwdStatus) {
-  const base = category || 'OPEN';
+  // Strict mapper to translate UI categories to JoSAA JSON strings
+  const categoryMap = {
+    'OPEN': 'OPEN',
+    'GEN-EWS': 'EWS',
+    'OBC-NCL': 'OBC-NCL',
+    'SC': 'SC',
+    'ST': 'ST'
+  };
+
+  const base = categoryMap[category] || category || 'OPEN';
   const types = [base];
+
   if (pwdStatus === 'yes' || pwdStatus === 'Yes') {
     types.push(base + ' (PwD)');
   }
+  
   return types;
 }
 
