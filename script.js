@@ -1909,12 +1909,11 @@ function exportToPdf() {
 function instituteGroup(type, name) {
   const t = String(type || "").toLowerCase();
   const n = String(name || "").toLowerCase();
-  
-  if (isStrictlyIIT(name)) return "iit";
-  if (n.includes("national institute of technology") || /\bnit\b/.test(n) || t.includes("national institute of technology") || t === "nit") return "nit";
-  if (n.includes("indian institute of information technology") || /\biiit\b/.test(n) || t.includes("iiit")) return "iiit";
-  
-  return "gfti";
+  if (n.includes("iit ") || t.includes("iit")) return "iit";
+  if (n.includes("national institute of technology") || n.includes("nit ") || t.includes("national institute of technology") || t === "nit") return "nit";
+  if (n.includes("indian institute of information technology") || n.includes("iiit ") || t.includes("iiit")) return "iiit";
+  if (t.includes("gfti")) return "iiit";
+  return "other";
 }
 
 function verdictFromBand(band) {
@@ -2034,9 +2033,8 @@ const branchAliases = {
 
 function getBadgeText(name) {
   const n = String(name || "").trim().toLowerCase();
-  if (isStrictlyIIT(name)) return "IIT";
-  if (n.includes("national institute of technology") || /\bnit\b/.test(n)) return "NIT";
-  if (n.includes("indian institute of information technology") || /\biiit\b/.test(n)) return "IIIT";
+  if (n.startsWith("indian institute of technology") || n.startsWith("iit")) return "IIT";
+  if (n.startsWith("national institute of technology") || n.startsWith("nit")) return "NIT";
   return "GFTI";
 }
 
@@ -2099,7 +2097,7 @@ function renderChances() {
       if (activeCategory === "all-iits") {
         if (group !== "iit") return false;
       } else if (activeCategory === "all-nits") {
-        if (group === "iit") return false;
+        if (group !== "nit") return false;
       } else {
         // Specific category logic
         if (activeChancesType === "IIT") {
@@ -3090,7 +3088,7 @@ document.querySelectorAll(".segment-btn").forEach((btn) => {
         `;
       } else {
         filter.innerHTML = `
-          <option value="all-nits">All NITs, IIITs & GFTIs</option>
+          <option value="all-nits">All NITs</option>
           <option value="top10">Top 10</option>
           <option value="bottom">Bottom NITs</option>
         `;
