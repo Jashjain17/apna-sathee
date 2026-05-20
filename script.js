@@ -547,6 +547,7 @@ async function loadDataFiles() {
 function normalizeName(value = '') {
   return value
     .toLowerCase()
+    .split(',')[0] // Strips state identifiers (e.g., "IIIT Kota, Rajasthan" -> "iiit kota")
     .replace(/&/g, ' and ')
     .replace(/\([^)]*\)/g, ' ')
     .replace(/\b(indian institute of technology)\b/g, 'iit')
