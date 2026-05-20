@@ -2108,7 +2108,7 @@ function renderChances() {
       if (activeCategory === "all-iits") {
         if (group !== "iit") return false;
       } else if (activeCategory === "all-nits") {
-        if (group !== "nit") return false;
+        if (group !== "nit" && group !== "iiit") return false;
       } else {
         // Specific category logic
         if (activeChancesType === "IIT") {
@@ -2117,7 +2117,7 @@ function renderChances() {
           if (activeCategory === "old12" && !OLD_IITS.includes(r.institute)) return false;
           if (activeCategory === "newer" && OLD_IITS.includes(r.institute)) return false;
         } else {
-          if (group !== "nit") return false;
+          if (group !== "nit" && group !== "iiit") return false;
           if (activeCategory === "top10" && !TOP_10_NITS.includes(r.institute)) return false;
           if (activeCategory === "bottom" && TOP_10_NITS.includes(r.institute)) return false;
         }
