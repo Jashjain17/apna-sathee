@@ -674,7 +674,8 @@ function matchStrictProfile(record, profile, instState) {
 
   const rowQuota = norm(record.quota || record['Quota']);
   const isIIT = isStrictlyIIT(record.institute || record['Institute']);
-  const isHomeState = norm(profile.homeState) === norm(instState);
+  const uHS = norm(profile.homeState);
+  const isHomeState = uHS ? uHS === norm(instState) : false;
 
   if (isIIT) {
     if (rowQuota !== 'ai') return false;
