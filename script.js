@@ -868,18 +868,60 @@ async function clientRecommend(p) {
   }
 
   const bucketOrder = { AMBITIOUS: 0, BALANCED: 1, SAFE: 2 };
+
+  function getDesirabilityScore(record) {
+    let pts = 0;
+    const inst = (record.institute || "").toLowerCase();
+    const prog = (record.program || "").toLowerCase();
+    const type = record.instituteType;
+
+    const top7IIT = ['bombay', 'delhi', 'madras', 'kanpur', 'kharagpur', 'roorkee', 'guwahati'];
+    const top5NIT = ['trichy', 'tiruchirappalli', 'surathkal', 'warangal', 'rourkela', 'allahabad'];
+    const topIIIT = ['hyderabad', 'allahabad', 'bangalore', 'bengaluru', 'gwalior', 'lucknow'];
+
+    if (type === 'IIT') {
+      if (top7IIT.some(x => inst.includes(x))) pts += 10000;
+      else pts += 8000;
+    } else if (type === 'NIT') {
+      if (top5NIT.some(x => inst.includes(x))) pts += 9000;
+      else pts += 6000;
+    } else if (type === 'IIEST') {
+      pts += 6000;
+    } else if (type === 'IIIT') {
+      if (topIIIT.some(x => inst.includes(x))) pts += 9000;
+      else pts += 4000;
+    } else {
+      pts += 2000;
+    }
+
+    if (prog.includes('computer') || prog.includes('software') || prog.includes('information') || prog.match(/\bai\b/) || prog.includes('artificial') || prog.includes('math') || prog.includes('data')) {
+      pts += 1000;
+    } else if (prog.includes('electronic') || prog.includes('electrical') || prog.includes('ece') || prog.includes('eee') || prog.includes('communication')) {
+      pts += 750;
+    } else if (prog.includes('mechanic') || prog.includes('aerospace') || prog.includes('chemic')) {
+      pts += 500;
+    } else if (prog.includes('civil') || prog.includes('metallurg') || prog.includes('material')) {
+      pts += 250;
+    }
+    return pts;
+  }
+
   categorizedResults.sort((a, b) => {
     const bucketDiff = (bucketOrder[a.band] ?? 9) - (bucketOrder[b.band] ?? 9);
     if (bucketDiff !== 0) return bucketDiff;
 
-    // Prioritize explicitly specified branches if the user typed them in
     if (preferredBranches.length > 0) {
       const aMatches = preferredBranches.some(p => a.program.toLowerCase().includes(p)) ? 1 : 0;
       const bMatches = preferredBranches.some(p => b.program.toLowerCase().includes(p)) ? 1 : 0;
       if (bMatches !== aMatches) return bMatches - aMatches;
     }
 
-    // Sort strictly by avgClosingRank ASCENDING (most prestigious/lowest number first)
+    const aScore = getDesirabilityScore(a);
+    const bScore = getDesirabilityScore(b);
+    if (aScore !== bScore) {
+      return bScore - aScore;
+    }
+
     return (a.avgClosingRank || Infinity) - (b.avgClosingRank || Infinity);
   });
 
