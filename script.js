@@ -501,6 +501,7 @@ async function loadDataFiles() {
     ]);
 
     cutoffsCache = await cutoffsRes.json();
+    cutoffsCache.sort((a, b) => (b.year || 0) - (a.year || 0));
     console.log('Fetched Data: josaa_real_cutoffs.json', cutoffsCache);
 
     masterInstitutes = await masterRes.json();
@@ -749,7 +750,8 @@ async function clientRecommend(p) {
   allInstitutes.forEach(i => instMap.set(normalizeName(i.name), i));
 
   for (const record of cutoffsCache) {
-    if (record.round !== targetRound || record.year !== targetYear) continue;
+    const finalRoundForYear = finalRoundsMap.get(record.year) || 6;
+    if (record.round !== finalRoundForYear) continue;
 
     // Name-based IIT detection - robust against missing/wrong instituteType
     const isIIT = isStrictlyIIT(record.institute);
