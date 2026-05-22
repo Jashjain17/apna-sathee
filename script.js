@@ -501,7 +501,11 @@ async function loadDataFiles() {
     ]);
 
     cutoffsCache = await cutoffsRes.json();
-    cutoffsCache.sort((a, b) => (b.year || 0) - (a.year || 0));
+    cutoffsCache.sort((a, b) => {
+      if ((b.year || 0) !== (a.year || 0)) return (b.year || 0) - (a.year || 0);
+      const getRank = (r) => (typeof r === 'number' && Number.isFinite(r) ? r : parseInt(String(r).replace(/[^\d]/g, ''), 10)) || 0;
+      return getRank(b.closingRank) - getRank(a.closingRank);
+    });
     console.log('Fetched Data: josaa_real_cutoffs.json', cutoffsCache);
 
     masterInstitutes = await masterRes.json();
@@ -669,7 +673,7 @@ function matchStrictProfile(record, profile, instState) {
 
   const isUserFemale = norm(profile.gender).includes('female');
   const rowGender = norm(record.gender || record['Gender']);
-  if (isUserFemale && !rowGender.includes('female')) return false;
+  if (isUserFemale && !rowGender.includes('female') && !rowGender.includes('neutral')) return false;
   if (!isUserFemale && !rowGender.includes('neutral')) return false;
 
   const rowQuota = norm(record.quota || record['Quota']);
@@ -787,7 +791,7 @@ async function clientRecommend(p) {
     const inst = instMap.get(normalizeName(record.institute));
     if (!matchStrictProfile(record, p, inst?.state)) continue;
 
-    const key = `${record.institute}||${record.program}||${record.quota}||${record.seatType}||${record.gender}`;
+    const key = `${record.institute}||${record.program}||${record.quota}||${record.seatType}`;
     if (seen.has(key)) continue;
     seen.add(key);
 
