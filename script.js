@@ -1921,10 +1921,10 @@ function exportToPdf() {
 function instituteGroup(type, name) {
   const t = String(type || "").toLowerCase();
   const n = String(name || "").toLowerCase();
-  if (n.includes("iit ") || t.includes("iit")) return "iit";
-  if (n.includes("national institute of technology") || n.includes("nit ") || t.includes("national institute of technology") || t === "nit") return "nit";
   if (n.includes("indian institute of information technology") || n.includes("iiit ") || t.includes("iiit")) return "iiit";
   if (t.includes("gfti")) return "iiit";
+  if (n.includes("iit ") || t.includes("iit")) return "iit";
+  if (n.includes("national institute of technology") || n.includes("nit ") || t.includes("national institute of technology") || t === "nit") return "nit";
   return "other";
 }
 
