@@ -869,43 +869,6 @@ async function clientRecommend(p) {
 
   const bucketOrder = { AMBITIOUS: 0, BALANCED: 1, SAFE: 2 };
 
-  function getDesirabilityScore(record) {
-    let pts = 0;
-    const inst = (record.institute || "").toLowerCase();
-    const prog = (record.program || "").toLowerCase();
-    const type = record.instituteType;
-
-    const top7IIT = ['bombay', 'delhi', 'madras', 'kanpur', 'kharagpur', 'roorkee', 'guwahati'];
-    const top5NIT = ['trichy', 'tiruchirappalli', 'surathkal', 'warangal', 'rourkela', 'allahabad'];
-    const topIIIT = ['hyderabad', 'allahabad', 'bangalore', 'bengaluru', 'gwalior', 'lucknow'];
-
-    if (type === 'IIT') {
-      if (top7IIT.some(x => inst.includes(x))) pts += 10000;
-      else pts += 8000;
-    } else if (type === 'NIT') {
-      if (top5NIT.some(x => inst.includes(x))) pts += 9000;
-      else pts += 6000;
-    } else if (type === 'IIEST') {
-      pts += 6000;
-    } else if (type === 'IIIT') {
-      if (topIIIT.some(x => inst.includes(x))) pts += 9000;
-      else pts += 4000;
-    } else {
-      pts += 2000;
-    }
-
-    if (prog.includes('computer') || prog.includes('software') || prog.includes('information') || prog.match(/\bai\b/) || prog.includes('artificial') || prog.includes('math') || prog.includes('data')) {
-      pts += 1000;
-    } else if (prog.includes('electronic') || prog.includes('electrical') || prog.includes('ece') || prog.includes('eee') || prog.includes('communication')) {
-      pts += 750;
-    } else if (prog.includes('mechanic') || prog.includes('aerospace') || prog.includes('chemic')) {
-      pts += 500;
-    } else if (prog.includes('civil') || prog.includes('metallurg') || prog.includes('material')) {
-      pts += 250;
-    }
-    return pts;
-  }
-
   categorizedResults.sort((a, b) => {
     const bucketDiff = (bucketOrder[a.band] ?? 9) - (bucketOrder[b.band] ?? 9);
     if (bucketDiff !== 0) return bucketDiff;
@@ -916,8 +879,8 @@ async function clientRecommend(p) {
       if (bMatches !== aMatches) return bMatches - aMatches;
     }
 
-    const aScore = getDesirabilityScore(a);
-    const bScore = getDesirabilityScore(b);
+    const aScore = calculateDesirability(a);
+    const bScore = calculateDesirability(b);
     if (aScore !== bScore) {
       return bScore - aScore;
     }
@@ -1745,13 +1708,48 @@ function prefBand(row) {
   return "ambitious";
 }
 
+function calculateDesirability(item) {
+  let pts = 0;
+  const inst = (item.institute || "").toLowerCase();
+  const prog = (item.program || "").toLowerCase();
+  const type = item.instituteType || (inst.includes('iiit') ? 'IIIT' : inst.includes('iit') ? 'IIT' : inst.includes('nit') ? 'NIT' : 'GFTI');
+
+  const top7IIT = ['bombay', 'delhi', 'madras', 'kanpur', 'kharagpur', 'roorkee', 'guwahati'];
+  const top5NIT = ['trichy', 'tiruchirappalli', 'surathkal', 'warangal', 'rourkela', 'allahabad'];
+  const topIIIT = ['hyderabad', 'allahabad', 'bangalore', 'bengaluru', 'gwalior', 'lucknow'];
+
+  if (type === 'IIT') {
+    if (top7IIT.some(x => inst.includes(x))) pts += 10000;
+    else pts += 8000;
+  } else if (type === 'NIT') {
+    if (top5NIT.some(x => inst.includes(x))) pts += 9000;
+    else pts += 6000;
+  } else if (type === 'IIEST') {
+    pts += 6000;
+  } else if (type === 'IIIT') {
+    if (topIIIT.some(x => inst.includes(x))) pts += 9000;
+    else pts += 4000;
+  } else {
+    pts += 2000;
+  }
+
+  if (prog.includes('computer') || prog.includes('software') || prog.includes('information') || prog.match(/\bai\b/) || prog.includes('artificial') || prog.includes('math') || prog.includes('data')) {
+    pts += 1000;
+  } else if (prog.includes('electronic') || prog.includes('electrical') || prog.includes('ece') || prog.includes('eee') || prog.includes('communication')) {
+    pts += 750;
+  } else if (prog.includes('mechanic') || prog.includes('aerospace') || prog.includes('chemic')) {
+    pts += 500;
+  } else if (prog.includes('civil') || prog.includes('metallurg') || prog.includes('material')) {
+    pts += 250;
+  }
+  return pts;
+}
+
 function generatePreferenceList(filteredDatabase, userProfile) {
   const mainNum = parseInt(String(userProfile.rankMain).replace(/,/g, ''), 10) || Number.MAX_VALUE;
   const advNum = parseInt(String(userProfile.rankAdvanced).replace(/,/g, ''), 10) || Number.MAX_VALUE;
 
   return filteredDatabase
-    .sort((a, b) => (a.closingRank || Infinity) - (b.closingRank || Infinity))
-    .slice(0, 200)
     .map(college => {
       const name = college.institute || "";
       const isIIT = name.includes('IIT') && !name.includes('IIIT');
@@ -1759,9 +1757,17 @@ function generatePreferenceList(filteredDatabase, userProfile) {
 
       return {
         ...college,
-        band: classifyBand(appliedRank, college.closingRank) || 'AMBITIOUS'
+        band: classifyBand(appliedRank, college.closingRank) || 'AMBITIOUS',
+        desirabilityScore: calculateDesirability(college)
       };
-    });
+    })
+    .sort((a, b) => {
+      if (b.desirabilityScore !== a.desirabilityScore) {
+        return b.desirabilityScore - a.desirabilityScore;
+      }
+      return (a.closingRank || Infinity) - (b.closingRank || Infinity);
+    })
+    .slice(0, 200);
 }
 
 function clonePrefRows(rows) {
@@ -1818,7 +1824,7 @@ function renderPreferenceBoard() {
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
-            <b>${index + 1}. ${escapeHtml(row.institute || "Institute")}</b>
+            <b>${index + 1}. ${escapeHtml(row.institute || "Institute")} <span style="color: #10b981; font-size: 0.9em;">(Score: ${row.desirabilityScore || 0})</span></b>
             <span class="pref-band ${band}">${band}</span>
           </div>
           <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || "-")} • Round ${escapeHtml(row.round || "-")}</p>
