@@ -506,7 +506,8 @@ async function loadDataFiles() {
       if (r.program.length > 110) return false;
       const o = r.program.indexOf('(');
       const c = r.program.indexOf(')');
-      if (c !== -1 && (o === -1 || c < o)) return false;
+      if (o !== -1 && c === -1) return false; // missing closing parenthesis (chopped off)
+      if (c !== -1 && (o === -1 || c < o)) return false; // reversed or missing opening
       return true;
     });
     cutoffsCache.sort((a, b) => {
@@ -852,8 +853,9 @@ async function clientRecommend(p) {
   }
 
   const dedupMap = new Map();
+  const normCat = (s) => (s || '').toLowerCase().replace(/[\s\-]/g, '');
   for (const r of results) {
-    const dKey = `${normalizeName(r.institute)}||${normalizeName(r.program)}||${r.seatType}`;
+    const dKey = `${normalizeName(r.institute)}||${normalizeName(r.program)}||${normCat(r.seatType)}`;
     if (!dedupMap.has(dKey)) {
       dedupMap.set(dKey, r);
     } else {
