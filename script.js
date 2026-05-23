@@ -512,7 +512,7 @@ async function loadDataFiles() {
     cutoffsCache.sort((a, b) => {
       if ((b.year || 0) !== (a.year || 0)) return (b.year || 0) - (a.year || 0);
       const getRank = (r) => (typeof r === 'number' && Number.isFinite(r) ? r : parseInt(String(r).replace(/[^\d]/g, ''), 10)) || 0;
-      return getRank(b.closingRank) - getRank(a.closingRank);
+      return getRank(a.closingRank) - getRank(b.closingRank);
     });
     console.log('Fetched Data: josaa_real_cutoffs.json', cutoffsCache);
 
@@ -3232,7 +3232,7 @@ function triggerSortByRank() {
 function triggerSortByBuckets() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
 
-  const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3 };
+  const bucketWeights = { "VERY_AMBITIOUS": 1, "AMBITIOUS": 2, "BALANCED": 3, "SAFE": 4 };
   preferenceState.rows.sort((a, b) => {
     const bandA = (a.band || "").toUpperCase();
     const bandB = (b.band || "").toUpperCase();
