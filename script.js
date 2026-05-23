@@ -791,13 +791,13 @@ async function clientRecommend(p) {
     const inst = instMap.get(normalizeName(record.institute));
     if (!matchStrictProfile(record, p, inst?.state)) continue;
 
-    const key = `${record.institute}||${record.program}||${record.quota}||${record.seatType}`;
+    const instKey = normalizeName(record.institute);
+    const progKey = normalizeName(record.program);
+    const key = `${instKey}||${progKey}||${record.quota}||${record.seatType}||${record.gender}`;
     if (seen.has(key)) continue;
     seen.add(key);
 
-    const instKey = normalizeName(record.institute);
-    const progKey = normalizeName(record.program);
-    const statsKey = `${instKey}||${progKey}||${record.quota}||${record.seatType}||${record.gender}`;
+    const statsKey = key;
     const stats = seatStats.get(statsKey);
 
     // Defensive cast: always coerce closingRank to a real integer.
