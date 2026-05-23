@@ -1817,9 +1817,10 @@ function renderPreferenceBoard() {
   warnings.innerHTML = warningList.map((w) => `<div class="warning-chip">${escapeHtml(w)}</div>`).join("");
 
   if (typeof activeChancesType !== "undefined" && activeChancesType !== "all") {
+    const activeSys = String(activeChancesType).toLowerCase();
     document.querySelectorAll(".pref-item.sys-row").forEach(row => {
       const sys = String(row.dataset.system).toLowerCase();
-      if (sys !== activeChancesType) row.style.display = "none";
+      if (sys !== activeSys) row.style.display = "none";
     });
   }
 
