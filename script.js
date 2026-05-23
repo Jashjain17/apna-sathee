@@ -935,9 +935,15 @@ function loadPreferenceFromStorage() {
   try {
     const stored = localStorage.getItem(PREF_STORAGE_KEY);
     if (stored) {
-      const parsed = JSON.parse(stored);
+      let parsed = JSON.parse(stored);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        // Purge IIITs and GFTIs from legacy cache
+        parsed = parsed.filter(r => {
+          const n = (r.institute || "").toLowerCase();
+          return n.includes("indian institute of technology") || n.includes("national institute of technology") || /\biit\b/.test(n) || /\bnit\b/.test(n);
+        });
         preferenceState.rows = parsed;
+        localStorage.setItem(PREF_STORAGE_KEY, JSON.stringify(parsed));
       }
     }
   } catch (e) {
@@ -2973,6 +2979,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.add("active");
       btn.classList.remove("subtle");
       const targetSys = String(btn.dataset.sys).toLowerCase();
+      activeChancesType = targetSys;
       document.querySelectorAll(".sys-row").forEach(row => {
         const rowSys = String(row.dataset.system).toLowerCase();
         if (targetSys === "all" || rowSys === targetSys || rowSys === "all") {
