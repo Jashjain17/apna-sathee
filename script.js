@@ -1767,17 +1767,46 @@ function generatePreferenceList(filteredDatabase, userProfile) {
       const isIIT = name.includes('IIT') && !name.includes('IIIT');
       const appliedRank = isIIT ? advNum : mainNum;
 
+      // Extract cutoffs correctly
+      const currentCutoff = parseInt(String(college.closingRank || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+      const avgCutoff = parseInt(String(college.avgClosingRank || currentCutoff || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+
+      // Re-assign Bucket using avgCutoff
+      let newBand = 'SAFE'; 
+      if (appliedRank <= 0.33 * avgCutoff) {
+        newBand = 'VERY_SAFE';
+      } else if (appliedRank <= 0.85 * avgCutoff) {
+        newBand = 'SAFE';
+      } else if (appliedRank <= 1.05 * avgCutoff) {
+        newBand = 'BALANCED';
+      } else {
+        newBand = 'AMBITIOUS';
+      }
+
       return {
         ...college,
-        band: classifyBand(appliedRank, college.closingRank) || 'AMBITIOUS',
+        band: newBand,
+        _computedAvgCutoff: avgCutoff,
         desirabilityScore: calculateDesirability(college)
       };
     })
     .sort((a, b) => {
+      const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3, "VERY_SAFE": 4 };
+      const wA = bucketWeights[(a.band || "").toUpperCase()] || 3;
+      const wB = bucketWeights[(b.band || "").toUpperCase()] || 3;
+
+      // Primary: Bucket Hierarchy
+      if (wA !== wB) return wA - wB;
+
+      // Secondary: Desirability Score Descending
       if (b.desirabilityScore !== a.desirabilityScore) {
         return b.desirabilityScore - a.desirabilityScore;
       }
-      return (a.closingRank || Infinity) - (b.closingRank || Infinity);
+
+      // Tertiary: Closing Rank Ascending
+      const rankA = parseInt(String(a.closingRank || a.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+      const rankB = parseInt(String(b.closingRank || b.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+      return rankA - rankB;
     })
     .slice(0, 200);
 }
@@ -3217,8 +3246,8 @@ function triggerSortByRank() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
 
   preferenceState.rows.sort((a, b) => {
-    const rankA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    const rankB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const rankA = parseInt(String(a.closingRank || a.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const rankB = parseInt(String(b.closingRank || b.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
     return rankA - rankB;
   });
 
@@ -3269,6 +3298,11 @@ function triggerSortByBuckets() {
     if (!avgCutoff) avgCutoff = currentCutoff;
 
     row._computedAvgCutoff = avgCutoff;
+    
+    // Ensure desirabilityScore exists (for manually added items)
+    if (typeof row.desirabilityScore === "undefined") {
+      row.desirabilityScore = calculateDesirability(row);
+    }
 
     // Re-assign Bucket using existing 3-year avg logic
     let newBand = 'SAFE'; 
@@ -3307,8 +3341,15 @@ function triggerSortByBuckets() {
     // Primary: Strict Bucket Hierarchy
     if (wA !== wB) return wA - wB;
 
-    // Secondary: Avg Cutoff Ascending (closest reach first for Ambitious)
-    return a._computedAvgCutoff - b._computedAvgCutoff;
+    // Secondary: Desirability Score Descending
+    if (b.desirabilityScore !== a.desirabilityScore) {
+      return b.desirabilityScore - a.desirabilityScore;
+    }
+
+    // Tertiary: Closing Rank Ascending (use current cutoff since that's what's shown)
+    const rankA = parseInt(String(a.closingRank || a.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const rankB = parseInt(String(b.closingRank || b.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    return rankA - rankB;
   });
 
   const rankBtn = document.getElementById('sortRankBtn');
