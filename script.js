@@ -562,11 +562,43 @@ function normalizeName(value = '') {
 }
 
 function getSeatTypes(category, pwdStatus) {
-  const base = category || 'OPEN';
+  // 1. Map the UI category string to the exact base string JoSAA uses
+  let base;
+  switch (category) {
+    case 'GEN-EWS':
+      base = 'EWS';
+      break;
+    case 'OBC-NCL':
+      base = 'OBC- NCL'; // Exact JoSAA JSON string
+      break;
+    case 'OPEN-PwD':
+      base = 'OPEN (PwD)';
+      break;
+    case 'SC':
+      base = 'SC';
+      break;
+    case 'ST':
+      base = 'ST';
+      break;
+    case 'OPEN':
+    default:
+      base = 'OPEN';
+      break;
+  }
+
+  // If the selected category is already a PwD variant, just return it
+  if (base.includes('(PwD)')) {
+    return [base];
+  }
+
+  // 2. Generate the seat types array
   const types = [base];
+  
+  // 3. Append the PwD variant if the user selected 'Yes' for PWD status
   if (pwdStatus === 'yes' || pwdStatus === 'Yes') {
     types.push(base + ' (PwD)');
   }
+  
   return types;
 }
 
