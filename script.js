@@ -848,7 +848,7 @@ async function clientRecommend(p) {
 
   const dedupMap = new Map();
   for (const r of categorizedResults) {
-    const dKey = `${r.institute}||${r.program}||${r.seatType}||${r.gender}`;
+    const dKey = `${normalizeName(r.institute)}||${normalizeName(r.program)}||${r.seatType}||${r.gender}`;
     if (!dedupMap.has(dKey)) {
       dedupMap.set(dKey, r);
     } else {
@@ -2239,17 +2239,17 @@ function renderChances() {
       let trendUI = "-";
       if (typeof cutoffsCache !== 'undefined' && cutoffsCache && r.quota && r.seatType && r.gender) {
         const historyData = cutoffsCache.filter(c =>
-          c.institute === r.institute &&
-          c.program === r.program &&
+          normalizeName(c.institute) === normalizeName(r.institute) &&
+          normalizeName(c.program) === normalizeName(r.program) &&
           c.quota === r.quota &&
           c.seatType === r.seatType &&
           c.gender === r.gender &&
           c.round === finalRoundsMap.get(c.year)
-        ).sort((a, b) => a.year - b.year);
+        ).sort((a, b) => b.year - a.year);
 
         if (historyData.length > 0) {
           trendUI = `<div style="display:flex; flex-direction:column; font-size:0.75em; color:var(--muted); line-height:1.3; white-space:nowrap;">` +
-            historyData.slice(-3).map(c => {
+            historyData.slice(0, 3).map(c => {
               const cr = (typeof c.closingRank === 'number' && Number.isFinite(c.closingRank))
                 ? c.closingRank
                 : parseInt(String(c.closingRank).replace(/[^\\d]/g, ''), 10);
