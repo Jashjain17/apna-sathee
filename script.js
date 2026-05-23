@@ -1824,7 +1824,7 @@ function renderPreferenceBoard() {
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
-            <b>${index + 1}. ${escapeHtml(row.institute || "Institute")} <span style="color: #10b981; font-size: 0.9em;">(Score: ${row.desirabilityScore || 0})</span></b>
+            <b>${index + 1}. ${escapeHtml(row.institute || "Institute")}</b>
             <span class="pref-band ${band}">${band}</span>
           </div>
           <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || "-")} • Round ${escapeHtml(row.round || "-")}</p>
