@@ -3254,7 +3254,19 @@ function triggerSortByBuckets() {
 
     // Parse cutoffs
     const currentCutoff = parseInt(String(row.closingRank || row.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    const avgCutoff = parseInt(String(row.avgCutoff || currentCutoff || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    let avgCutoff = parseInt(String(row.avgCutoff || '').replace(/,/g, ''), 10) || null;
+
+    // Fallback for old items in localStorage without avgCutoff
+    if (!avgCutoff && typeof seatStats !== "undefined" && seatStats) {
+      const instKey = typeof normalizeName === "function" ? normalizeName(row.institute) : row.institute;
+      const progKey = typeof normalizeName === "function" ? normalizeName(row.program) : row.program;
+      const sKey = `${instKey}||${progKey}||${row.quota}||${row.seatType}||${row.gender}`;
+      const stats = seatStats.get(sKey);
+      if (stats && stats.count > 0 && Number.isFinite(stats.sum)) {
+        avgCutoff = Math.round(stats.sum / stats.count);
+      }
+    }
+    if (!avgCutoff) avgCutoff = currentCutoff;
 
     row._computedAvgCutoff = avgCutoff;
 
