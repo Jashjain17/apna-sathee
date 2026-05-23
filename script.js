@@ -500,7 +500,15 @@ async function loadDataFiles() {
       fetch('/institutes_master.json')
     ]);
 
-    cutoffsCache = await cutoffsRes.json();
+    let rawCutoffs = await cutoffsRes.json();
+    cutoffsCache = rawCutoffs.filter(r => {
+      if (!r.program) return false;
+      if (r.program.length > 110) return false;
+      if (/Years,\s*Bachelor/i.test(r.program)) return false;
+      if (/Bachelor\s+Technology\)/i.test(r.program)) return false;
+      if (r.program.includes(') (4 of') || r.program.includes(') (4')) return false;
+      return true;
+    });
     cutoffsCache.sort((a, b) => {
       if ((b.year || 0) !== (a.year || 0)) return (b.year || 0) - (a.year || 0);
       const getRank = (r) => (typeof r === 'number' && Number.isFinite(r) ? r : parseInt(String(r).replace(/[^\d]/g, ''), 10)) || 0;
