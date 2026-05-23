@@ -500,21 +500,7 @@ async function loadDataFiles() {
       fetch('/institutes_master.json')
     ]);
 
-    let rawCutoffs = await cutoffsRes.json();
-    cutoffsCache = rawCutoffs.filter(r => {
-      if (!r.program) return false;
-      if (r.program.length > 110) return false;
-      const o = r.program.indexOf('(');
-      const c = r.program.indexOf(')');
-      if (o !== -1 && c === -1) return false; // missing closing parenthesis (chopped off)
-      if (c !== -1 && (o === -1 || c < o)) return false; // reversed or missing opening
-      return true;
-    });
-    cutoffsCache.sort((a, b) => {
-      if ((b.year || 0) !== (a.year || 0)) return (b.year || 0) - (a.year || 0);
-      const getRank = (r) => (typeof r === 'number' && Number.isFinite(r) ? r : parseInt(String(r).replace(/[^\d]/g, ''), 10)) || 0;
-      return getRank(a.closingRank) - getRank(b.closingRank);
-    });
+    cutoffsCache = await cutoffsRes.json();
     console.log('Fetched Data: josaa_real_cutoffs.json', cutoffsCache);
 
     masterInstitutes = await masterRes.json();
@@ -561,7 +547,6 @@ async function loadDataFiles() {
 function normalizeName(value = '') {
   return value
     .toLowerCase()
-    .split(',')[0] // Strips state identifiers (e.g., "IIIT Kota, Rajasthan" -> "iiit kota")
     .replace(/&/g, ' and ')
     .replace(/\([^)]*\)/g, ' ')
     .replace(/\b(indian institute of technology)\b/g, 'iit')
@@ -577,22 +562,11 @@ function normalizeName(value = '') {
 }
 
 function getSeatTypes(category, pwdStatus) {
-  // Strict mapper to translate UI categories to JoSAA JSON strings
-  const categoryMap = {
-    'OPEN': 'OPEN',
-    'GEN-EWS': 'EWS',
-    'OBC-NCL': 'OBC-NCL',
-    'SC': 'SC',
-    'ST': 'ST'
-  };
-
-  const base = categoryMap[category] || category || 'OPEN';
+  const base = category || 'OPEN';
   const types = [base];
-
   if (pwdStatus === 'yes' || pwdStatus === 'Yes') {
     types.push(base + ' (PwD)');
   }
-  
   return types;
 }
 
@@ -682,13 +656,12 @@ function matchStrictProfile(record, profile, instState) {
 
   const isUserFemale = norm(profile.gender).includes('female');
   const rowGender = norm(record.gender || record['Gender']);
-  if (isUserFemale && !rowGender.includes('female') && !rowGender.includes('neutral')) return false;
+  if (isUserFemale && !rowGender.includes('female')) return false;
   if (!isUserFemale && !rowGender.includes('neutral')) return false;
 
   const rowQuota = norm(record.quota || record['Quota']);
   const isIIT = isStrictlyIIT(record.institute || record['Institute']);
-  const uHS = norm(profile.homeState);
-  const isHomeState = uHS ? uHS === norm(instState) : false;
+  const isHomeState = norm(profile.homeState) === norm(instState);
 
   if (isIIT) {
     if (rowQuota !== 'ai') return false;
@@ -799,13 +772,13 @@ async function clientRecommend(p) {
     const inst = instMap.get(normalizeName(record.institute));
     if (!matchStrictProfile(record, p, inst?.state)) continue;
 
-    const instKey = normalizeName(record.institute);
-    const progKey = normalizeName(record.program);
-    const key = `${instKey}||${progKey}||${record.quota}||${record.seatType}||${record.gender}`;
+    const key = `${record.institute}||${record.program}||${record.quota}||${record.seatType}||${record.gender}`;
     if (seen.has(key)) continue;
     seen.add(key);
 
-    const statsKey = key;
+    const instKey = normalizeName(record.institute);
+    const progKey = normalizeName(record.program);
+    const statsKey = `${instKey}||${progKey}||${record.quota}||${record.seatType}||${record.gender}`;
     const stats = seatStats.get(statsKey);
 
     // Defensive cast: always coerce closingRank to a real integer.
@@ -852,26 +825,22 @@ async function clientRecommend(p) {
     });
   }
 
+  let categorizedResults = results.filter(r => r.band !== null);
+
   const dedupMap = new Map();
-  const normCat = (s) => (s || '').toLowerCase().replace(/[\s\-]/g, '');
-  for (const r of results) {
-    const dKey = `${normalizeName(r.institute)}||${normalizeName(r.program)}||${normCat(r.seatType)}`;
+  for (const r of categorizedResults) {
+    const dKey = `${r.institute}||${r.program}||${r.seatType}||${r.gender}`;
     if (!dedupMap.has(dKey)) {
       dedupMap.set(dKey, r);
     } else {
       const existing = dedupMap.get(dKey);
-      const existingRank = existing.closingNumeric || 0;
-      const currentRank = r.closingNumeric || 0;
-      // Keep the easier (higher) cutoff since the candidate is eligible for both pools
-      if (currentRank > existingRank) {
+      const priority = { 'HS': 3, 'OS': 2, 'AI': 1 };
+      if ((priority[r.quota] || 0) > (priority[existing.quota] || 0)) {
         dedupMap.set(dKey, r);
       }
     }
   }
-  results.length = 0;
-  results.push(...Array.from(dedupMap.values()));
-
-  let categorizedResults = results.filter(r => r.band !== null);
+  categorizedResults = Array.from(dedupMap.values());
 
   // --- EXTREME RANK FALLBACK ------------------------------------------------
   if (categorizedResults.length === 0 && results.length > 0) {
@@ -880,23 +849,18 @@ async function clientRecommend(p) {
   }
 
   const bucketOrder = { AMBITIOUS: 0, BALANCED: 1, SAFE: 2 };
-
   categorizedResults.sort((a, b) => {
     const bucketDiff = (bucketOrder[a.band] ?? 9) - (bucketOrder[b.band] ?? 9);
     if (bucketDiff !== 0) return bucketDiff;
 
+    // Prioritize explicitly specified branches if the user typed them in
     if (preferredBranches.length > 0) {
       const aMatches = preferredBranches.some(p => a.program.toLowerCase().includes(p)) ? 1 : 0;
       const bMatches = preferredBranches.some(p => b.program.toLowerCase().includes(p)) ? 1 : 0;
       if (bMatches !== aMatches) return bMatches - aMatches;
     }
 
-    const aScore = calculateDesirability(a);
-    const bScore = calculateDesirability(b);
-    if (aScore !== bScore) {
-      return bScore - aScore;
-    }
-
+    // Sort strictly by avgClosingRank ASCENDING (most prestigious/lowest number first)
     return (a.avgClosingRank || Infinity) - (b.avgClosingRank || Infinity);
   });
 
@@ -1193,8 +1157,8 @@ function renderHomePersonalization(data, percent) {
   const picks = rankNum <= 2500
     ? ["IIT Roorkee ME", "IIT BHU Civil", "IIT Mandi EE"]
     : rankNum <= 10000
-      ? ["NIT Trichy ECE", "NIT Surathkal EE", "IIIT Allahabad IT"]
-      : ["NIT Jalandhar ECE", "IIITDM Kancheepuram CSE", "GFTI safer band mix"];
+      ? ["NIT Trichy ECE", "NIT Surathkal EE", "IIT Roorkee EE"]
+      : ["NIT Jalandhar ECE", "IIT Mandi CSE", "NIT safer band mix"];
 
   greeting.textContent = `Welcome back! Your rank ${rankVal} (${data.category}) is competitive for ${Math.min(47, Math.max(16, Math.floor(62000 / Math.max(1, rankNum))))} branches`;
   subtitle.textContent = percent < 100
@@ -1720,101 +1684,23 @@ function prefBand(row) {
   return "ambitious";
 }
 
-function calculateDesirability(item) {
-  let pts = 0;
-  const inst = (item.institute || "").toLowerCase();
-  const prog = (item.program || "").toLowerCase();
-  const type = item.instituteType || (inst.includes('iiit') ? 'IIIT' : inst.includes('iit') ? 'IIT' : inst.includes('nit') ? 'NIT' : 'GFTI');
-
-  const top7IIT = ['bombay', 'delhi', 'madras', 'kanpur', 'kharagpur', 'roorkee', 'guwahati'];
-  const top5NIT = ['trichy', 'tiruchirappalli', 'surathkal', 'warangal', 'rourkela', 'allahabad'];
-  const topIIIT = ['hyderabad', 'allahabad', 'bangalore', 'bengaluru', 'gwalior', 'lucknow'];
-
-  if (type === 'IIT') {
-    if (top7IIT.some(x => inst.includes(x))) pts += 10000;
-    else pts += 8000;
-  } else if (type === 'NIT') {
-    if (top5NIT.some(x => inst.includes(x))) pts += 9500;
-    else pts += 6000;
-  } else if (type === 'IIEST') {
-    pts += 6000;
-  } else if (type === 'IIIT') {
-    if (topIIIT.some(x => inst.includes(x))) pts += 9000;
-    else pts += 4000;
-  } else {
-    pts += 2000;
-  }
-
-  if (prog.includes('computer') || prog.includes('software') || prog.includes('information') || prog.match(/\bai\b/) || prog.includes('artificial') || prog.includes('math') || prog.includes('data')) {
-    pts += 1000;
-  } else if (prog.includes('electronic') || prog.includes('electrical') || prog.includes('ece') || prog.includes('eee') || prog.includes('communication')) {
-    pts += 750;
-  } else if (prog.includes('mechanic') || prog.includes('aerospace') || prog.includes('chemic')) {
-    pts += 500;
-  } else if (prog.includes('civil') || prog.includes('metallurg') || prog.includes('material')) {
-    pts += 250;
-  }
-  return pts;
-}
-
 function generatePreferenceList(filteredDatabase, userProfile) {
   const mainNum = parseInt(String(userProfile.rankMain).replace(/,/g, ''), 10) || Number.MAX_VALUE;
   const advNum = parseInt(String(userProfile.rankAdvanced).replace(/,/g, ''), 10) || Number.MAX_VALUE;
 
   return filteredDatabase
+    .sort((a, b) => (a.closingRank || Infinity) - (b.closingRank || Infinity))
+    .slice(0, 200)
     .map(college => {
       const name = college.institute || "";
       const isIIT = name.includes('IIT') && !name.includes('IIIT');
       const appliedRank = isIIT ? advNum : mainNum;
 
-      const currentCutoff = parseInt(String(college.closingRank || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-      const avgCutoff = parseInt(String(college.avgClosingRank || currentCutoff || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-
-      let anomalyWarning = null;
-      let effectiveCutoffForBuckets = avgCutoff;
-      let newBand = 'SAFE';
-
-      if (avgCutoff !== Number.MAX_VALUE && currentCutoff !== Number.MAX_VALUE) {
-        if (avgCutoff > 3 * currentCutoff || currentCutoff > 3 * avgCutoff) {
-          anomalyWarning = `⚠️ Data Anomaly: 2025 cutoff (${currentCutoff}) and 3-yr avg (${avgCutoff}) are completely misaligned.`;
-          effectiveCutoffForBuckets = currentCutoff;
-          newBand = 'SAFE'; // Default to SAFE for anomalies
-        }
-      }
-
-      if (!anomalyWarning) {
-        if (appliedRank <= 0.20 * avgCutoff) {
-          newBand = 'VERY_SAFE';
-        } else if (appliedRank <= 0.85 * avgCutoff) {
-          newBand = 'SAFE';
-        } else if (appliedRank <= 1.05 * avgCutoff) {
-          newBand = 'BALANCED';
-        } else {
-          newBand = 'AMBITIOUS';
-        }
-      }
-
       return {
         ...college,
-        band: newBand,
-        _computedAvgCutoff: effectiveCutoffForBuckets,
-        volatilityWarning: anomalyWarning,
-        desirabilityScore: calculateDesirability(college)
+        band: classifyBand(appliedRank, college.closingRank) || 'AMBITIOUS'
       };
-    })
-    .sort((a, b) => {
-      const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3, "VERY_SAFE": 4 };
-      const wA = bucketWeights[(a.band || "").toUpperCase()] || 3;
-      const wB = bucketWeights[(b.band || "").toUpperCase()] || 3;
-
-      if (wA !== wB) return wA - wB;
-      if (b.desirabilityScore !== a.desirabilityScore) return b.desirabilityScore - a.desirabilityScore;
-
-      const rankA = parseInt(String(a.closingRank || a.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-      const rankB = parseInt(String(b.closingRank || b.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-      return rankA - rankB;
-    })
-    .slice(0, 200);
+    });
 }
 
 function clonePrefRows(rows) {
@@ -1866,18 +1752,15 @@ function renderPreferenceBoard() {
   host.innerHTML = preferenceState.rows
     .map((row, index) => {
       const band = prefBand(row);
-      const bandLabel = band === "very_safe" ? "Very Safe / Guaranteed" : band;
       const blurClass = (isFreeUser && index >= 3) ? 'blurred-list-item' : '';
-      const volatilityWarning = row.volatilityWarning ? `<p class="volatility-warning" style="color:#f87171; font-size:0.85em; margin-top:4px; font-weight:bold;">⚠️ ${row.volatilityWarning}</p>` : '';
       return `<article class="pref-item sys-row ${band} ${blurClass}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'IIT' : 'NIT'}">
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
             <b>${index + 1}. ${escapeHtml(row.institute || "Institute")}</b>
-            <span class="pref-band ${band}" style="${band === 'very_safe' ? 'background:#dcfce7; color:#166534; border:1px solid #bbf7d0;' : ''}">${bandLabel}</span>
+            <span class="pref-band ${band}">${band}</span>
           </div>
-          <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || row.final || "-")} • Round ${escapeHtml(row.round || "-")}</p>
-          ${volatilityWarning}
+          <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || "-")} • Round ${escapeHtml(row.round || "-")}</p>
         </div>
         <button class="mini-btn remove-pref" type="button" data-remove-pref="${index}">Remove</button>
       </article>`;
@@ -2026,10 +1909,10 @@ function exportToPdf() {
 function instituteGroup(type, name) {
   const t = String(type || "").toLowerCase();
   const n = String(name || "").toLowerCase();
-  if (n.includes("indian institute of information technology") || n.includes("iiit ") || t.includes("iiit")) return "iiit";
-  if (t.includes("gfti")) return "iiit";
   if (n.includes("iit ") || t.includes("iit")) return "iit";
   if (n.includes("national institute of technology") || n.includes("nit ") || t.includes("national institute of technology") || t === "nit") return "nit";
+  if (n.includes("indian institute of information technology") || n.includes("iiit ") || t.includes("iiit")) return "iiit";
+  if (t.includes("gfti")) return "iiit";
   return "other";
 }
 
@@ -2084,7 +1967,6 @@ async function loadChancesData() {
         program: r.program,
         round1: r.openingRank || null,
         final: r.closingRank || null,
-        avgCutoff: r.avgClosingRank || null,
         seats: r.seats || "-",
         band: (r.band || "ambitious").toLowerCase(),
         year: r.year,
@@ -2215,7 +2097,7 @@ function renderChances() {
       if (activeCategory === "all-iits") {
         if (group !== "iit") return false;
       } else if (activeCategory === "all-nits") {
-        if (group !== "nit" && group !== "iiit") return false;
+        if (group !== "nit") return false;
       } else {
         // Specific category logic
         if (activeChancesType === "IIT") {
@@ -2224,7 +2106,7 @@ function renderChances() {
           if (activeCategory === "old12" && !OLD_IITS.includes(r.institute)) return false;
           if (activeCategory === "newer" && OLD_IITS.includes(r.institute)) return false;
         } else {
-          if (group !== "nit" && group !== "iiit") return false;
+          if (group !== "nit") return false;
           if (activeCategory === "top10" && !TOP_10_NITS.includes(r.institute)) return false;
           if (activeCategory === "bottom" && TOP_10_NITS.includes(r.institute)) return false;
         }
@@ -2290,17 +2172,17 @@ function renderChances() {
       let trendUI = "-";
       if (typeof cutoffsCache !== 'undefined' && cutoffsCache && r.quota && r.seatType && r.gender) {
         const historyData = cutoffsCache.filter(c =>
-          normalizeName(c.institute) === normalizeName(r.institute) &&
-          normalizeName(c.program) === normalizeName(r.program) &&
+          c.institute === r.institute &&
+          c.program === r.program &&
           c.quota === r.quota &&
           c.seatType === r.seatType &&
           c.gender === r.gender &&
           c.round === finalRoundsMap.get(c.year)
-        ).sort((a, b) => b.year - a.year);
+        ).sort((a, b) => a.year - b.year);
 
         if (historyData.length > 0) {
           trendUI = `<div style="display:flex; flex-direction:column; font-size:0.75em; color:var(--muted); line-height:1.3; white-space:nowrap;">` +
-            historyData.slice(0, 3).map(c => {
+            historyData.slice(-3).map(c => {
               const cr = (typeof c.closingRank === 'number' && Number.isFinite(c.closingRank))
                 ? c.closingRank
                 : parseInt(String(c.closingRank).replace(/[^\\d]/g, ''), 10);
@@ -3252,8 +3134,8 @@ function triggerSortByRank() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
 
   preferenceState.rows.sort((a, b) => {
-    const rankA = parseInt(String(a.closingRank || a.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    const rankB = parseInt(String(b.closingRank || b.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const rankA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const rankB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
     return rankA - rankB;
   });
 
@@ -3276,89 +3158,17 @@ function triggerSortByRank() {
 function triggerSortByBuckets() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
 
-  const p = typeof profile === "function" ? profile() : {};
-  const mainNum = p.rankMain ? parseInt(String(p.rankMain).replace(/,/g, ''), 10) : null;
-  const advNum = p.rankAdvanced ? parseInt(String(p.rankAdvanced).replace(/,/g, ''), 10) : null;
-
-  preferenceState.rows.forEach(row => {
-    // Determine applicable student rank
-    const group = typeof instituteGroup === "function" ? instituteGroup(row.instituteType, row.institute) : "nit";
-    let studentRank = (group === "iit") ? advNum : mainNum;
-    if (!studentRank) studentRank = p.exam === "JEE Advanced" ? advNum : mainNum;
-    if (!studentRank) studentRank = 1e9; // fallback
-
-    // Parse cutoffs
-    const currentCutoff = parseInt(String(row.closingRank || row.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    let avgCutoff = parseInt(String(row.avgCutoff || '').replace(/,/g, ''), 10) || null;
-
-    // Fallback for old items in localStorage without avgCutoff
-    if (!avgCutoff && typeof seatStats !== "undefined" && seatStats) {
-      const instKey = typeof normalizeName === "function" ? normalizeName(row.institute) : row.institute;
-      const progKey = typeof normalizeName === "function" ? normalizeName(row.program) : row.program;
-      const sKey = `${instKey}||${progKey}||${row.quota}||${row.seatType}||${row.gender}`;
-      const stats = seatStats.get(sKey);
-      if (stats && stats.count > 0 && Number.isFinite(stats.sum)) {
-        avgCutoff = Math.round(stats.sum / stats.count);
-      }
-    }
-    if (!avgCutoff) avgCutoff = currentCutoff;
-
-    row._computedAvgCutoff = avgCutoff;
-    
-    // Ensure desirabilityScore exists (for manually added items)
-    if (typeof row.desirabilityScore === "undefined") {
-      row.desirabilityScore = calculateDesirability(row);
-    }
-
-    let anomalyWarning = null;
-    let effectiveCutoffForBuckets = avgCutoff;
-    let newBand = 'SAFE';
-
-    if (avgCutoff !== Number.MAX_VALUE && currentCutoff !== Number.MAX_VALUE) {
-      if (avgCutoff > 3 * currentCutoff || currentCutoff > 3 * avgCutoff) {
-        anomalyWarning = `⚠️ Data Anomaly: 2025 cutoff (${currentCutoff}) and 3-yr avg (${avgCutoff}) are completely misaligned.`;
-        effectiveCutoffForBuckets = currentCutoff;
-        newBand = 'SAFE'; // Default to SAFE for anomalies
-      }
-    }
-
-    if (!anomalyWarning) {
-      if (studentRank <= 0.20 * avgCutoff) {
-        newBand = 'VERY_SAFE'; // More than 5x student rank
-      } else if (studentRank <= 0.85 * avgCutoff) {
-        newBand = 'SAFE';
-      } else if (studentRank <= 1.05 * avgCutoff) {
-        newBand = 'BALANCED';
-      } else {
-        newBand = 'AMBITIOUS';
-      }
-    }
-
-    row.band = newBand;
-    row._computedAvgCutoff = effectiveCutoffForBuckets;
-    row.volatilityWarning = anomalyWarning;
-  });
-
-  // Strict Sort Hierarchy
-  const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3, "VERY_SAFE": 4 };
-
+  const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3 };
   preferenceState.rows.sort((a, b) => {
-    const bandA = (a.band || "SAFE").toUpperCase();
-    const bandB = (b.band || "SAFE").toUpperCase();
-    const wA = bucketWeights[bandA] || 3;
-    const wB = bucketWeights[bandB] || 3;
+    const bandA = (a.band || "").toUpperCase();
+    const bandB = (b.band || "").toUpperCase();
+    const wA = bucketWeights[bandA] || 4;
+    const wB = bucketWeights[bandB] || 4;
 
-    // Primary: Strict Bucket Hierarchy
     if (wA !== wB) return wA - wB;
 
-    // Secondary: Desirability Score Descending
-    if (b.desirabilityScore !== a.desirabilityScore) {
-      return b.desirabilityScore - a.desirabilityScore;
-    }
-
-    // Tertiary: Closing Rank Ascending (use current cutoff since that's what's shown)
-    const rankA = parseInt(String(a.closingRank || a.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    const rankB = parseInt(String(b.closingRank || b.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const rankA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const rankB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
     return rankA - rankB;
   });
 
