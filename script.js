@@ -1831,15 +1831,18 @@ function renderPreferenceBoard() {
   host.innerHTML = preferenceState.rows
     .map((row, index) => {
       const band = prefBand(row);
+      const bandLabel = band === "very_safe" ? "Very Safe / Guaranteed" : band;
       const blurClass = (isFreeUser && index >= 3) ? 'blurred-list-item' : '';
+      const volatilityWarning = row.volatilityWarning ? `<p class="volatility-warning" style="color:#f87171; font-size:0.85em; margin-top:4px; font-weight:bold;">⚠️ ${row.volatilityWarning}</p>` : '';
       return `<article class="pref-item sys-row ${band} ${blurClass}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'IIT' : 'NIT'}">
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
             <b>${index + 1}. ${escapeHtml(row.institute || "Institute")}</b>
-            <span class="pref-band ${band}">${band}</span>
+            <span class="pref-band ${band}" style="${band === 'very_safe' ? 'background:#dcfce7; color:#166534; border:1px solid #bbf7d0;' : ''}">${bandLabel}</span>
           </div>
-          <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || "-")} • Round ${escapeHtml(row.round || "-")}</p>
+          <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || row.final || "-")} • Round ${escapeHtml(row.round || "-")}</p>
+          ${volatilityWarning}
         </div>
         <button class="mini-btn remove-pref" type="button" data-remove-pref="${index}">Remove</button>
       </article>`;
@@ -2046,6 +2049,7 @@ async function loadChancesData() {
         program: r.program,
         round1: r.openingRank || null,
         final: r.closingRank || null,
+        avgCutoff: r.avgClosingRank || null,
         seats: r.seats || "-",
         band: (r.band || "ambitious").toLowerCase(),
         year: r.year,
@@ -3237,18 +3241,62 @@ function triggerSortByRank() {
 function triggerSortByBuckets() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
 
-  const bucketWeights = { "VERY_AMBITIOUS": 1, "AMBITIOUS": 2, "BALANCED": 3, "SAFE": 4 };
-  preferenceState.rows.sort((a, b) => {
-    const bandA = (a.band || "").toUpperCase();
-    const bandB = (b.band || "").toUpperCase();
-    const wA = bucketWeights[bandA] || 4;
-    const wB = bucketWeights[bandB] || 4;
+  const p = typeof profile === "function" ? profile() : {};
+  const mainNum = p.rankMain ? parseInt(String(p.rankMain).replace(/,/g, ''), 10) : null;
+  const advNum = p.rankAdvanced ? parseInt(String(p.rankAdvanced).replace(/,/g, ''), 10) : null;
 
+  preferenceState.rows.forEach(row => {
+    // Determine applicable student rank
+    const group = typeof instituteGroup === "function" ? instituteGroup(row.instituteType, row.institute) : "nit";
+    let studentRank = (group === "iit") ? advNum : mainNum;
+    if (!studentRank) studentRank = p.exam === "JEE Advanced" ? advNum : mainNum;
+    if (!studentRank) studentRank = 1e9; // fallback
+
+    // Parse cutoffs
+    const currentCutoff = parseInt(String(row.closingRank || row.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const avgCutoff = parseInt(String(row.avgCutoff || currentCutoff || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
+
+    row._computedAvgCutoff = avgCutoff;
+
+    // Re-assign Bucket using existing 3-year avg logic
+    let newBand = 'SAFE'; 
+    if (studentRank <= 0.33 * avgCutoff) {
+      newBand = 'VERY_SAFE'; // More than 3x student rank
+    } else if (studentRank <= 0.85 * avgCutoff) {
+      newBand = 'SAFE';
+    } else if (studentRank <= 1.05 * avgCutoff) {
+      newBand = 'BALANCED';
+    } else {
+      newBand = 'AMBITIOUS';
+    }
+    row.band = newBand;
+
+    // Fix Bug: 100% Volatility Difference Warning
+    if (avgCutoff !== Number.MAX_VALUE && currentCutoff !== Number.MAX_VALUE) {
+      const minVal = Math.min(avgCutoff, currentCutoff);
+      const diff = Math.abs(avgCutoff - currentCutoff);
+      if (minVal > 0 && (diff / minVal) > 1.0) {
+        row.volatilityWarning = `Warning: 2025 cutoff (${currentCutoff}) differs vastly from historical avg (${avgCutoff}).`;
+      } else {
+        row.volatilityWarning = null;
+      }
+    }
+  });
+
+  // Strict Sort Hierarchy
+  const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3, "VERY_SAFE": 4 };
+
+  preferenceState.rows.sort((a, b) => {
+    const bandA = (a.band || "SAFE").toUpperCase();
+    const bandB = (b.band || "SAFE").toUpperCase();
+    const wA = bucketWeights[bandA] || 3;
+    const wB = bucketWeights[bandB] || 3;
+
+    // Primary: Strict Bucket Hierarchy
     if (wA !== wB) return wA - wB;
 
-    const rankA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    const rankB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    return rankA - rankB;
+    // Secondary: Avg Cutoff Ascending (closest reach first for Ambitious)
+    return a._computedAvgCutoff - b._computedAvgCutoff;
   });
 
   const rankBtn = document.getElementById('sortRankBtn');
