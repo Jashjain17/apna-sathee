@@ -496,8 +496,8 @@ async function loadDataFiles() {
   try {
     console.log('Fetching data files from public path...');
     const [cutoffsRes, masterRes] = await Promise.all([
-      fetch('/josaa_real_cutoffs.json'),
-      fetch('/institutes_master.json')
+      fetch('/josaa_real_cutoffs.json?v=' + Date.now()),
+      fetch('/institutes_master.json?v=' + Date.now())
     ]);
 
     cutoffsCache = await cutoffsRes.json();
@@ -719,21 +719,15 @@ function matchStrictProfile(record, profile, instState) {
  * - 'Indian Institute of Information Technology Allahabad' -> false
  */
 function isStrictlyIIT(instituteName) {
-  const name = (instituteName || '').trim();
-
-  // Full-form check (exclude Information Technology variant)
-  if (/\bIndian\s+Institute\s+of\s+Technology\b/i.test(name) &&
-    !/\bInformation\s+Technology\b/i.test(name)) {
+  if (!instituteName) return false;
+  const name = instituteName.toLowerCase();
+  if (name.includes('indian institute of technology') && !name.includes('information')) {
     return true;
   }
-
-  // Acronym check: 'IIT' that is NOT preceded by an extra 'I' (i.e. not 'IIIT')
-  // \bIIT\b matches 'IIT' as a whole word; we additionally verify the character
-  // just before 'IIT' (if any) is not another 'I'.
-  if (/(?<![I])\bIIT\b/i.test(name)) {
+  const words = name.split(/[^a-z0-9]+/);
+  if (words.includes('iit')) {
     return true;
   }
-
   return false;
 }
 
@@ -911,7 +905,7 @@ let activeSlide = 0;
 let historyQuery = "";
 let activeMode = "normal";
 let showOnlySaved = false;
-let activeChancesType = "IIT";
+let activeChancesType = "all";
 let chancesCache = null;
 const PREF_STORAGE_KEY = "apnaSaathiPreferenceRows";
 let preferenceState = {
@@ -1491,7 +1485,7 @@ function renderEmptyState() {
 }
 
 async function postJson(url, payload) {
-  const response = await fetch(url, {
+  const response = await fetch(url + '?_=' + Date.now(), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
@@ -1502,7 +1496,7 @@ async function postJson(url, payload) {
 }
 
 async function getJson(url) {
-  const response = await fetch(url);
+  const response = await fetch(url + '?_=' + Date.now());
   const data = await response.json();
   if (!response.ok) throw new Error(data.error || "Request failed");
   return data;
@@ -1619,7 +1613,7 @@ async function askBot(message) {
 
   // 4. FETCH from Python FastAPI backend
   try {
-    const response = await fetch("https://apna-sathee-backend.onrender.com/api/chat", {
+    const response = await fetch("https://apna-sathee-backend.onrender.com/api/chat" + '?_=' + Date.now(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: message })
@@ -1731,7 +1725,7 @@ function generatePreferenceList(filteredDatabase, userProfile) {
     .slice(0, 200)
     .map(college => {
       const name = college.institute || "";
-      const isIIT = name.includes('IIT') && !name.includes('IIIT');
+      const isIIT = isStrictlyIIT(name);
       const appliedRank = isIIT ? advNum : mainNum;
 
       return {
@@ -1778,8 +1772,6 @@ function renderPreferenceBoard() {
   const warnings = $("prefWarnings");
   if (!host || !history || !count || !warnings) return;
 
-  console.log("Top list [0] element:", preferenceState.rows[0]);
-
   count.textContent = String(preferenceState.rows.length);
   if (preferenceState.rows.length === 0) {
     host.innerHTML = '<div class="rec-card">Fill your profile to see personalized chances.</div>';
@@ -1791,7 +1783,7 @@ function renderPreferenceBoard() {
     .map((row, index) => {
       const band = prefBand(row);
       const blurClass = (isFreeUser && index >= 3) ? 'blurred-list-item' : '';
-      return `<article class="pref-item sys-row ${band} ${blurClass}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'IIT' : 'NIT'}">
+      return `<article class="pref-item sys-row ${band} ${blurClass}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'iit' : 'nit'}">
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
@@ -1823,6 +1815,13 @@ function renderPreferenceBoard() {
 
   const warningList = buildPreferenceWarnings();
   warnings.innerHTML = warningList.map((w) => `<div class="warning-chip">${escapeHtml(w)}</div>`).join("");
+
+  if (typeof activeChancesType !== "undefined" && activeChancesType !== "all") {
+    document.querySelectorAll(".pref-item.sys-row").forEach(row => {
+      const sys = String(row.dataset.system).toLowerCase();
+      if (sys !== activeChancesType) row.style.display = "none";
+    });
+  }
 
   history.innerHTML = preferenceState.snapshots
     .map(
