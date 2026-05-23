@@ -1734,7 +1734,7 @@ function calculateDesirability(item) {
     if (top7IIT.some(x => inst.includes(x))) pts += 10000;
     else pts += 8000;
   } else if (type === 'NIT') {
-    if (top5NIT.some(x => inst.includes(x))) pts += 9000;
+    if (top5NIT.some(x => inst.includes(x))) pts += 9500;
     else pts += 6000;
   } else if (type === 'IIEST') {
     pts += 6000;
@@ -1767,26 +1767,38 @@ function generatePreferenceList(filteredDatabase, userProfile) {
       const isIIT = name.includes('IIT') && !name.includes('IIIT');
       const appliedRank = isIIT ? advNum : mainNum;
 
-      // Extract cutoffs correctly
       const currentCutoff = parseInt(String(college.closingRank || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
       const avgCutoff = parseInt(String(college.avgClosingRank || currentCutoff || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
 
-      // Re-assign Bucket using avgCutoff
-      let newBand = 'SAFE'; 
-      if (appliedRank <= 0.33 * avgCutoff) {
-        newBand = 'VERY_SAFE';
-      } else if (appliedRank <= 0.85 * avgCutoff) {
-        newBand = 'SAFE';
-      } else if (appliedRank <= 1.05 * avgCutoff) {
-        newBand = 'BALANCED';
-      } else {
-        newBand = 'AMBITIOUS';
+      let anomalyWarning = null;
+      let effectiveCutoffForBuckets = avgCutoff;
+      let newBand = 'SAFE';
+
+      if (avgCutoff !== Number.MAX_VALUE && currentCutoff !== Number.MAX_VALUE) {
+        if (avgCutoff > 3 * currentCutoff || currentCutoff > 3 * avgCutoff) {
+          anomalyWarning = `⚠️ Data Anomaly: 2025 cutoff (${currentCutoff}) and 3-yr avg (${avgCutoff}) are completely misaligned.`;
+          effectiveCutoffForBuckets = currentCutoff;
+          newBand = 'SAFE'; // Default to SAFE for anomalies
+        }
+      }
+
+      if (!anomalyWarning) {
+        if (appliedRank <= 0.20 * avgCutoff) {
+          newBand = 'VERY_SAFE';
+        } else if (appliedRank <= 0.85 * avgCutoff) {
+          newBand = 'SAFE';
+        } else if (appliedRank <= 1.05 * avgCutoff) {
+          newBand = 'BALANCED';
+        } else {
+          newBand = 'AMBITIOUS';
+        }
       }
 
       return {
         ...college,
         band: newBand,
-        _computedAvgCutoff: avgCutoff,
+        _computedAvgCutoff: effectiveCutoffForBuckets,
+        volatilityWarning: anomalyWarning,
         desirabilityScore: calculateDesirability(college)
       };
     })
@@ -1795,15 +1807,9 @@ function generatePreferenceList(filteredDatabase, userProfile) {
       const wA = bucketWeights[(a.band || "").toUpperCase()] || 3;
       const wB = bucketWeights[(b.band || "").toUpperCase()] || 3;
 
-      // Primary: Bucket Hierarchy
       if (wA !== wB) return wA - wB;
+      if (b.desirabilityScore !== a.desirabilityScore) return b.desirabilityScore - a.desirabilityScore;
 
-      // Secondary: Desirability Score Descending
-      if (b.desirabilityScore !== a.desirabilityScore) {
-        return b.desirabilityScore - a.desirabilityScore;
-      }
-
-      // Tertiary: Closing Rank Ascending
       const rankA = parseInt(String(a.closingRank || a.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
       const rankB = parseInt(String(b.closingRank || b.final || '').replace(/,/g, ''), 10) || Number.MAX_VALUE;
       return rankA - rankB;
@@ -3304,29 +3310,33 @@ function triggerSortByBuckets() {
       row.desirabilityScore = calculateDesirability(row);
     }
 
-    // Re-assign Bucket using existing 3-year avg logic
-    let newBand = 'SAFE'; 
-    if (studentRank <= 0.33 * avgCutoff) {
-      newBand = 'VERY_SAFE'; // More than 3x student rank
-    } else if (studentRank <= 0.85 * avgCutoff) {
-      newBand = 'SAFE';
-    } else if (studentRank <= 1.05 * avgCutoff) {
-      newBand = 'BALANCED';
-    } else {
-      newBand = 'AMBITIOUS';
-    }
-    row.band = newBand;
+    let anomalyWarning = null;
+    let effectiveCutoffForBuckets = avgCutoff;
+    let newBand = 'SAFE';
 
-    // Fix Bug: 100% Volatility Difference Warning
     if (avgCutoff !== Number.MAX_VALUE && currentCutoff !== Number.MAX_VALUE) {
-      const minVal = Math.min(avgCutoff, currentCutoff);
-      const diff = Math.abs(avgCutoff - currentCutoff);
-      if (minVal > 0 && (diff / minVal) > 1.0) {
-        row.volatilityWarning = `Warning: 2025 cutoff (${currentCutoff}) differs vastly from historical avg (${avgCutoff}).`;
-      } else {
-        row.volatilityWarning = null;
+      if (avgCutoff > 3 * currentCutoff || currentCutoff > 3 * avgCutoff) {
+        anomalyWarning = `⚠️ Data Anomaly: 2025 cutoff (${currentCutoff}) and 3-yr avg (${avgCutoff}) are completely misaligned.`;
+        effectiveCutoffForBuckets = currentCutoff;
+        newBand = 'SAFE'; // Default to SAFE for anomalies
       }
     }
+
+    if (!anomalyWarning) {
+      if (studentRank <= 0.20 * avgCutoff) {
+        newBand = 'VERY_SAFE'; // More than 5x student rank
+      } else if (studentRank <= 0.85 * avgCutoff) {
+        newBand = 'SAFE';
+      } else if (studentRank <= 1.05 * avgCutoff) {
+        newBand = 'BALANCED';
+      } else {
+        newBand = 'AMBITIOUS';
+      }
+    }
+
+    row.band = newBand;
+    row._computedAvgCutoff = effectiveCutoffForBuckets;
+    row.volatilityWarning = anomalyWarning;
   });
 
   // Strict Sort Hierarchy
