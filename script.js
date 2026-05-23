@@ -755,8 +755,7 @@ async function clientRecommend(p) {
   allInstitutes.forEach(i => instMap.set(normalizeName(i.name), i));
 
   for (const record of cutoffsCache) {
-    const finalRoundForYear = finalRoundsMap.get(record.year) || 6;
-    if (record.round !== finalRoundForYear) continue;
+    if (record.round !== targetRound || record.year !== targetYear) continue;
 
     // Name-based IIT detection - robust against missing/wrong instituteType
     const isIIT = isStrictlyIIT(record.institute);
