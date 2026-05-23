@@ -851,22 +851,25 @@ async function clientRecommend(p) {
     });
   }
 
-  let categorizedResults = results.filter(r => r.band !== null);
-
   const dedupMap = new Map();
-  for (const r of categorizedResults) {
-    const dKey = `${normalizeName(r.institute)}||${normalizeName(r.program)}||${r.seatType}||${r.gender}`;
+  for (const r of results) {
+    const dKey = `${normalizeName(r.institute)}||${normalizeName(r.program)}||${r.seatType}`;
     if (!dedupMap.has(dKey)) {
       dedupMap.set(dKey, r);
     } else {
       const existing = dedupMap.get(dKey);
-      const priority = { 'HS': 3, 'OS': 2, 'AI': 1 };
-      if ((priority[r.quota] || 0) > (priority[existing.quota] || 0)) {
+      const existingRank = existing.closingNumeric || 0;
+      const currentRank = r.closingNumeric || 0;
+      // Keep the easier (higher) cutoff since the candidate is eligible for both pools
+      if (currentRank > existingRank) {
         dedupMap.set(dKey, r);
       }
     }
   }
-  categorizedResults = Array.from(dedupMap.values());
+  results.length = 0;
+  results.push(...Array.from(dedupMap.values()));
+
+  let categorizedResults = results.filter(r => r.band !== null);
 
   // --- EXTREME RANK FALLBACK ------------------------------------------------
   if (categorizedResults.length === 0 && results.length > 0) {
