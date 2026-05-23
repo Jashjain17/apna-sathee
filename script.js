@@ -504,9 +504,9 @@ async function loadDataFiles() {
     cutoffsCache = rawCutoffs.filter(r => {
       if (!r.program) return false;
       if (r.program.length > 110) return false;
-      if (/Years,\s*Bachelor/i.test(r.program)) return false;
-      if (/Bachelor\s+Technology\)/i.test(r.program)) return false;
-      if (r.program.includes(') (4 of') || r.program.includes(') (4')) return false;
+      const o = r.program.indexOf('(');
+      const c = r.program.indexOf(')');
+      if (c !== -1 && (o === -1 || c < o)) return false;
       return true;
     });
     cutoffsCache.sort((a, b) => {
