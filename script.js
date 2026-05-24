@@ -1740,7 +1740,27 @@ function generatePreferenceList(filteredDatabase, userProfile) {
   const mainNum = parseInt(String(userProfile.rankMain).replace(/,/g, ''), 10) || Number.MAX_VALUE;
   const advNum = parseInt(String(userProfile.rankAdvanced).replace(/,/g, ''), 10) || Number.MAX_VALUE;
 
-  return filteredDatabase
+  let activeData = filteredDatabase;
+  
+  if (typeof activeChancesType !== "undefined" && activeChancesType !== "all") {
+    activeData = activeData.filter(college => {
+      const name = college.institute || "";
+      const sys = instituteGroup(name); // returns "iit", "nit", "other_main"
+      
+      if (activeChancesType === "iit_nit") {
+        return sys === "iit" || sys === "nit";
+      } else if (activeChancesType === "iit") {
+        return sys === "iit";
+      } else if (activeChancesType === "nit") {
+        return sys === "nit";
+      } else if (activeChancesType === "all_main") {
+        return sys === "nit" || sys === "other_main";
+      }
+      return true;
+    });
+  }
+
+  return activeData
     .sort((a, b) => (a.closingRank || Infinity) - (b.closingRank || Infinity))
     .slice(0, 200)
     .map(college => {
@@ -3013,21 +3033,9 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.classList.remove("subtle");
       const targetSys = String(btn.dataset.sys).toLowerCase();
       activeChancesType = targetSys;
-      document.querySelectorAll(".sys-row").forEach(row => {
-        const rowSys = String(row.dataset.system).toLowerCase(); // 'iit', 'nit', 'other_main'
-        let show = false;
-        if (targetSys === "iit_nit") {
-          show = (rowSys === "iit" || rowSys === "nit");
-        } else if (targetSys === "iit") {
-          show = (rowSys === "iit");
-        } else if (targetSys === "nit") {
-          show = (rowSys === "nit");
-        } else if (targetSys === "all_main") {
-          show = (rowSys === "nit" || rowSys === "other_main");
-        }
-        
-        row.style.display = show ? "" : "none";
-      });
+      
+      // Re-generate the full 200-list with the new filter applied
+      handleGeneratePreferenceList("preferenceDnDList");
     });
   });
 
