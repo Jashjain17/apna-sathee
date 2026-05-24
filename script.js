@@ -498,14 +498,20 @@ async function loadDataFiles() {
   try {
     console.log('Fetching data files from public path...');
     const [iitRes, mainRes, masterRes] = await Promise.all([
-      fetch('/iit_cutoffs.json?v=' + Date.now()),
-      fetch('/main_cutoffs.json?v=' + Date.now()),
-      fetch('/institutes_master.json?v=' + Date.now())
+      fetch('./public/iit_cutoffs.json?v=' + Date.now()),
+      fetch('./public/main_cutoffs.json?v=' + Date.now()),
+      fetch('./public/institutes_master.json?v=' + Date.now())
     ]);
 
     iitCutoffsCache = await iitRes.json();
     mainCutoffsCache = await mainRes.json();
     masterInstitutes = await masterRes.json();
+
+    console.log('✅ Successfully loaded data arrays:', {
+      iitCount: iitCutoffsCache.length,
+      mainCount: mainCutoffsCache.length,
+      masterInstitutesLoaded: !!masterInstitutes
+    });
 
     console.log('Fetched Data: iit_cutoffs.json', iitCutoffsCache.length);
     console.log('Fetched Data: main_cutoffs.json', mainCutoffsCache.length);
