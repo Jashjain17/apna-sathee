@@ -1979,10 +1979,11 @@ function exportToPdf() {
 function instituteGroup(type, name) {
   const t = String(type || "").toLowerCase();
   const n = String(name || "").toLowerCase();
-  if (n.includes("iit ") || t.includes("iit")) return "iit";
-  if (n.includes("national institute of technology") || n.includes("nit ") || t.includes("national institute of technology") || t === "nit") return "nit";
-  if (n.includes("indian institute of information technology") || n.includes("iiit ") || t.includes("iiit")) return "iiit";
-  if (t.includes("gfti")) return "iiit";
+  
+  if (n.includes("indian institute of information technology") || /\biiit\b/.test(n) || t.includes("iiit") || t.includes("gfti")) return "iiit";
+  if (n.includes("national institute of technology") || /\bnit\b/.test(n) || t.includes("national institute of technology") || /\bnit\b/.test(t)) return "nit";
+  if (isStrictlyIIT(name) || t === "iit" || (/\biit\b/.test(t) && !t.includes("iiit"))) return "iit";
+  
   return "other";
 }
 
