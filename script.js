@@ -1398,22 +1398,13 @@ function addMessage(role, text, persist = true, messageObj) {
     actions.className = "message-actions";
     // ALIEN EMOJI FIX ------------------------------------------------
     actions.innerHTML = `
-      <button class="action-btn" data-action="up" type="button">👍</button>
-      <button class="action-btn" data-action="down" type="button">👎</button>
-      <button class="action-btn" data-action="save" type="button">Save</button>
       <button class="action-btn" data-action="share" type="button">Share</button>
     `;
     // ----------------------------------------------------------------
-    const followups = document.createElement("div");
-    followups.className = "followups";
-    followups.innerHTML = buildFollowupChips(text).map((t) => `<button class="chip" type="button" data-followup="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join("");
-    box.append(actions, followups);
+    box.append(actions);
 
     actions.querySelectorAll("[data-action]").forEach((btn) => {
       btn.addEventListener("click", () => onMessageAction(messageId, btn.dataset.action));
-    });
-    followups.querySelectorAll("[data-followup]").forEach((btn) => {
-      btn.addEventListener("click", () => askBot(btn.dataset.followup));
     });
   }
 
