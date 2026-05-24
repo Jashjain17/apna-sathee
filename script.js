@@ -1836,10 +1836,18 @@ function renderPreferenceBoard() {
   warnings.innerHTML = warningList.map((w) => `<div class="warning-chip">${escapeHtml(w)}</div>`).join("");
 
   if (typeof activeChancesType !== "undefined" && activeChancesType !== "all") {
-    const activeSys = String(activeChancesType).toLowerCase();
+    const targetSys = String(activeChancesType).toLowerCase();
     document.querySelectorAll(".pref-item.sys-row").forEach(row => {
-      const sys = String(row.dataset.system).toLowerCase();
-      if (sys !== activeSys) row.style.display = "none";
+      const rowSys = String(row.dataset.system).toLowerCase();
+      let show = false;
+      if (targetSys === "iit_nit") {
+        show = (rowSys === "iit" || rowSys === "nit");
+      } else if (targetSys === "all_main") {
+        show = (rowSys === "nit" || rowSys === "other_main");
+      } else {
+        show = (rowSys === targetSys);
+      }
+      if (!show) row.style.display = "none";
     });
   }
 
