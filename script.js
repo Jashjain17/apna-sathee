@@ -863,8 +863,20 @@ async function clientRecommend(p) {
     branches, pwdStatus
   } = p;
 
-  const mainNum = rankMain ? parseInt(String(rankMain).replace(/,/g, ''), 10) : null;
-  const advNum = rankAdvanced ? parseInt(String(rankAdvanced).replace(/,/g, ''), 10) : null;
+  const parseRank = (val) => {
+    if (!val) return null;
+    let str = String(val).toLowerCase().replace(/,/g, '').trim();
+    let multiplier = 1;
+    if (str.endsWith('k')) {
+      multiplier = 1000;
+      str = str.slice(0, -1);
+    }
+    const num = parseFloat(str);
+    return isNaN(num) ? null : Math.round(num * multiplier);
+  };
+
+  const mainNum = parseRank(rankMain);
+  const advNum = parseRank(rankAdvanced);
 
   if (!exam || (exam === 'JEE Main' && !mainNum) || (exam === 'JEE Advanced' && !advNum) || (exam === 'Both' && (!mainNum || !advNum))) {
     return { ready: false, message: 'Please complete your profile.' };
