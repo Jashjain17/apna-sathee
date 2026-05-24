@@ -486,6 +486,7 @@ let currentBalanced = [];
 let currentSafe = [];
 let iitCutoffsCache = null;
 let mainCutoffsCache = null;
+let cutoffsCache = null;
 let masterInstitutes = null;
 let iitSeatStats = null;
 let mainSeatStats = null;
@@ -505,6 +506,7 @@ async function loadDataFiles() {
 
     iitCutoffsCache = await iitRes.json();
     mainCutoffsCache = await mainRes.json();
+    cutoffsCache = [...iitCutoffsCache, ...mainCutoffsCache];
     masterInstitutes = await masterRes.json();
 
     console.log('✅ Successfully loaded data arrays:', {
@@ -518,7 +520,7 @@ async function loadDataFiles() {
     console.log('Fetched Data: institutes_master.json', masterInstitutes);
 
     // Pre-calculate stats for recommendation engine
-    const allCutoffs = [...iitCutoffsCache, ...mainCutoffsCache];
+    const allCutoffs = cutoffsCache;
     const years = [...new Set(allCutoffs.map(r => r.year))];
     latestYearVal = Math.max(...years);
     finalRoundsMap = new Map();
