@@ -484,59 +484,67 @@ let lastChoiceList = [];
 let currentAmbitious = [];
 let currentBalanced = [];
 let currentSafe = [];
-let cutoffsCache = null;
+let iitCutoffsCache = null;
+let mainCutoffsCache = null;
 let masterInstitutes = null;
-let seatStats = null;
+let iitSeatStats = null;
+let mainSeatStats = null;
 let latestYearVal = null;
 let finalRoundsMap = null;
 
 async function loadDataFiles() {
-  if (cutoffsCache && masterInstitutes) return;
+  if (iitCutoffsCache && mainCutoffsCache && masterInstitutes) return;
 
   try {
     console.log('Fetching data files from public path...');
-    const [cutoffsRes, masterRes] = await Promise.all([
-      fetch('/josaa_real_cutoffs.json?v=' + Date.now()),
+    const [iitRes, mainRes, masterRes] = await Promise.all([
+      fetch('/iit_cutoffs.json?v=' + Date.now()),
+      fetch('/main_cutoffs.json?v=' + Date.now()),
       fetch('/institutes_master.json?v=' + Date.now())
     ]);
 
-    cutoffsCache = await cutoffsRes.json();
-    console.log('Fetched Data: josaa_real_cutoffs.json', cutoffsCache);
-
+    iitCutoffsCache = await iitRes.json();
+    mainCutoffsCache = await mainRes.json();
     masterInstitutes = await masterRes.json();
+
+    console.log('Fetched Data: iit_cutoffs.json', iitCutoffsCache.length);
+    console.log('Fetched Data: main_cutoffs.json', mainCutoffsCache.length);
     console.log('Fetched Data: institutes_master.json', masterInstitutes);
 
     // Pre-calculate stats for recommendation engine
-    const years = [...new Set(cutoffsCache.map(r => r.year))];
+    const allCutoffs = [...iitCutoffsCache, ...mainCutoffsCache];
+    const years = [...new Set(allCutoffs.map(r => r.year))];
     latestYearVal = Math.max(...years);
     finalRoundsMap = new Map();
     years.forEach(y => {
-      const rounds = cutoffsCache.filter(r => r.year === y).map(r => r.round);
+      const rounds = allCutoffs.filter(r => r.year === y).map(r => r.round);
       finalRoundsMap.set(y, Math.max(...rounds));
     });
 
-    seatStats = new Map();
-    for (const row of cutoffsCache) {
-      if (row.round !== finalRoundsMap.get(row.year)) continue;
-      const instKey = normalizeName(row.institute);
-      const progKey = normalizeName(row.program);
-      const key = `${instKey}||${progKey}||${row.quota}||${row.seatType}||${row.gender}`;
+    function buildStats(cache) {
+      const statsMap = new Map();
+      for (const row of cache) {
+        if (row.round !== finalRoundsMap.get(row.year)) continue;
+        const instKey = normalizeName(row.institute);
+        const progKey = normalizeName(row.program);
+        const key = `${instKey}||${progKey}||${row.quota}||${row.seatType}||${row.gender}`;
 
-      if (!seatStats.has(key)) seatStats.set(key, { sum: 0, count: 0 });
-      const stats = seatStats.get(key);
-      // Defensive cast: closingRank may arrive as a string from some JSON
-      // sources.  Force to Number first, then parseInt to strip any trailing
-      // non-digit characters (e.g. 'P' for preparatory ranks).
-      const raw = row.closingRank;
-      const rankVal = (typeof raw === 'number' && Number.isFinite(raw))
-        ? raw
-        : parseInt(String(raw).replace(/[^\d]/g, ''), 10);
-      if (Number.isFinite(rankVal) && rankVal > 0) {
-        stats.sum += rankVal;
-        stats.count += 1;
+        if (!statsMap.has(key)) statsMap.set(key, { sum: 0, count: 0 });
+        const stats = statsMap.get(key);
+        const raw = row.closingRank;
+        const rankVal = (typeof raw === 'number' && Number.isFinite(raw))
+          ? raw
+          : parseInt(String(raw).replace(/[^\d]/g, ''), 10);
+        if (Number.isFinite(rankVal) && rankVal > 0) {
+          stats.sum += rankVal;
+          stats.count += 1;
+        }
       }
+      return statsMap;
     }
 
+    iitSeatStats = buildStats(iitCutoffsCache);
+    mainSeatStats = buildStats(mainCutoffsCache);
 
   } catch (err) {
     console.error('Failed to load data files:', err);
@@ -731,6 +739,116 @@ function isStrictlyIIT(instituteName) {
   return false;
 }
 
+function processAndSortDataset(cache, currentSeatStats, targetRank, targetRound, targetYear, p, preferredBranches, instMap) {
+  const results = [];
+  const seen = new Set();
+  
+  for (const record of cache) {
+    if (record.round !== targetRound || record.year !== targetYear) continue;
+
+    const programLower = (record.program || '').toLowerCase();
+    if (
+      programLower.includes('architecture') ||
+      programLower.includes('planning') ||
+      programLower.includes('landscape')
+    ) continue;
+
+    if (preferredBranches.length > 0) {
+      const matchesBranch = preferredBranches.some(br => programLower.includes(br));
+      if (!matchesBranch) continue;
+    }
+
+    const inst = instMap.get(normalizeName(record.institute));
+    if (!matchStrictProfile(record, p, inst?.state)) continue;
+
+    const key = `${record.institute}||${record.program}||${record.quota}||${record.seatType}||${record.gender}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    const instKey = normalizeName(record.institute);
+    const progKey = normalizeName(record.program);
+    const statsKey = `${instKey}||${progKey}||${record.quota}||${record.seatType}||${record.gender}`;
+    const stats = currentSeatStats.get(statsKey);
+
+    const rawClosing = record.closingRank;
+    const currentClosing = (typeof rawClosing === 'number' && Number.isFinite(rawClosing))
+      ? rawClosing
+      : parseInt(String(rawClosing).replace(/[^\d]/g, ''), 10);
+
+    let avgClosing;
+    if (stats && stats.count > 0 && Number.isFinite(stats.sum)) {
+      avgClosing = stats.sum / stats.count;
+    } else if (Number.isFinite(currentClosing) && currentClosing > 0) {
+      avgClosing = currentClosing;
+    } else {
+      continue; 
+    }
+
+    if (!Number.isFinite(avgClosing) || avgClosing <= 0) continue;
+
+    const band = classifyBand(targetRank, avgClosing);
+
+    results.push({
+      institute: record.institute,
+      instituteType: record.instituteType,
+      program: record.program,
+      quota: record.quota,
+      seatType: record.seatType,
+      gender: record.gender,
+      openingRank: record.openingRank,
+      closingRank: currentClosing,
+      avgClosingRank: Math.round(avgClosing),
+      closingNumeric: currentClosing,
+      round: record.round,
+      year: record.year,
+      band,
+      branchScore: branchScore(record.program, preferredBranches),
+      city: inst?.city || '',
+      state: inst?.state || '',
+      nirf: inst?.nirf_2024 || null,
+      isIIT: isStrictlyIIT(record.institute)
+    });
+  }
+
+  let categorizedResults = results.filter(r => r.band !== null);
+
+  const dedupMap = new Map();
+  for (const r of categorizedResults) {
+    const dKey = `${r.institute}||${r.program}||${r.seatType}||${r.gender}`;
+    if (!dedupMap.has(dKey)) {
+      dedupMap.set(dKey, r);
+    } else {
+      const existing = dedupMap.get(dKey);
+      const priority = { 'HS': 3, 'OS': 2, 'AI': 1 };
+      if ((priority[r.quota] || 0) > (priority[existing.quota] || 0)) {
+        dedupMap.set(dKey, r);
+      }
+    }
+  }
+  categorizedResults = Array.from(dedupMap.values());
+
+  if (categorizedResults.length === 0 && results.length > 0) {
+    results.sort((a, b) => (b.avgClosingRank || 0) - (a.avgClosingRank || 0));
+    categorizedResults = results.slice(0, 30).map(r => ({ ...r, band: 'AMBITIOUS' }));
+  }
+
+  const bucketOrder = { AMBITIOUS: 0, BALANCED: 1, SAFE: 2 };
+  categorizedResults.sort((a, b) => {
+    const bucketDiff = (bucketOrder[a.band] ?? 9) - (bucketOrder[b.band] ?? 9);
+    if (bucketDiff !== 0) return bucketDiff;
+
+    if (preferredBranches.length > 0) {
+      const aMatches = preferredBranches.some(p => a.program.toLowerCase().includes(p)) ? 1 : 0;
+      const bMatches = preferredBranches.some(p => b.program.toLowerCase().includes(p)) ? 1 : 0;
+      if (bMatches !== aMatches) return bMatches - aMatches;
+    }
+
+    return (a.avgClosingRank || Infinity) - (b.avgClosingRank || Infinity);
+  });
+
+  return { categorizedResults, fullResults: results };
+}
+
 async function clientRecommend(p) {
   await loadDataFiles();
 
@@ -755,148 +873,39 @@ async function clientRecommend(p) {
   const targetYear = latestYearVal;
   const targetRound = finalRoundsMap.get(targetYear);
 
-  const results = [];
-  const seen = new Set();
-
   const allInstitutes = [...(masterInstitutes.IITs || []), ...(masterInstitutes.NITs || []), ...(masterInstitutes.IIITs || []), ...(masterInstitutes.IIESTs || []), ...(masterInstitutes.GFTIs || [])];
   const instMap = new Map();
   allInstitutes.forEach(i => instMap.set(normalizeName(i.name), i));
 
-  for (const record of cutoffsCache) {
-    if (record.round !== targetRound || record.year !== targetYear) continue;
-
-    // Name-based IIT detection - robust against missing/wrong instituteType
-    const isIIT = isStrictlyIIT(record.institute);
-
-    // --- 1. EXAM GUARD & DYNAMIC RANK ROUTING -------------------------------
-    let targetRank;
-    if (exam === 'JEE Main') {
-      if (isIIT) continue;
-      targetRank = mainNum;
-    } else if (exam === 'JEE Advanced') {
-      if (!isIIT) continue;
-      targetRank = advNum;
-    } else if (exam === 'Both') {
-      targetRank = isIIT ? advNum : mainNum;
-    }
-    if (!targetRank) continue;
-
-    // Exclude Paper 2 programs (Architecture, Planning, Landscape)
-    const programLower = (record.program || '').toLowerCase();
-    if (
-      programLower.includes('architecture') ||
-      programLower.includes('planning') ||
-      programLower.includes('landscape')
-    ) continue;
-
-    // --- 2. STRICT BRANCH GUARD ---------------------------------------------
-    if (preferredBranches.length > 0) {
-      const matchesBranch = preferredBranches.some(br => programLower.includes(br));
-      if (!matchesBranch) continue;
-    }
-
-    const inst = instMap.get(normalizeName(record.institute));
-    if (!matchStrictProfile(record, p, inst?.state)) continue;
-
-    const key = `${record.institute}||${record.program}||${record.quota}||${record.seatType}||${record.gender}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-
-    const instKey = normalizeName(record.institute);
-    const progKey = normalizeName(record.program);
-    const statsKey = `${instKey}||${progKey}||${record.quota}||${record.seatType}||${record.gender}`;
-    const stats = seatStats.get(statsKey);
-
-    // Defensive cast: always coerce closingRank to a real integer.
-    // If the JSON source emits strings (e.g. "1800" instead of 1800),
-    // a raw `+` would concatenate rather than add.
-    const rawClosing = record.closingRank;
-    const currentClosing = (typeof rawClosing === 'number' && Number.isFinite(rawClosing))
-      ? rawClosing
-      : parseInt(String(rawClosing).replace(/[^\d]/g, ''), 10);
-
-    // Compute average from stats; guard against NaN and divide-by-zero.
-    let avgClosing;
-    if (stats && stats.count > 0 && Number.isFinite(stats.sum)) {
-      avgClosing = stats.sum / stats.count;
-    } else if (Number.isFinite(currentClosing) && currentClosing > 0) {
-      avgClosing = currentClosing;
-    } else {
-      continue; // no usable rank data - skip
-    }
-
-    // Final sanity gate: avgClosing must be a positive finite number
-    if (!Number.isFinite(avgClosing) || avgClosing <= 0) continue;
-
-    const band = classifyBand(targetRank, avgClosing);
-
-    results.push({
-      institute: record.institute,
-      instituteType: record.instituteType,
-      program: record.program,
-      quota: record.quota,
-      seatType: record.seatType,
-      gender: record.gender,
-      openingRank: record.openingRank,
-      closingRank: currentClosing,
-      avgClosingRank: Math.round(avgClosing),
-      closingNumeric: currentClosing,
-      round: record.round,
-      year: record.year,
-      band,
-      branchScore: branchScore(record.program, preferredBranches),
-      city: inst?.city || '',
-      state: inst?.state || '',
-      nirf: inst?.nirf_2024 || null
-    });
+  let iitCat = [], iitFull = [];
+  if ((exam === 'JEE Advanced' || exam === 'Both') && advNum) {
+    const res = processAndSortDataset(iitCutoffsCache, iitSeatStats, advNum, targetRound, targetYear, p, preferredBranches, instMap);
+    iitCat = res.categorizedResults;
+    iitFull = res.fullResults;
   }
 
-  let categorizedResults = results.filter(r => r.band !== null);
-
-  const dedupMap = new Map();
-  for (const r of categorizedResults) {
-    const dKey = `${r.institute}||${r.program}||${r.seatType}||${r.gender}`;
-    if (!dedupMap.has(dKey)) {
-      dedupMap.set(dKey, r);
-    } else {
-      const existing = dedupMap.get(dKey);
-      const priority = { 'HS': 3, 'OS': 2, 'AI': 1 };
-      if ((priority[r.quota] || 0) > (priority[existing.quota] || 0)) {
-        dedupMap.set(dKey, r);
-      }
-    }
-  }
-  categorizedResults = Array.from(dedupMap.values());
-
-  // --- EXTREME RANK FALLBACK ------------------------------------------------
-  if (categorizedResults.length === 0 && results.length > 0) {
-    results.sort((a, b) => (b.avgClosingRank || 0) - (a.avgClosingRank || 0));
-    categorizedResults = results.slice(0, 30).map(r => ({ ...r, band: 'AMBITIOUS' }));
+  let mainCat = [], mainFull = [];
+  if ((exam === 'JEE Main' || exam === 'Both') && mainNum) {
+    const res = processAndSortDataset(mainCutoffsCache, mainSeatStats, mainNum, targetRound, targetYear, p, preferredBranches, instMap);
+    mainCat = res.categorizedResults;
+    mainFull = res.fullResults;
   }
 
-  const bucketOrder = { AMBITIOUS: 0, BALANCED: 1, SAFE: 2 };
-  categorizedResults.sort((a, b) => {
-    const bucketDiff = (bucketOrder[a.band] ?? 9) - (bucketOrder[b.band] ?? 9);
-    if (bucketDiff !== 0) return bucketDiff;
-
-    // Prioritize explicitly specified branches if the user typed them in
-    if (preferredBranches.length > 0) {
-      const aMatches = preferredBranches.some(p => a.program.toLowerCase().includes(p)) ? 1 : 0;
-      const bMatches = preferredBranches.some(p => b.program.toLowerCase().includes(p)) ? 1 : 0;
-      if (bMatches !== aMatches) return bMatches - aMatches;
-    }
-
-    // Sort strictly by avgClosingRank ASCENDING (most prestigious/lowest number first)
-    return (a.avgClosingRank || Infinity) - (b.avgClosingRank || Infinity);
+  const finalCategorized = [];
+  ['AMBITIOUS', 'BALANCED', 'SAFE'].forEach(band => {
+    finalCategorized.push(...iitCat.filter(r => r.band === band));
+    finalCategorized.push(...mainCat.filter(r => r.band === band));
   });
+
+  const finalFull = [...iitFull, ...mainFull];
 
   return {
     ready: true,
-    results: categorizedResults,
-    fullResults: results,
-    choiceList: categorizedResults,
-    total: categorizedResults.length,
-    message: `Found ${categorizedResults.length} matching options.`
+    results: finalCategorized,
+    fullResults: finalFull,
+    choiceList: finalCategorized,
+    total: finalCategorized.length,
+    message: `Found ${finalCategorized.length} matching options.`
   };
 }
 
@@ -1783,7 +1792,11 @@ function renderPreferenceBoard() {
     .map((row, index) => {
       const band = prefBand(row);
       const blurClass = (isFreeUser && index >= 3) ? 'blurred-list-item' : '';
-      return `<article class="pref-item sys-row ${band} ${blurClass}" draggable="true" data-pref-idx="${index}" data-system="${isStrictlyIIT(row.institute) ? 'iit' : 'nit'}">
+      let sysTag = 'other_main';
+      if (isStrictlyIIT(row.institute)) sysTag = 'iit';
+      else if (/\bnit\b/i.test(row.institute) || /national institute of technology/i.test(row.institute)) sysTag = 'nit';
+      
+      return `<article class="pref-item sys-row ${band} ${blurClass}" draggable="true" data-pref-idx="${index}" data-system="${sysTag}">
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
@@ -2135,7 +2148,7 @@ function renderChances() {
       if (activeCategory === "all-iits") {
         if (group !== "iit") return false;
       } else if (activeCategory === "all-nits") {
-        if (group !== "nit") return false;
+        if (group === "iit") return false;
       } else {
         // Specific category logic
         if (activeChancesType === "IIT") {
@@ -2981,12 +2994,19 @@ document.addEventListener('DOMContentLoaded', () => {
       const targetSys = String(btn.dataset.sys).toLowerCase();
       activeChancesType = targetSys;
       document.querySelectorAll(".sys-row").forEach(row => {
-        const rowSys = String(row.dataset.system).toLowerCase();
-        if (targetSys === "all" || rowSys === targetSys || rowSys === "all") {
-          row.style.display = "";
-        } else {
-          row.style.display = "none";
+        const rowSys = String(row.dataset.system).toLowerCase(); // 'iit', 'nit', 'other_main'
+        let show = false;
+        if (targetSys === "iit_nit") {
+          show = (rowSys === "iit" || rowSys === "nit");
+        } else if (targetSys === "iit") {
+          show = (rowSys === "iit");
+        } else if (targetSys === "nit") {
+          show = (rowSys === "nit");
+        } else if (targetSys === "all_main") {
+          show = (rowSys === "nit" || rowSys === "other_main");
         }
+        
+        row.style.display = show ? "" : "none";
       });
     });
   });
@@ -3127,8 +3147,8 @@ document.querySelectorAll(".segment-btn").forEach((btn) => {
         `;
       } else {
         filter.innerHTML = `
-          <option value="all-nits">All NITs</option>
-          <option value="top10">Top 10</option>
+          <option value="all-nits">All NITs & Others</option>
+          <option value="top10">Top 10 NITs</option>
           <option value="bottom">Bottom NITs</option>
         `;
       }

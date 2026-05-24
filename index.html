@@ -657,7 +657,7 @@ body, html {
           <!-- Segmented Control for IIT/NIT -->
           <div class="segmented-control" id="chancesTypeToggle">
             <button class="segment-btn active" data-type="IIT">IITs</button>
-            <button class="segment-btn" data-type="NIT">NITs</button>
+            <button class="segment-btn" data-type="NIT">NITs & Others</button>
           </div>
 
           <div class="chances-filters">
@@ -729,9 +729,10 @@ body, html {
           </div>
           <div id="systemFilterContainer" class="controls-wrapper" style="display:none;">
             <div id="instituteFilterGroup" class="segmented-control">
-              <button class="sys-filter-btn active" data-sys="all">Show All</button>
-              <button class="sys-filter-btn" data-sys="iit">IITs Only</button>
-              <button class="sys-filter-btn" data-sys="nit">NITs Only</button>
+              <button class="sys-filter-btn active" data-sys="iit_nit">IITs + NITs</button>
+              <button class="sys-filter-btn" data-sys="iit">Only IITs</button>
+              <button class="sys-filter-btn" data-sys="nit">Only NITs</button>
+              <button class="sys-filter-btn" data-sys="all_main">NITs + IIITs + GFTIs</button>
             </div>
             <div class="sort-view-wrapper">
               <span style="color: #94a3b8; font-size: 0.85rem; font-weight: 600;">Sort View:</span>
