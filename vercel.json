@@ -20,6 +20,8 @@
     { "src": "/cutoffs.json", "dest": "/public/cutoffs.json" },
     { "src": "/josaa_real_cutoffs.json", "dest": "/public/josaa_real_cutoffs.json" },
     { "src": "/institutes_master.json", "dest": "/public/institutes_master.json" },
+    { "src": "/iit_cutoffs.json", "dest": "/public/iit_cutoffs.json" },
+    { "src": "/main_cutoffs.json", "dest": "/public/main_cutoffs.json" },
     { "src": "/script.js", "dest": "/script.js" },
     { "src": "/styles.css", "dest": "/styles.css" },
     { "src": "/logo.png", "dest": "/logo.png" },
