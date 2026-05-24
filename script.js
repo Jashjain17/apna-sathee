@@ -1745,7 +1745,9 @@ function generatePreferenceList(filteredDatabase, userProfile) {
   if (typeof activeChancesType !== "undefined" && activeChancesType !== "all") {
     activeData = activeData.filter(college => {
       const name = college.institute || "";
-      const sys = instituteGroup(name); // returns "iit", "nit", "other_main"
+      let sys = 'other_main';
+      if (isStrictlyIIT(name)) sys = 'iit';
+      else if (/\bnit\b/i.test(name) || /national institute of technology/i.test(name)) sys = 'nit';
       
       if (activeChancesType === "iit_nit") {
         return sys === "iit" || sys === "nit";
