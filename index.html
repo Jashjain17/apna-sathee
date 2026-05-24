@@ -792,59 +792,59 @@ body, html {
           </div>
 
           <!-- Referral Link Section -->
-          <div style="background: rgba(30, 41, 59, 0.5); padding: 20px; border-radius: 12px; border: 1px solid rgba(100, 116, 139, 0.2); margin-bottom: 24px;">
-            <label style="display: block; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Your Unique Referral Link</label>
+          <div style="background: var(--paper); padding: 20px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 24px; box-shadow: var(--shadow);">
+            <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Your Unique Referral Link</label>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-              <input id="referralLinkInput" type="text" readonly value="Login to get your link" style="flex: 1; min-width: 200px; background: #0f172a; border: 1px solid #334155; color: #cbd5e1; padding: 12px 16px; border-radius: 10px; font-size: 0.9rem;" />
-              <button id="copyReferralBtn" style="padding: 12px 24px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; background: linear-gradient(135deg, #6366f1, #818cf8); color: #fff; font-size: 0.9rem; transition: all 0.2s; min-width: 110px;">Copy Link</button>
+              <input id="referralLinkInput" type="text" readonly value="Login to get your link" style="flex: 1; min-width: 200px; background: var(--bg); border: 1px solid var(--line); color: var(--text); padding: 12px 16px; border-radius: 10px; font-size: 0.9rem;" />
+              <button id="copyReferralBtn" style="padding: 12px 24px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; background: linear-gradient(135deg, var(--violet), var(--navy-2)); color: #fff; font-size: 0.9rem; transition: all 0.2s; min-width: 110px;">Copy Link</button>
             </div>
           </div>
 
           <!-- Progress Tracker -->
           <div style="margin-bottom: 28px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
-              <span style="font-size: 0.9rem; font-weight: 600; color: #e2e8f0;">Your Progress</span>
-              <span id="referralProgressText" style="font-size: 1.1rem; font-weight: 700; color: #f8fafc;">0 <span style="color: #64748b; font-size: 0.8rem; font-weight: 400;">/ 2</span></span>
+              <span style="font-size: 0.9rem; font-weight: 600; color: var(--text);">Your Progress</span>
+              <span id="referralProgressText" style="font-size: 1.1rem; font-weight: 700; color: var(--navy);">0 <span style="color: var(--muted); font-size: 0.8rem; font-weight: 400;">/ 2</span></span>
             </div>
-            <div style="height: 16px; width: 100%; background: #1e293b; border-radius: 999px; overflow: hidden; border: 1px solid rgba(100,116,139,0.2); position: relative;">
-              <div id="referralProgressBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #6366f1, #fbbf24); transition: width 0.7s ease-out; border-radius: 999px;"></div>
+            <div style="height: 16px; width: 100%; background: var(--bg); border-radius: 999px; overflow: hidden; border: 1px solid var(--line); position: relative;">
+              <div id="referralProgressBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--violet), var(--orange)); transition: width 0.7s ease-out; border-radius: 999px;"></div>
             </div>
-            <p style="margin-top: 10px; font-size: 0.8rem; color: #64748b; text-align: center;">Get 2 friends to upgrade to Pro to unlock your ₹100 UPI Cashback!</p>
+            <p style="margin-top: 10px; font-size: 0.8rem; color: var(--muted); text-align: center;">Get 2 friends to upgrade to Pro to unlock your ₹100 UPI Cashback!</p>
           </div>
 
           <!-- Reward Claim Section -->
-          <div id="referralRewardSection" style="padding-top: 20px; border-top: 1px solid #1e293b;">
+          <div id="referralRewardSection" style="padding-top: 20px; border-top: 1px solid var(--line);">
 
             <!-- Locked State (default) -->
-            <div id="referralLocked" style="background: rgba(15, 23, 42, 0.5); border-radius: 12px; padding: 28px 20px; text-align: center; border: 1px dashed #334155;">
-              <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: #1e293b; margin-bottom: 16px; font-size: 1.4rem;">🔒</div>
-              <h3 style="font-size: 1.1rem; font-weight: 600; color: #cbd5e1; margin: 0 0 8px;">Reward Locked</h3>
-              <p id="referralLockedText" style="font-size: 0.85rem; color: #64748b; margin: 0;">Get 2 friends to upgrade to Pro to unlock your ₹100 UPI Cashback!</p>
+            <div id="referralLocked" style="background: var(--bg); border-radius: 12px; padding: 28px 20px; text-align: center; border: 1px dashed var(--muted);">
+              <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); margin-bottom: 16px; font-size: 1.4rem;">🔒</div>
+              <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text); margin: 0 0 8px;">Reward Locked</h3>
+              <p id="referralLockedText" style="font-size: 0.85rem; color: var(--muted); margin: 0;">Get 2 friends to upgrade to Pro to unlock your ₹100 UPI Cashback!</p>
             </div>
 
             <!-- Unlocked State (hidden by default) -->
-            <div id="referralUnlocked" style="display: none; background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.8)); border-radius: 12px; padding: 24px; border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: 0 0 24px rgba(99, 102, 241, 0.08);">
+            <div id="referralUnlocked" style="display: none; background: var(--paper); border-radius: 12px; padding: 24px; border: 1px solid var(--orange); box-shadow: var(--shadow);">
               <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                 <span style="font-size: 1.6rem;">🎉</span>
                 <div>
-                  <h3 style="font-size: 1.1rem; font-weight: 700; color: #fbbf24; margin: 0;">Reward Unlocked!</h3>
-                  <p style="font-size: 0.85rem; color: #cbd5e1; margin: 4px 0 0;">You've successfully referred 2 friends.</p>
+                  <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--orange); margin: 0;">Reward Unlocked!</h3>
+                  <p style="font-size: 0.85rem; color: var(--muted); margin: 4px 0 0;">You've successfully referred 2 friends.</p>
                 </div>
               </div>
 
               <!-- Claim Success Banner (hidden) -->
-              <div id="referralClaimSuccess" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; padding: 16px; border-radius: 10px; text-align: center; font-size: 0.9rem; font-weight: 600;">
+              <div id="referralClaimSuccess" style="display: none; background: rgba(0, 182, 122, 0.1); border: 1px solid var(--green); color: var(--green-2); padding: 16px; border-radius: 10px; text-align: center; font-size: 0.9rem; font-weight: 600;">
                 ✅ Claim submitted! We'll process your ₹100 cashback shortly.
               </div>
 
               <!-- Claim Form -->
               <div id="referralClaimForm">
-                <label style="display: block; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Enter your UPI ID for cashback</label>
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Enter your UPI ID for cashback</label>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                  <input id="upiIdInput" type="text" placeholder="e.g. 9876543210@upi" style="flex: 1; min-width: 180px; background: #0f172a; border: 1px solid rgba(99, 102, 241, 0.3); color: #e2e8f0; padding: 12px 16px; border-radius: 10px; font-size: 0.9rem;" />
-                  <button id="claimRewardBtn" style="padding: 12px 24px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #1e293b; font-size: 0.9rem; transition: all 0.2s; min-width: 130px;">Claim ₹100</button>
+                  <input id="upiIdInput" type="text" placeholder="e.g. 9876543210@upi" style="flex: 1; min-width: 180px; background: var(--bg); border: 1px solid var(--line); color: var(--text); padding: 12px 16px; border-radius: 10px; font-size: 0.9rem;" />
+                  <button id="claimRewardBtn" style="padding: 12px 24px; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; background: linear-gradient(135deg, var(--orange), var(--orange-2)); color: #fff; font-size: 0.9rem; transition: all 0.2s; min-width: 130px;">Claim ₹100</button>
                 </div>
-                <p id="referralClaimError" style="display: none; color: #f87171; font-size: 0.8rem; margin-top: 8px;">Something went wrong. Please try again.</p>
+                <p id="referralClaimError" style="display: none; color: var(--danger); font-size: 0.8rem; margin-top: 8px;">Something went wrong. Please try again.</p>
               </div>
             </div>
           </div>
