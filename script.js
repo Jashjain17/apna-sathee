@@ -26,7 +26,7 @@ let currentUserUid = null;
 let appliedAffiliateCode = null;      // The validated affiliate referral_code
 let appliedAffiliateUid = null;       // The UID of the affiliate whose code was used
 let affiliateDiscountApplied = false; // Whether a 10% discount is active
-const BASE_PRICE_PAISE = 24900;       // ₹249 in paise
+const BASE_PRICE_PAISE = 49900;       // ₹499 in paise
 const AFFILIATE_DISCOUNT_PERCENT = 10;
 const AFFILIATE_COMMISSION_PERCENT = 15;
 
@@ -48,7 +48,7 @@ function openPaywallModal() {
 
   if (codeInput) { codeInput.value = ''; codeInput.disabled = false; codeInput.style.opacity = '1'; }
   if (statusMsg) { statusMsg.style.display = 'none'; statusMsg.textContent = ''; }
-  if (priceEl)   { priceEl.innerHTML = '₹249 <span>/ one-time</span>'; }
+  if (priceEl)   { priceEl.innerHTML = '₹499 <span>/ one-time</span>'; }
   if (applyBtn)  {
     applyBtn.textContent = 'Apply';
     applyBtn.disabled = false;
@@ -409,7 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
           appliedAffiliateUid = null;
           affiliateDiscountApplied = false;
           // Reset price display
-          if (priceEl) priceEl.innerHTML = '₹249 <span>/ one-time</span>';
+          if (priceEl) priceEl.innerHTML = '₹499 <span>/ one-time</span>';
         } else {
           // Valid affiliate code found
           const affiliateDoc = snapshot.docs[0];
@@ -424,7 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
           statusMsg.style.display = 'block';
 
           // Update the visible price
-          if (priceEl) priceEl.innerHTML = `<s style="color:#64748b;font-size:0.85em;">₹249</s> ₹${discountedPrice} <span>/ one-time</span>`;
+          if (priceEl) priceEl.innerHTML = `<s style="color:#64748b;font-size:0.85em;">₹499</s> ₹${discountedPrice} <span>/ one-time</span>`;
 
           // Lock the input so they can't change it
           codeInput.disabled = true;
@@ -1853,7 +1853,7 @@ function renderPreferenceBoard() {
       overlay.className = 'premium-list-overlay';
       overlay.innerHTML = `
         <p style="color: white; margin-bottom: 16px; font-weight: bold; text-align: center;">Want the full list? Unlock your complete, AI-optimized preference order.</p>
-        <button class="btn-primary" style="padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; background: #3b82f6; color: white;" onclick="if(typeof window.openPaywallModal==='function'){window.openPaywallModal();}else if(typeof window.openProCheckout==='function'){window.openProCheckout();}else{document.getElementById('upgradeToProBtn')?.click();}">Upgrade for ₹249</button>
+        <button class="btn-primary" style="padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; border: none; background: #3b82f6; color: white;" onclick="if(typeof window.openPaywallModal==='function'){window.openPaywallModal();}else if(typeof window.openProCheckout==='function'){window.openProCheckout();}else{document.getElementById('upgradeToProBtn')?.click();}">Upgrade for ₹499</button>
       `;
       container.appendChild(overlay);
     }
@@ -2784,7 +2784,7 @@ listen("exportBtn", "click", () => {
 listen("exportPdfBtn", "click", () => {
   if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
     const textEl = document.getElementById('modalMessageText');
-    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹249 to download your complete, AI-optimized preference list.";
+    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to download your complete, AI-optimized preference list.";
     const modal = document.getElementById('limitReachedModal');
     if (modal) modal.style.display = 'flex';
     return;
@@ -3210,7 +3210,7 @@ listen("chancesCheckBtn", "click", function(e) {
   else {
       console.log("Limit reached. Showing modal.");
       const textEl = document.getElementById('modalMessageText');
-      if (textEl) textEl.innerText = "You've used your 1 free chance prediction! Upgrade to Pro for ₹249 to check your probabilities for unlimited colleges.";
+      if (textEl) textEl.innerText = "You've used your 1 free chance prediction! Upgrade to Pro for ₹499 to check your probabilities for unlimited colleges.";
       const modal = document.getElementById('limitReachedModal');
       if (modal) modal.style.display = 'flex';
       return; 
