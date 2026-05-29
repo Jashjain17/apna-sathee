@@ -216,7 +216,10 @@ textarea {
 .app-main {
   min-width: 0;
   padding: 32px 36px;
-  max-width: 1180px;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  transition: all 0.3s ease;
 }
 
 .app-topbar {
@@ -3851,3 +3854,74 @@ body:not(.theme-dark) .chances-table tbody tr:hover,
 body:not(.theme-dark) .pref-item:hover {
   background-color: #f8fafc;
 }
+
+.nav-icon svg { width: 18px; height: 18px; stroke-width: 2px; }
+
+
+/* --- NEW PREMIUM CHAT UI OVERRIDES --- */
+
+/* 1. Suggestion Chips */
+.prompt-card {
+  padding: 12px 16px !important;
+  border-radius: 16px !important;
+  background: rgba(30, 41, 59, 0.05) !important;
+  border: 1px solid rgba(0,0,0,0.05) !important;
+  white-space: normal !important;
+  height: auto !important;
+  min-height: 0 !important;
+  transition: all 0.2s ease !important;
+}
+body.theme-dark .prompt-card {
+  background: rgba(30, 41, 59, 0.5) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.prompt-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05) !important;
+  background: rgba(30, 41, 59, 0.08) !important;
+  border-color: var(--violet) !important;
+}
+body.theme-dark .prompt-card:hover {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border-color: var(--navy-2) !important;
+}
+
+/* 2. Chat Bubbles */
+.message {
+  border-radius: 24px !important;
+  border: 1px solid transparent !important;
+  padding: 14px 18px !important;
+}
+.message.bot {
+  align-self: flex-start !important;
+  background: rgba(15, 23, 42, 0.04) !important;
+  border-bottom-left-radius: 6px !important;
+}
+body.theme-dark .message.bot {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+.message.user {
+  align-self: flex-end !important;
+  background: linear-gradient(135deg, var(--violet), var(--navy-2)) !important;
+  color: #fff !important;
+  border-bottom-right-radius: 6px !important;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.15) !important;
+}
+.message.user p, .message.user span, .message.user .message-body {
+  color: #fff !important;
+}
+
+/* 3. Composer Fixes for Mobile */
+@media (max-width: 768px) {
+  .composer {
+    margin: 0 16px 16px 16px !important;
+    padding: 8px 8px 8px 16px !important;
+  }
+}
+
+
+/* --- FIX LAYOUT EXPANSION ON COLLAPSE --- */
+.panel, .main-card, .chances-panel {
+  width: 100% !important;
+}
+
