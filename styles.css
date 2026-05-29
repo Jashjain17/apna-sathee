@@ -1,26 +1,35 @@
 :root {
   color-scheme: light;
-  --bg: #eef3ff;
-  --paper: #ffffff;
-  --navy: #151a52;
-  --navy-2: #2b2fa8;
-  --line: #d9e3ef;
-  --text: #1d224a;
-  --muted: #607386;
-  --orange: #ff6b2c;
-  --orange-2: #ff8a3c;
-  --green: #00b67a;
-  --green-2: #009a67;
-  --violet: #7a5cff;
-  --cyan: #16c4ff;
-  --danger: #ff6b6b;
-  --shadow: 0 16px 36px rgba(34, 45, 128, 0.14);
-  --radius-card: 14px;
-  --radius-control: 10px;
+  --bg: #f8fafc;
+  --paper: rgba(255, 255, 255, 0.7);
+  --navy: #1e1b4b;
+  --navy-2: #3730a3;
+  --line: rgba(226, 232, 240, 0.8);
+  --text: #1e293b;
+  --muted: #64748b;
+  --orange: #ff8a3c;
+  --orange-2: #fb923c;
+  --green: #10b981;
+  --green-2: #059669;
+  --violet: #4f46e5;
+  --cyan: #0ea5e9;
+  --danger: #ef4444;
+  --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --radius-card: 20px;
+  --radius-control: 16px;
   --space-1: 8px;
   --space-2: 12px;
   --space-3: 16px;
   --space-4: 22px;
+  --tag-safe-bg: #ecfdf5;
+  --tag-safe-text: #047857;
+  --tag-safe-border: #a7f3d0;
+  --tag-balanced-bg: #fffbeb;
+  --tag-balanced-text: #b45309;
+  --tag-balanced-border: #fde68a;
+  --tag-ambitious-bg: #fff1f2;
+  --tag-ambitious-text: #be123c;
+  --tag-ambitious-border: #fecdd3;
 }
 /* ==========================================================================
    DESKTOP RESTORATION (Fixes the Giant Logo & Mobile Spills)
@@ -89,14 +98,23 @@
     }
 }
 body.theme-dark {
-  --bg: #0e1220;
-  --paper: #141a2d;
-  --navy: #e8ecff;
-  --navy-2: #99a9ff;
-  --line: #2a3555;
-  --text: #e6ebff;
-  --muted: #a8b5d4;
-  --shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+  --bg: #0f172a;
+  --paper: rgba(15, 23, 42, 0.6);
+  --navy: #e0e7ff;
+  --navy-2: #a5b4fc;
+  --line: rgba(255, 255, 255, 0.1);
+  --text: #f8fafc;
+  --muted: #94a3b8;
+  --shadow: none;
+  --tag-safe-bg: rgba(16, 185, 129, 0.1);
+  --tag-safe-text: #34d399;
+  --tag-safe-border: rgba(16, 185, 129, 0.2);
+  --tag-balanced-bg: rgba(245, 158, 11, 0.1);
+  --tag-balanced-text: #fbbf24;
+  --tag-balanced-border: rgba(245, 158, 11, 0.2);
+  --tag-ambitious-bg: rgba(244, 63, 94, 0.1);
+  --tag-ambitious-text: #fb7185;
+  --tag-ambitious-border: rgba(244, 63, 94, 0.2);
   color-scheme: dark;
 }
 
@@ -1977,15 +1995,15 @@ h2 {
 }
 
 .pref-item.safe {
-  border-left: 5px solid #00b67a;
+  border-left: 5px solid var(--tag-safe-text);
 }
 
 .pref-item.balanced {
-  border-left: 5px solid #ff8a3c;
+  border-left: 5px solid var(--tag-balanced-text);
 }
 
 .pref-item.ambitious {
-  border-left: 5px solid #ff6b6b;
+  border-left: 5px solid var(--tag-ambitious-text);
 }
 
 .drag-handle {
@@ -2021,18 +2039,21 @@ h2 {
 }
 
 .pref-band.safe {
-  background: #effdf6;
-  color: #0f6138;
+  background: var(--tag-safe-bg);
+  color: var(--tag-safe-text);
+  border: 1px solid var(--tag-safe-border);
 }
 
 .pref-band.balanced {
-  background: #fff9e6;
-  color: #7a4a00;
+  background: var(--tag-balanced-bg);
+  color: var(--tag-balanced-text);
+  border: 1px solid var(--tag-balanced-border);
 }
 
 .pref-band.ambitious {
-  background: #fff2f2;
-  color: #7f1d1d;
+  background: var(--tag-ambitious-bg);
+  color: var(--tag-ambitious-text);
+  border: 1px solid var(--tag-ambitious-border);
 }
 
 .remove-pref {
@@ -2083,6 +2104,8 @@ h2 {
   background: var(--paper);
   border-radius: var(--radius-card);
   box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
 }
 
@@ -2209,21 +2232,21 @@ h2 {
 }
 
 .verdict.safe {
-  background: #effdf6;
-  border-color: rgba(0, 182, 122, 0.28);
-  color: #0f6138;
+  background: var(--tag-safe-bg);
+  border-color: var(--tag-safe-border);
+  color: var(--tag-safe-text);
 }
 
 .verdict.borderline {
-  background: #fff9e6;
-  border-color: rgba(255, 138, 60, 0.35);
-  color: #7a4a00;
+  background: var(--tag-balanced-bg);
+  border-color: var(--tag-balanced-border);
+  color: var(--tag-balanced-text);
 }
 
 .verdict.reach {
-  background: #fff2f2;
-  border-color: rgba(255, 107, 107, 0.4);
-  color: #7f1d1d;
+  background: var(--tag-ambitious-bg);
+  border-color: var(--tag-ambitious-border);
+  color: var(--tag-ambitious-text);
 }
 
 .row-safe {
@@ -3794,4 +3817,37 @@ html {
     align-items: center;
     padding-bottom: 40px;
     z-index: 10;
+}
+
+/* Desktop Section Margins */
+@media (min-width: 769px) {
+  .screen > .panel, 
+  .screen > .workspace, 
+  .hero-panel, 
+  .trust-strip, 
+  .quick-access-grid {
+    margin-bottom: 40px !important;
+  }
+}
+
+/* Premium Hover Interactions & Micro-Animations */
+.chances-table tbody tr,
+.pref-item {
+  transition: all 0.2s ease;
+}
+
+.chances-table tbody tr:hover,
+.pref-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+body.theme-dark .chances-table tbody tr:hover,
+body.theme-dark .pref-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+body:not(.theme-dark) .chances-table tbody tr:hover,
+body:not(.theme-dark) .pref-item:hover {
+  background-color: #f8fafc;
 }
