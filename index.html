@@ -96,9 +96,10 @@
             align-items: center;
             height: 70px;
             padding: 0 24px;
-            background: rgba(15, 23, 42, 0.8);
+            background: var(--paper);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid #1e293b;
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
             position: sticky;
             top: -32px; /* Adjusted to app-main padding */
             margin: -32px -36px 32px -36px; /* Negate app-main padding for edge-to-edge */
@@ -158,7 +159,7 @@
         }
 
         .dashboard-header .profile-name {
-          color: #f8fafc;
+          color: var(--navy);
         }
 
         @media (max-width: 768px) {
@@ -174,7 +175,7 @@
       </style>
       <header class="dashboard-header">
         <div class="header-left">
-          <h2 id="dashboardTitle" style="margin: 0; color: #f8fafc; font-size: 1.2rem; font-weight: 600;">Dashboard</h2>
+          <h2 id="dashboardTitle" style="margin: 0; color: var(--navy); font-size: 1.2rem; font-weight: 600;">Dashboard</h2>
         </div>
         <div class="header-actions" id="authContainer">
           <div class="header-legal" id="headerLegalWrapper">
