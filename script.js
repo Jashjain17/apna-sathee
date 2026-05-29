@@ -3070,13 +3070,7 @@ document.addEventListener('DOMContentLoaded', () => {
   listen("rankMain", "input", () => renderProfileVisuals(profile()));
   listen("rankAdvanced", "input", () => renderProfileVisuals(profile()));
 
-  const instituteSelect = document.getElementById("instituteFilterSelect");
-  if (instituteSelect) {
-    instituteSelect.addEventListener("change", (e) => {
-      activeChancesType = String(e.target.value).toLowerCase();
-      handleGeneratePreferenceList("preferenceDnDList");
-    });
-  }
+  // Dropdown listeners moved to delegated handler inside DOMContentLoaded for mobile stability
 
   try {
     loadProfile();
@@ -3297,16 +3291,20 @@ function triggerSortByBuckets() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const sortViewSelectEvent = document.getElementById("sortViewSelect");
-  if (sortViewSelectEvent) {
-    sortViewSelectEvent.addEventListener("change", (e) => {
-      if (e.target.value === "rank") {
-        triggerSortByRank();
-      } else {
-        triggerSortByBuckets();
+  ['change', 'input'].forEach(evt => {
+    document.body.addEventListener(evt, (e) => {
+      if (e.target && e.target.id === "instituteFilterSelect") {
+        activeChancesType = String(e.target.value).toLowerCase();
+        handleGeneratePreferenceList("preferenceDnDList");
+      } else if (e.target && e.target.id === "sortViewSelect") {
+        if (e.target.value === "rank") {
+          triggerSortByRank();
+        } else {
+          triggerSortByBuckets();
+        }
       }
     });
-  }
+  });
 });
 
 // Add BETA badge to Compare tab
