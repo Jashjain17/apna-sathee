@@ -560,8 +560,10 @@ async function loadDataFiles() {
   }
 }
 
+const normalizeCache = new Map();
 function normalizeName(value = '') {
-  return value
+  if (normalizeCache.has(value)) return normalizeCache.get(value);
+  const result = value
     .toLowerCase()
     .replace(/&/g, ' and ')
     .replace(/\([^)]*\)/g, ' ')
@@ -575,6 +577,8 @@ function normalizeName(value = '') {
     .replace(/\bcalicut\b/g, 'kozhikode calicut')
     .replace(/[^a-z0-9]+/g, ' ')
     .trim();
+  normalizeCache.set(value, result);
+  return result;
 }
 
 function getSeatTypes(category, pwdStatus) {
@@ -2230,6 +2234,20 @@ function renderChances() {
     const existingOverlay = body.parentElement.querySelector('.paywall-overlay-container');
     if (existingOverlay) existingOverlay.remove();
 
+    const historyMap = new Map();
+    if (typeof cutoffsCache !== 'undefined' && cutoffsCache) {
+      for (const c of cutoffsCache) {
+        if (c.round === finalRoundsMap.get(c.year)) {
+          const key = `${c.institute}|${c.program}|${c.quota}|${c.seatType}|${c.gender}`;
+          if (!historyMap.has(key)) historyMap.set(key, []);
+          historyMap.get(key).push(c);
+        }
+      }
+      for (const arr of historyMap.values()) {
+        arr.sort((a, b) => a.year - b.year);
+      }
+    }
+
     body.innerHTML = rows.map((r, index) => {
       const v = verdictFromBand(r.band === "ambitious" ? "ambitious" : r.band);
       const rowClass = v.key === "safe" ? "row-safe" : v.key === "borderline" ? "row-borderline" : "row-reach";
@@ -2264,14 +2282,8 @@ function renderChances() {
 
       let trendUI = "-";
       if (typeof cutoffsCache !== 'undefined' && cutoffsCache && r.quota && r.seatType && r.gender) {
-        const historyData = cutoffsCache.filter(c =>
-          c.institute === r.institute &&
-          c.program === r.program &&
-          c.quota === r.quota &&
-          c.seatType === r.seatType &&
-          c.gender === r.gender &&
-          c.round === finalRoundsMap.get(c.year)
-        ).sort((a, b) => a.year - b.year);
+        const key = `${r.institute}|${r.program}|${r.quota}|${r.seatType}|${r.gender}`;
+        const historyData = historyMap.get(key) || [];
 
         if (historyData.length > 0) {
           trendUI = `<div style="display:flex; flex-direction:column; font-size:0.75em; color:var(--muted); line-height:1.3; white-space:nowrap;">` +
