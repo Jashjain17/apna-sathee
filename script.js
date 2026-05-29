@@ -783,9 +783,16 @@ function processAndSortDataset(cache, currentSeatStats, targetRank, targetRound,
     const stats = currentSeatStats.get(statsKey);
 
     const rawClosing = record.closingRank;
+    const rawClosingStr = String(rawClosing);
+    
+    // Completely remove preparatory ranks
+    if (rawClosingStr.toLowerCase().includes('p')) {
+      continue;
+    }
+
     const currentClosing = (typeof rawClosing === 'number' && Number.isFinite(rawClosing))
       ? rawClosing
-      : parseInt(String(rawClosing).replace(/[^\d]/g, ''), 10);
+      : parseInt(rawClosingStr.replace(/[^\d]/g, ''), 10);
 
     let avgClosing;
     if (stats && stats.count > 0 && Number.isFinite(stats.sum)) {
@@ -1773,14 +1780,19 @@ function generatePreferenceList(filteredDatabase, userProfile) {
       
       let multiplier = 1.0;
       if (!isStrictlyIIT(college.institute)) {
-        if (/\bnit\b/i.test(name) || /national institute of technology/i.test(name)) multiplier = 2.2;
-        else if (/\biiit\b/i.test(name) || /indian institute of information technology/i.test(name) || /international institute of information technology/i.test(name)) multiplier = 2.5;
-        else multiplier = 3.5;
+        if (/\bnit\b/i.test(name) || /national institute of technology/i.test(name)) multiplier = 1.4 + (cr * 0.00003);
+        else if (/\biiit\b/i.test(name) || /indian institute of information technology/i.test(name) || /international institute of information technology/i.test(name)) multiplier = 1.6 + (cr * 0.00003);
+        else multiplier = 2.0 + (cr * 0.00004);
+      } else {
+        multiplier = 1.0 + (cr * 0.00002);
       }
+
+      const bScore = college.branchScore || 0;
+      const preferenceScore = (cr * multiplier) - (bScore * 50);
 
       return {
         ...college,
-        preferenceScore: cr * multiplier,
+        preferenceScore: preferenceScore,
         band: college.band || 'AMBITIOUS'
       };
     })
