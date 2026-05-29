@@ -1767,18 +1767,25 @@ function generatePreferenceList(filteredDatabase, userProfile) {
   }
 
   return activeData
-    .sort((a, b) => (a.closingRank || Infinity) - (b.closingRank || Infinity))
-    .slice(0, 200)
     .map(college => {
-      const name = college.institute || "";
-      const isIIT = isStrictlyIIT(name);
-      const appliedRank = isIIT ? advNum : mainNum;
+      const name = (college.institute || "").toLowerCase();
+      const cr = college.closingRank || Infinity;
+      
+      let multiplier = 1.0;
+      if (!isStrictlyIIT(college.institute)) {
+        if (/\bnit\b/i.test(name) || /national institute of technology/i.test(name)) multiplier = 2.2;
+        else if (/\biiit\b/i.test(name) || /indian institute of information technology/i.test(name) || /international institute of information technology/i.test(name)) multiplier = 2.5;
+        else multiplier = 3.5;
+      }
 
       return {
         ...college,
-        band: classifyBand(appliedRank, college.closingRank) || 'AMBITIOUS'
+        preferenceScore: cr * multiplier,
+        band: college.band || 'AMBITIOUS'
       };
-    });
+    })
+    .sort((a, b) => a.preferenceScore - b.preferenceScore)
+    .slice(0, 200);
 }
 
 function clonePrefRows(rows) {
@@ -3235,9 +3242,9 @@ function triggerSortByRank() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
 
   preferenceState.rows.sort((a, b) => {
-    const rankA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    const rankB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    return rankA - rankB;
+    const pA = a.preferenceScore || (parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE);
+    const pB = b.preferenceScore || (parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE);
+    return pA - pB;
   });
 
   const rankBtn = document.getElementById('sortRankBtn');
@@ -3268,9 +3275,9 @@ function triggerSortByBuckets() {
 
     if (wA !== wB) return wA - wB;
 
-    const rankA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    const rankB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
-    return rankA - rankB;
+    const pA = a.preferenceScore || (parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE);
+    const pB = b.preferenceScore || (parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE);
+    return pA - pB;
   });
 
   const rankBtn = document.getElementById('sortRankBtn');
