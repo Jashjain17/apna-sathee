@@ -171,10 +171,23 @@
         }
 
         const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('promoCode', '==', code), where('paid', '==', true));
+        const q = query(usersRef, where('referral_code', '==', code), where('is_affiliate', '==', true));
         
-        const snapshot = await getCountFromServer(q);
-        const count = snapshot.data().count;
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+          throw new Error('Partner Code Not Found');
+        }
+
+        // The influencer's own document already tracks their total referrals and earnings!
+        // This is 1 document read and completely protects student data.
+        const affiliateData = snapshot.docs[0].data();
+        
+        const count = affiliateData.total_successful_referrals || 0;
+        
+        // You can either use their tracked balance or strictly use Count * 74.85
+        // Let's use count * 74.85 as requested, or fallback to their unpaid cash balance.
+        // I will stick to your exact requested math: count * 74.85
         const earnings = count * 74.85;
 
         // Animate numbers
@@ -192,7 +205,9 @@
 
       } catch (error) {
         console.error("Error fetching data:", error);
-        document.getElementById('error-msg').textContent = "Failed to load data. Please check the link.";
+        document.getElementById('error-msg').textContent = error.message === 'Partner Code Not Found' 
+          ? "Invalid Partner Code." 
+          : "Failed to load data. Please check the link.";
         document.getElementById('error-msg').style.display = "block";
         document.getElementById('total-conversions').textContent = "--";
         document.getElementById('total-earnings').textContent = "--";
