@@ -25,32 +25,32 @@
       </div>
       <nav class="side-nav" aria-label="Main tools">
         <button class="nav-item active" data-target="choiceScreen" data-step-target="2">
-          <span class="nav-icon">⌂</span> <span class="nav-text">Home</span>
+          <i data-lucide="layout-dashboard" class="nav-icon"></i> <span class="nav-text">Home</span>
         </button>
         <button class="nav-item" data-target="profileScreen" data-step-target="1">
-          <span class="nav-icon">◉</span> <span class="nav-text">Profile</span>
+          <i data-lucide="user" class="nav-icon"></i> <span class="nav-text">Profile</span>
         </button>
         <button class="nav-item" data-target="chatScreen" data-step-target="3">
-          <span class="nav-icon">◌</span> <span class="nav-text">Ask Sathee</span>
+          <i data-lucide="sparkles" class="nav-icon"></i> <span class="nav-text">Ask Sathee</span>
         </button>
         <button class="nav-item" data-target="chancesScreen" data-step-target="3">
-          <span class="nav-icon">◍</span> <span class="nav-text">My chances</span>
+          <i data-lucide="target" class="nav-icon"></i> <span class="nav-text">My chances</span>
         </button>
         <button class="nav-item" data-target="preferenceScreen" data-step-target="3">
-          <span class="nav-icon">≡</span> <span class="nav-text">Preference list</span>
+          <i data-lucide="list-ordered" class="nav-icon"></i> <span class="nav-text">Preference list</span>
         </button>
         <button class="nav-item" data-target="compareScreen" data-step-target="3">
-          <span class="nav-icon">⇄</span> <span class="nav-text">Compare</span>
+          <i data-lucide="arrow-left-right" class="nav-icon"></i> <span class="nav-text">Compare</span>
         </button>
         <button class="nav-item locked-feature" id="contactUsBtn" data-target="contactUs">
-          <span class="nav-icon">💬</span> <span class="nav-text">1-on-1 Help 🔒</span>
+          <i data-lucide="headset" class="nav-icon"></i> <span class="nav-text">1-on-1 Help 🔒</span>
         </button>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfrkIBtdQ1Ctbi8WhRgYfjHQfpzw4muc7FkhfocFgTU86LwmA/viewform?usp=dialog" target="_blank" class="nav-item feedback-link" style="text-decoration: none; display: flex; align-items: center; padding: 10px 16px; color: inherit;">
-  <span class="nav-icon" style="margin-right: 12px; font-size: 1.2rem;">📝</span>
-  <span class="nav-text">Send Feedback</span>
-</a>
+          <i data-lucide="message-square" class="nav-icon" style="margin-right: 12px;"></i>
+          <span class="nav-text">Send Feedback</span>
+        </a>
         <button class="nav-item" data-target="referralScreen" data-step-target="3">
-          <span class="nav-icon">🎁</span> <span class="nav-text">Earn Rewards</span>
+          <i data-lucide="gift" class="nav-icon"></i> <span class="nav-text">Earn Rewards</span>
         </button>
         <a href="#pro-checkout" id="upgradeToProBtn" class="sidebar-upgrade-link">UPGRADE TO PRO</a>
         <script>
@@ -969,5 +969,9 @@ body, html {
     </div>
 </div>
 
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>
+  lucide.createIcons();
+</script>
 </body>
 </html>
