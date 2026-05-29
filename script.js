@@ -3070,21 +3070,13 @@ document.addEventListener('DOMContentLoaded', () => {
   listen("rankMain", "input", () => renderProfileVisuals(profile()));
   listen("rankAdvanced", "input", () => renderProfileVisuals(profile()));
 
-  document.querySelectorAll(".sys-filter-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".sys-filter-btn").forEach(b => {
-        b.classList.remove("active");
-        b.classList.add("subtle");
-      });
-      btn.classList.add("active");
-      btn.classList.remove("subtle");
-      const targetSys = String(btn.dataset.sys).toLowerCase();
-      activeChancesType = targetSys;
-      
-      // Re-generate the full 200-list with the new filter applied
+  const instituteSelect = document.getElementById("instituteFilterSelect");
+  if (instituteSelect) {
+    instituteSelect.addEventListener("change", (e) => {
+      activeChancesType = String(e.target.value).toLowerCase();
       handleGeneratePreferenceList("preferenceDnDList");
     });
-  });
+  }
 
   try {
     loadProfile();
@@ -3273,17 +3265,8 @@ function triggerSortByRank() {
     return pA - pB;
   });
 
-  const rankBtn = document.getElementById('sortRankBtn');
-  const bucketBtn = document.getElementById('sortBucketsBtn');
-
-  if (rankBtn) {
-    rankBtn.classList.add("active");
-    rankBtn.classList.remove("subtle");
-  }
-  if (bucketBtn) {
-    bucketBtn.classList.remove("active");
-    bucketBtn.classList.add("subtle");
-  }
+  const sortViewSelect = document.getElementById('sortViewSelect');
+  if (sortViewSelect) sortViewSelect.value = "rank";
 
   if (typeof syncLastChoiceList === "function") syncLastChoiceList();
   if (typeof renderPreferenceBoard === "function") renderPreferenceBoard();
@@ -3306,28 +3289,24 @@ function triggerSortByBuckets() {
     return pA - pB;
   });
 
-  const rankBtn = document.getElementById('sortRankBtn');
-  const bucketBtn = document.getElementById('sortBucketsBtn');
-
-  if (bucketBtn) {
-    bucketBtn.classList.add("active");
-    bucketBtn.classList.remove("subtle");
-  }
-  if (rankBtn) {
-    rankBtn.classList.remove("active");
-    rankBtn.classList.add("subtle");
-  }
+  const sortViewSelect = document.getElementById('sortViewSelect');
+  if (sortViewSelect) sortViewSelect.value = "buckets";
 
   if (typeof syncLastChoiceList === "function") syncLastChoiceList();
   if (typeof renderPreferenceBoard === "function") renderPreferenceBoard();
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const rankBtn = document.getElementById('sortRankBtn');
-  if (rankBtn) rankBtn.addEventListener("click", triggerSortByRank);
-
-  const bucketBtn = document.getElementById('sortBucketsBtn');
-  if (bucketBtn) bucketBtn.addEventListener("click", triggerSortByBuckets);
+  const sortViewSelectEvent = document.getElementById("sortViewSelect");
+  if (sortViewSelectEvent) {
+    sortViewSelectEvent.addEventListener("change", (e) => {
+      if (e.target.value === "rank") {
+        triggerSortByRank();
+      } else {
+        triggerSortByBuckets();
+      }
+    });
+  }
 });
 
 // Add BETA badge to Compare tab
