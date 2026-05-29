@@ -537,8 +537,12 @@ async function loadDataFiles() {
         const progKey = normalizeName(row.program);
         const key = `${instKey}||${progKey}||${row.quota}||${row.seatType}||${row.gender}`;
 
-        if (!statsMap.has(key)) statsMap.set(key, { sum: 0, count: 0 });
+        if (!statsMap.has(key)) statsMap.set(key, { sum: 0, count: 0, years: new Set() });
         const stats = statsMap.get(key);
+        
+        // Prevent duplicate corrupted rows in the dataset from the same year from inflating the average
+        if (stats.years.has(row.year)) continue;
+
         const raw = row.closingRank;
         const rankVal = (typeof raw === 'number' && Number.isFinite(raw))
           ? raw
@@ -546,6 +550,7 @@ async function loadDataFiles() {
         if (Number.isFinite(rankVal) && rankVal > 0) {
           stats.sum += rankVal;
           stats.count += 1;
+          stats.years.add(row.year);
         }
       }
       return statsMap;
@@ -1796,7 +1801,16 @@ function generatePreferenceList(filteredDatabase, userProfile) {
         band: college.band || 'AMBITIOUS'
       };
     })
-    .sort((a, b) => a.preferenceScore - b.preferenceScore)
+    .sort((a, b) => {
+      // Group by safety buckets to match the default UI toggle state
+      const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3 };
+      const wA = bucketWeights[(a.band || "").toUpperCase()] || 4;
+      const wB = bucketWeights[(b.band || "").toUpperCase()] || 4;
+      if (wA !== wB) return wA - wB;
+      
+      // Within the bucket, sort using the advanced preference formula
+      return a.preferenceScore - b.preferenceScore;
+    })
     .slice(0, 200);
 }
 
@@ -3254,8 +3268,8 @@ function triggerSortByRank() {
   if (typeof preferenceState === "undefined" || !preferenceState.rows) return;
 
   preferenceState.rows.sort((a, b) => {
-    const pA = a.preferenceScore || (parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE);
-    const pB = b.preferenceScore || (parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE);
+    const pA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
+    const pB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
     return pA - pB;
   });
 
