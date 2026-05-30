@@ -2190,11 +2190,22 @@ const branchAliases = {
   'geophysics': 'geophysics',
   'geology': 'geology',
   'polymer science and technology': 'polymer',
+  'polymer science': 'polymer',
   'polymer': 'polymer',
+  'ceramic engineering': 'ceramic',
   'ceramic': 'ceramic',
+  'ocean engineering': 'ocean',
+  'ocean engineering and naval architecture': 'ocean',
+  'naval architecture and ocean engineering': 'ocean',
   'ocean': 'ocean',
+  'agricultural engineering': 'agricultural',
   'agricultural': 'agricultural',
-  'earth sciences': 'earth'
+  'pharmaceutical engineering': 'pharmaceutical',
+  'materials science': 'materials',
+  'environmental engineering': 'environmental',
+  'naval architecture': 'naval architecture',
+  'earth sciences': 'earth sciences',
+  'earth science': 'earth sciences'
 };
 
 function getBadgeText(name) {
