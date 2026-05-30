@@ -2185,7 +2185,16 @@ const branchAliases = {
   'aero': 'aerospace',
   'mining': 'mining',
   'textile': 'textile',
-  'arch': 'architecture'
+  'arch': 'architecture',
+  'exploration geophysics': 'geophysics',
+  'geophysics': 'geophysics',
+  'geology': 'geology',
+  'polymer science and technology': 'polymer',
+  'polymer': 'polymer',
+  'ceramic': 'ceramic',
+  'ocean': 'ocean',
+  'agricultural': 'agricultural',
+  'earth sciences': 'earth'
 };
 
 function getBadgeText(name) {
@@ -2219,14 +2228,38 @@ function filterBranches(rows, query) {
       return true;
     }
 
-    // Fallback Substring Match with exclusions to prevent false positives like 'Degree' or 'Engineering'
-    const strippedProgram = program
-      .replace(/Engineering/gi, "")
-      .replace(/Degree/gi, "")
-      .trim()
-      .toLowerCase();
+    // 4. Fallback Multi-Word Fuzzy Match
+    // Strip common words that often cause mismatches between query and official name
+    const strippedProgram = programLower
+      .replace(/engineering/g, "")
+      .replace(/degree/g, "")
+      .replace(/technology/g, "")
+      .replace(/and/g, "")
+      .replace(/of/g, "")
+      .replace(/science/g, "")
+      .replace(/bachelor/g, "")
+      .replace(/master/g, "")
+      .replace(/integrated/g, "")
+      .replace(/years/g, "")
+      .replace(/[(),]/g, "")
+      .trim();
 
-    return strippedProgram.includes(cleanQuery);
+    // If simple substring matches
+    if (strippedProgram.includes(cleanQuery)) {
+      return true;
+    }
+
+    // Otherwise, split the query into keywords and ensure ALL significant keywords are in the program
+    const stopWords = ['and', 'of', 'in', 'engineering', 'technology', 'science'];
+    const keywords = cleanQuery.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
+    
+    if (keywords.length > 0) {
+      // Check if EVERY keyword is present in the program string
+      const allKeywordsMatch = keywords.every(kw => programLower.includes(kw));
+      if (allKeywordsMatch) return true;
+    }
+
+    return false;
   });
 }
 
@@ -3803,7 +3836,11 @@ const josaaBranches = [
   "Computer Science", "Electronics", "Electrical", "Mechanical", "Civil", 
   "Chemical", "Aerospace", "Engineering Physics", "Mathematics and Computing", 
   "Data Science and AI", "Metallurgical", "Bioengineering", "Production", 
-  "Textile", "Mining", "Instrumentation"
+  "Textile", "Mining", "Instrumentation", "Geophysics", "Applied Geophysics", 
+  "Geology", "Polymer Science", "Ocean Engineering", "Ceramic Engineering", 
+  "Agricultural Engineering", "Pharmaceutical Engineering", "Materials Science", 
+  "Environmental Engineering", "Naval Architecture", "Earth Sciences", 
+  "Industrial and Systems Engineering", "Smart Manufacturing"
 ];
 
 function initBranchCombobox() {
