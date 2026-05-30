@@ -351,7 +351,12 @@
               <input id="homeState" placeholder="e.g. Rajasthan" />
             </label>
             <label>Branch preferences (multiple)
-              <input id="branches" placeholder="e.g. CSE, ECE, Mechanical" />
+              <div class="combobox-container" id="branchesContainer">
+                <div class="tags-container" id="branchesTags"></div>
+                <input id="branchesDisplay" placeholder="e.g. CSE, ECE, Mechanical" autocomplete="off" />
+                <input type="hidden" id="branches" />
+                <div class="suggestions-dropdown" id="branchesDropdown"></div>
+              </div>
             </label>
             <label>PWD status
               <select id="pwdStatus">

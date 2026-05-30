@@ -3925,3 +3925,108 @@ body.theme-dark .message.bot {
   width: 100% !important;
 }
 
+/* --- Autocomplete Combobox Styles --- */
+.combobox-container {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  min-height: 48px;
+  transition: all 0.2s;
+}
+
+.combobox-container:focus-within {
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.branch-tag {
+  display: flex;
+  align-items: center;
+  background: var(--violet);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.branch-tag .remove-tag {
+  background: none;
+  border: none;
+  color: #fff;
+  margin-left: 6px;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+}
+
+.branch-tag .remove-tag:hover {
+  opacity: 1;
+}
+
+#branchesDisplay {
+  flex: 1;
+  min-width: 150px;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  margin: 0 !important;
+  height: auto !important;
+}
+
+#branchesDisplay:focus {
+  outline: none;
+  box-shadow: none !important;
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 50;
+  display: none;
+}
+
+.suggestions-dropdown.active {
+  display: block;
+}
+
+.suggestion-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: background 0.2s;
+}
+
+.suggestion-item:hover, .suggestion-item.highlighted {
+  background: rgba(79, 70, 229, 0.1);
+  color: var(--violet);
+}
+
+

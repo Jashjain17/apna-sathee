@@ -1106,6 +1106,7 @@ function loadProfile() {
   renderProfileSummary();
   updateEditLimitUI(saved);
   maybeLoadSharedProfile();
+  window.renderBranchTags?.();
 }
 
 function renderProfileSummary() {
@@ -3766,4 +3767,140 @@ document.addEventListener('DOMContentLoaded', () => {
   if (referralScreen) {
     observer.observe(referralScreen, { attributes: true, attributeFilter: ['class'] });
   }
+});
+
+// Branch Combobox Logic
+const josaaBranches = [
+  "Computer Science", "Electronics", "Electrical", "Mechanical", "Civil", 
+  "Chemical", "Aerospace", "Engineering Physics", "Mathematics and Computing", 
+  "Data Science and AI", "Metallurgical", "Bioengineering", "Production", 
+  "Textile", "Mining", "Instrumentation"
+];
+
+function initBranchCombobox() {
+  const displayInput = $("branchesDisplay");
+  const hiddenInput = $("branches");
+  const dropdown = $("branchesDropdown");
+  const tagsContainer = $("branchesTags");
+  if (!displayInput || !hiddenInput || !dropdown || !tagsContainer) return;
+
+  let currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+  let highlightedIndex = -1;
+
+  function renderTags() {
+    tagsContainer.innerHTML = '';
+    currentTags.forEach((tag, index) => {
+      const tagEl = document.createElement('div');
+      tagEl.className = 'branch-tag';
+      tagEl.innerHTML = `<span>${escapeHtml(tag)}</span><button type="button" class="remove-tag" data-index="${index}">&times;</button>`;
+      tagsContainer.appendChild(tagEl);
+    });
+    hiddenInput.value = currentTags.join(',');
+    // trigger input event so profile visuals update
+    hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  tagsContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('remove-tag')) {
+      const index = parseInt(e.target.getAttribute('data-index'), 10);
+      currentTags.splice(index, 1);
+      renderTags();
+    }
+  });
+
+  function showSuggestions(query) {
+    const q = query.toLowerCase().trim();
+    const matches = josaaBranches.filter(b => b.toLowerCase().includes(q) && !currentTags.includes(b));
+    
+    if (matches.length === 0) {
+      dropdown.classList.remove('active');
+      return;
+    }
+
+    dropdown.innerHTML = '';
+    matches.forEach((match, index) => {
+      const item = document.createElement('div');
+      item.className = 'suggestion-item';
+      item.textContent = match;
+      item.addEventListener('mousedown', (e) => {
+        e.preventDefault(); // Prevent blur
+        addTag(match);
+      });
+      dropdown.appendChild(item);
+    });
+    
+    highlightedIndex = -1;
+    dropdown.classList.add('active');
+  }
+
+  function addTag(tag) {
+    if (!currentTags.includes(tag)) {
+      currentTags.push(tag);
+      renderTags();
+    }
+    displayInput.value = '';
+    dropdown.classList.remove('active');
+    displayInput.focus();
+  }
+
+  displayInput.addEventListener('input', (e) => {
+    showSuggestions(e.target.value);
+  });
+
+  displayInput.addEventListener('focus', (e) => {
+    showSuggestions(e.target.value);
+  });
+
+  displayInput.addEventListener('blur', () => {
+    dropdown.classList.remove('active');
+    // Optionally add text as tag on blur if they typed something
+    if (displayInput.value.trim() !== '') {
+        addTag(displayInput.value.trim());
+    }
+  });
+
+  displayInput.addEventListener('keydown', (e) => {
+    const items = dropdown.querySelectorAll('.suggestion-item');
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (items.length > 0) {
+        highlightedIndex = (highlightedIndex + 1) % items.length;
+        updateHighlight(items);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (items.length > 0) {
+        highlightedIndex = (highlightedIndex - 1 + items.length) % items.length;
+        updateHighlight(items);
+      }
+    } else if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      if (highlightedIndex >= 0 && items.length > 0) {
+        addTag(items[highlightedIndex].textContent);
+      } else if (displayInput.value.trim() !== '') {
+        addTag(displayInput.value.trim());
+      }
+    } else if (e.key === 'Backspace' && displayInput.value === '' && currentTags.length > 0) {
+      currentTags.pop();
+      renderTags();
+    }
+  });
+
+  function updateHighlight(items) {
+    items.forEach(item => item.classList.remove('highlighted'));
+    if (highlightedIndex >= 0 && highlightedIndex < items.length) {
+      items[highlightedIndex].classList.add('highlighted');
+      items[highlightedIndex].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  // Hook into loadProfile
+  window.renderBranchTags = () => {
+    currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+    renderTags();
+  };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initBranchCombobox();
 });
