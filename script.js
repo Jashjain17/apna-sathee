@@ -1617,6 +1617,8 @@ function maybeLoadSharedProfile() {
   }
 }
 
+let isFirstChatQuery = true;
+
 async function askBot(message) {
   requireProfile("chatScreen");
 
@@ -1629,9 +1631,29 @@ async function askBot(message) {
   const msgHost = $("messages");
   const typingBubble = document.createElement("article");
   typingBubble.className = "message bot typing-indicator";
-  typingBubble.innerHTML = `<span>Apna Saathi</span><p>Sathee is typing...</p>`;
+  
+  const typingText = document.createElement("p");
+  typingText.textContent = "Sathee is typing...";
+  
+  const typingSpan = document.createElement("span");
+  typingSpan.textContent = "Apna Saathi";
+  
+  typingBubble.appendChild(typingSpan);
+  typingBubble.appendChild(typingText);
+
   if (msgHost) msgHost.appendChild(typingBubble);
   msgHost?.scrollTo({ top: msgHost.scrollHeight, behavior: "smooth" });
+
+  let typingTimer1, typingTimer2;
+  if (isFirstChatQuery) {
+    typingText.textContent = "Initializing counseling copilot...";
+    typingTimer1 = setTimeout(() => {
+      if (typingBubble.parentNode) typingText.textContent = "Scanning official JoSAA rules...";
+    }, 5000);
+    typingTimer2 = setTimeout(() => {
+      if (typingBubble.parentNode) typingText.textContent = "Generating your personalized response...";
+    }, 15000);
+  }
 
   const confEl = $("confidence");
   if (confEl) confEl.textContent = "thinking";
@@ -1688,6 +1710,10 @@ async function askBot(message) {
     console.error("Chat fetch error:", error);
     addMessage("bot", "⚠️ Connection error. Please ensure your backend server is running at localhost:8000.");
     if (confEl) confEl.textContent = "error";
+  } finally {
+    clearTimeout(typingTimer1);
+    clearTimeout(typingTimer2);
+    isFirstChatQuery = false;
   }
 }
 
@@ -3066,6 +3092,9 @@ listen("toggleHistoryBtn", "click", () => {
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Background Wake-Up Ping
+  fetch("https://apna-sathee-backend.onrender.com/api/wakeup").catch(() => {});
+
   listen("exam", "change", () => { updateRankInputsVisibility(); renderProfileVisuals(profile()); });
   listen("category", "change", updateRankInputsVisibility);
   listen("rankMain", "input", () => renderProfileVisuals(profile()));
