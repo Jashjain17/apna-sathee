@@ -3853,7 +3853,7 @@ const josaaBranches = [
   "Industrial and Systems Engineering", "Smart Manufacturing"
 ];
 
-function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId) {
+function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode = false) {
   const displayInput = $(displayId);
   const hiddenInput = $(hiddenId);
   const dropdown = $(dropdownId);
@@ -3902,6 +3902,10 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId) {
         e.preventDefault(); // Prevent blur
         addTag(match);
       });
+      item.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        addTag(match);
+      });
       dropdown.appendChild(item);
     });
     
@@ -3911,7 +3915,14 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId) {
 
   function addTag(tag) {
     if (!currentTags.includes(tag)) {
-      currentTags.push(tag);
+      if (singleMode) {
+        currentTags = [tag];
+      } else {
+        currentTags.push(tag);
+      }
+      renderTags();
+    } else if (singleMode) {
+      currentTags = [tag];
       renderTags();
     }
     displayInput.value = '';
@@ -3928,11 +3939,13 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId) {
   });
 
   displayInput.addEventListener('blur', () => {
-    dropdown.classList.remove('active');
-    // Optionally add text as tag on blur if they typed something
-    if (displayInput.value.trim() !== '') {
-        addTag(displayInput.value.trim());
-    }
+    setTimeout(() => {
+      dropdown.classList.remove('active');
+      // Optionally add text as tag on blur if they typed something
+      if (displayInput.value.trim() !== '') {
+          addTag(displayInput.value.trim());
+      }
+    }, 150);
   });
 
   displayInput.addEventListener('keydown', (e) => {
@@ -3987,5 +4000,5 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initBranchCombobox("branchesDisplay", "branches", "branchesDropdown", "branchesTags");
-  initBranchCombobox("chBranchDisplay", "chBranch", "chBranchDropdown", "chBranchTags");
+  initBranchCombobox("chBranchDisplay", "chBranch", "chBranchDropdown", "chBranchTags", true);
 });
