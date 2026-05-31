@@ -1026,17 +1026,7 @@ body, html {
       });
     }
 
-    // 2. THE UI SNIPER (Kills "Show previous chats" instantly)
-    // This runs in the background and hides that button whenever the system tries to generate it
-    setInterval(function() {
-      const allElements = document.querySelectorAll('button, div, span');
-      allElements.forEach(function(el) {
-        if (el.textContent && el.textContent.trim() === "Show previous chats") {
-          // Hide it completely, and hide its parent box if it has one
-          el.style.display = "none"; 
-        }
-      });
-    }, 200); // Scans 5 times a second so the user never even sees it appear
+    // 2. Removed UI Sniper that was incorrectly hiding the show history button
   });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
