@@ -804,11 +804,31 @@ body, html {
             
             <div class="premium-select-container">
               <select id="sortViewSelect" class="premium-select">
+                <option value="rank" selected>Sort: Closing Rank</option>
                 <option value="buckets">Sort: Safety Buckets</option>
-                <option value="rank">Sort: Closing Rank</option>
               </select>
               <i data-lucide="chevron-down" class="premium-select-icon" style="width: 18px; height: 18px;"></i>
             </div>
+          </div>
+          
+          <div id="safetyBucketInfo" style="display: none; margin-top: 10px;">
+            <details style="font-size: 0.85em; padding: 10px; background-color: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; border-radius: 6px; cursor: pointer;">
+              <summary style="font-weight: 600; outline: none; list-style-position: inside;">
+                ℹ️ How do Safety Buckets work? (Tap to read)
+              </summary>
+              <div style="margin-top: 10px; line-height: 1.5; color: #334155;">
+                <p><strong>Ambitious:</strong> Reach colleges (tough to get based on your rank).</p>
+                <p><strong>Balanced:</strong> Realistic colleges (your rank is very close to cutoffs).</p>
+                <p><strong>Safe:</strong> Backup colleges (your rank is better than past cutoffs, very likely to get).</p>
+                
+                <p style="margin-top: 8px;"><strong>Why sort this way?</strong></p>
+                <p>If you put a "Safe" option (a college you are almost guaranteed to get) at the top of your list, the counseling system will instantly give you that seat and you will completely lose any chance of getting into a better "Ambitious" college, even if you actually qualified for it!</p>
+                
+                <p style="margin-top: 8px;">By sorting Ambitious at the top, you force the algorithm to try to give you your "dream" colleges first. If you don't make the cut, it safely falls back to your "Balanced" realistic options. If you miss those too, it finally catches you with your "Safe" backups at the bottom.</p>
+                
+                <p style="margin-top: 8px;"><strong>Note:</strong> This list groups IITs and NITs together purely based on their safety buckets, regardless of the rank difference between your JEE Main and Advanced exams. Use this list to understand your chances for each college, and then <strong>manually drag and drop</strong> to move your preferred IITs or NITs up and down as needed!</p>
+              </div>
+            </details>
           </div>
         </section>
       </section>

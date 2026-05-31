@@ -1829,14 +1829,10 @@ function generatePreferenceList(filteredDatabase, userProfile) {
       };
     })
     .sort((a, b) => {
-      // Group by safety buckets to match the default UI toggle state
-      const bucketWeights = { "AMBITIOUS": 1, "BALANCED": 2, "SAFE": 3 };
-      const wA = bucketWeights[(a.band || "").toUpperCase()] || 4;
-      const wB = bucketWeights[(b.band || "").toUpperCase()] || 4;
-      if (wA !== wB) return wA - wB;
-      
-      // Within the bucket, sort using the advanced preference formula
-      return a.preferenceScore - b.preferenceScore;
+      // Sort purely by Closing Rank as the new default
+      const pA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
+      const pB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
+      return pA - pB;
     })
     .slice(0, 200);
 }
@@ -3371,9 +3367,12 @@ document.addEventListener("DOMContentLoaded", () => {
         activeChancesType = String(e.target.value).toLowerCase();
         handleGeneratePreferenceList("preferenceDnDList");
       } else if (e.target && e.target.id === "sortViewSelect") {
+        const infoDiv = document.getElementById("safetyBucketInfo");
         if (e.target.value === "rank") {
+          if (infoDiv) infoDiv.style.display = "none";
           triggerSortByRank();
         } else {
+          if (infoDiv) infoDiv.style.display = "block";
           triggerSortByBuckets();
         }
       }
