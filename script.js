@@ -1391,6 +1391,25 @@ function loadSession(id) {
   showScreen("chatScreen", 3);
 }
 
+async function generateChatTitle(session, query) {
+  try {
+    const response = await fetch("https://apna-sathee-backend.onrender.com/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "Generate a short 3-5 word title for this query, respond with ONLY the title and no other text, do not use quotes: " + query })
+    });
+    const data = await response.json();
+    if (data && data.reply) {
+      session.title = data.reply.trim().replace(/^"|"$/g, "");
+      session.updatedAt = new Date().toISOString();
+      persistSessions();
+      renderHistory();
+    }
+  } catch (e) {
+    console.error("Failed to generate smart title", e);
+  }
+}
+
 function addMessage(role, text, persist = true, messageObj) {
   const messageId = messageObj?.id || `m-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const box = document.createElement("article");
@@ -1438,7 +1457,12 @@ function addMessage(role, text, persist = true, messageObj) {
     saved: messageObj?.saved ?? false
   });
   if (role === "user" && session.title === "New counselling chat") {
-    session.title = text.trim().length < 5 ? "New counselling chat" : text.trim().slice(0, 52);
+    if (text.trim().length < 5) {
+      session.title = "New counselling chat";
+    } else {
+      session.title = text.trim().slice(0, 52);
+      generateChatTitle(session, text);
+    }
   }
   session.updatedAt = new Date().toISOString();
   persistSessions();
