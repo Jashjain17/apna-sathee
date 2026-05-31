@@ -3872,6 +3872,15 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode 
       tagsContainer.appendChild(tagEl);
     });
     hiddenInput.value = currentTags.join(',');
+    
+    if (singleMode) {
+      if (currentTags.length > 0) {
+        displayInput.style.display = 'none';
+      } else {
+        displayInput.style.display = 'block';
+      }
+    }
+    
     // trigger input event so profile visuals update
     hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
   }
@@ -3927,7 +3936,9 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode 
     }
     displayInput.value = '';
     dropdown.classList.remove('active');
-    displayInput.focus();
+    if (!singleMode || currentTags.length === 0) {
+      displayInput.focus();
+    }
   }
 
   displayInput.addEventListener('input', (e) => {
