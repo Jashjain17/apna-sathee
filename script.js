@@ -3853,11 +3853,11 @@ const josaaBranches = [
   "Industrial and Systems Engineering", "Smart Manufacturing"
 ];
 
-function initBranchCombobox() {
-  const displayInput = $("branchesDisplay");
-  const hiddenInput = $("branches");
-  const dropdown = $("branchesDropdown");
-  const tagsContainer = $("branchesTags");
+function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId) {
+  const displayInput = $(displayId);
+  const hiddenInput = $(hiddenId);
+  const dropdown = $(dropdownId);
+  const tagsContainer = $(tagsId);
   if (!displayInput || !hiddenInput || !dropdown || !tagsContainer) return;
 
   let currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
@@ -3970,16 +3970,22 @@ function initBranchCombobox() {
     }
   }
 
-  // Hook into loadProfile
-  window.renderBranchTags = () => {
+  // Hook into loadProfile (only for the main profile branches)
+  if (hiddenId === "branches") {
+    window.renderBranchTags = () => {
+      currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
+      renderTags();
+    };
+    // Call it once on init so that already loaded profile values are rendered
+    window.renderBranchTags();
+  } else {
+    // For other instances like chances filter, just render initial value if any
     currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
     renderTags();
-  };
-  
-  // Call it once on init so that already loaded profile values are rendered
-  window.renderBranchTags();
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initBranchCombobox();
+  initBranchCombobox("branchesDisplay", "branches", "branchesDropdown", "branchesTags");
+  initBranchCombobox("chBranchDisplay", "chBranch", "chBranchDropdown", "chBranchTags");
 });

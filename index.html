@@ -673,7 +673,12 @@ body, html {
 
           <div class="chances-filters">
             <label>Branch keyword
-              <input id="chBranch" placeholder="e.g. CSE, ECE, Mechanical" />
+              <div class="combobox-container" id="chBranchContainer">
+                <div class="tags-container" id="chBranchTags"></div>
+                <input id="chBranchDisplay" placeholder="e.g. CSE, ECE, Mechanical" autocomplete="off" />
+                <input type="hidden" id="chBranch" />
+                <div class="suggestions-dropdown" id="chBranchDropdown"></div>
+              </div>
             </label>
             <label>Filter
               <select id="chCategoryFilter">
