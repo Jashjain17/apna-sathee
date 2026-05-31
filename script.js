@@ -2230,8 +2230,9 @@ const branchAliases = {
 
 function getBadgeText(name) {
   const n = String(name || "").trim().toLowerCase();
-  if (n.startsWith("indian institute of technology") || n.startsWith("iit")) return "IIT";
+  if (n.startsWith("indian institute of technology") || (n.startsWith("iit") && !n.startsWith("iiit"))) return "IIT";
   if (n.startsWith("national institute of technology") || n.startsWith("nit")) return "NIT";
+  if (n.includes("indian institute of information technology") || n.includes("international institute of information technology") || n.startsWith("iiit")) return "IIIT";
   return "GFTI";
 }
 
