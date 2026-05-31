@@ -1143,6 +1143,7 @@ function showScreen(id, step = 3) {
   document.querySelectorAll(".nav-item").forEach((item) => {
     item.classList.toggle("active", item.dataset.target === id);
   });
+  if (id === "profileScreen") window.renderBranchTags?.();
   updateTopbar(id);
   updateBreadcrumb(id);
   setStep(step);
@@ -2110,7 +2111,8 @@ async function loadChancesData() {
   const notice = $("chancesNotice");
   const meta = $("chancesMeta");
   try {
-    const data = await clientRecommend(profile());
+    const chancesProfile = { ...profile(), branches: "" };
+    const data = await clientRecommend(chancesProfile);
     if (!data.ready) {
       chancesCache = { ready: false, rows: [], message: data.message || "Cutoff data not loaded yet." };
     } else {
