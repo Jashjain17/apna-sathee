@@ -1698,7 +1698,7 @@ async function askBot(message) {
     const response = await fetch("https://apna-sathee-backend.onrender.com/api/chat" + '?_=' + Date.now(), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: message })
+      body: JSON.stringify({ message: message + "\n\n(System Note: The current admission year is 2026. Please refer to all exams, cutoffs, and documents as 2026.)" })
     });
 
     if (!response.ok) {
