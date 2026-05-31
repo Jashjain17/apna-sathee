@@ -1415,9 +1415,7 @@ function addMessage(role, text, persist = true, messageObj) {
     const actions = document.createElement("div");
     actions.className = "message-actions";
     // ALIEN EMOJI FIX ------------------------------------------------
-    actions.innerHTML = `
-      <button class="action-btn" data-action="share" type="button">Share</button>
-    `;
+    actions.innerHTML = ``;
     // ----------------------------------------------------------------
     box.append(actions);
 
