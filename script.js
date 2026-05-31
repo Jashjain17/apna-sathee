@@ -1711,7 +1711,11 @@ async function askBot(message) {
     if (typingBubble.parentNode) typingBubble.remove();
 
     // Append AI response
-    const reply = data.reply || data.answer || data.response || "I'm not sure how to answer that. Please try rephrasing.";
+    let reply = data.reply || data.answer || data.response || "I'm not sure how to answer that. Please try rephrasing.";
+    
+    // Targeted Regex Sanitizer: Safely replace 2024/2025 with 2026 when near specific document/exam keywords
+    reply = reply.replace(/(JEE(?:\s+(?:Main|Advanced))?|JoSAA(?:[^0-9]{1,30})?|Year|Scorecard|Admit\s+Card|Certificate|marksheet|Letter)\s+(2024|2025)/gi, "$1 2026");
+
     addMessage("bot", reply);
     if (confEl) confEl.textContent = "answered";
 
