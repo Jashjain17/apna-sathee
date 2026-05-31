@@ -3975,6 +3975,9 @@ function initBranchCombobox() {
     currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
     renderTags();
   };
+  
+  // Call it once on init so that already loaded profile values are rendered
+  window.renderBranchTags();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
