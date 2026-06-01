@@ -1920,10 +1920,10 @@ function renderPreferenceBoard() {
         <div class="drag-handle" title="Drag to reorder">⋮</div>
         <div class="pref-main">
           <div class="pref-top">
-            <b>${index + 1}. ${escapeHtml(row.institute || "Institute")}</b>
-            <span class="pref-band ${band}">${band}</span>
+            <b>${index + 1}. ${(isFreeUser && index >= 3) ? "Locked Institute" : escapeHtml(row.institute || "Institute")}</b>
+            <span class="pref-band ${band}">${(isFreeUser && index >= 3) ? "LOCKED" : band}</span>
           </div>
-          <p>${escapeHtml(row.program || "Program")} • Closing rank ${escapeHtml(row.closingRank || "-")} • Round ${escapeHtml(row.round || "-")}</p>
+          <p>${(isFreeUser && index >= 3) ? "Unlock Pro to view branch & closing rank details" : escapeHtml(row.program || "Program") + " • Closing rank " + escapeHtml(row.closingRank || "-") + " • Round " + escapeHtml(row.round || "-")}</p>
         </div>
         <button class="mini-btn remove-pref" type="button" data-remove-pref="${index}">Remove</button>
       </article>`;
@@ -2905,6 +2905,13 @@ listen("saveCompareBtn", "click", async () => {
 
 
 listen("exportBtn", "click", () => {
+  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+    const textEl = document.getElementById('modalMessageText');
+    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to download your complete, AI-optimized preference list.";
+    const modal = document.getElementById('limitReachedModal');
+    if (modal) modal.style.display = 'flex';
+    return;
+  }
   if (!lastChoiceList.length) return;
   const columns = ["order", "band", "institute", "program", "quota", "seatType", "gender", "closingRank", "avgClosingRank", "round", "year"];
   const rows = [
@@ -2940,6 +2947,13 @@ listen("exportPdfBtn", "click", () => {
 });
 
 listen("exportShareBtn", "click", async () => {
+  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+    const textEl = document.getElementById('modalMessageText');
+    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to share your complete, AI-optimized preference list.";
+    const modal = document.getElementById('limitReachedModal');
+    if (modal) modal.style.display = 'flex';
+    return;
+  }
   if (!lastChoiceList.length) return;
   const payload = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(lastChoiceList.slice(0, 100))))));
   const url = new URL(window.location.href);
@@ -2954,6 +2968,13 @@ listen("exportShareBtn", "click", async () => {
 });
 
 listen("reviewWithAiBtn", "click", async () => {
+  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+    const textEl = document.getElementById('modalMessageText');
+    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to use the Saathi AI review feature.";
+    const modal = document.getElementById('limitReachedModal');
+    if (modal) modal.style.display = 'flex';
+    return;
+  }
   if (!lastChoiceList.length) return;
   const top = lastChoiceList.slice(0, 20);
   const prompt = `Review this counselling preference list and give strategy improvements. Mention conflicts, missing safe options, and ordering tweaks.\n${top.map((r, i) => `${i + 1}. ${r.institute} - ${r.program} [${r.band}]`).join("\n")}`;
