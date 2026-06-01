@@ -2332,7 +2332,7 @@ function renderChances() {
         if (group === "iit") return false;
       } else {
         // Specific category logic
-        if (activeChancesType === "IIT") {
+        if (activeChancesType === "IIT" || ["top7", "old12", "newer"].includes(activeCategory)) {
           if (group !== "iit") return false;
           if (activeCategory === "top7" && !isMatch(TOP_7_IITS)) return false;
           if (activeCategory === "old12" && !isMatch(OLD_IITS)) return false;
@@ -3906,7 +3906,9 @@ const josaaBranches = [
   "Geology", "Polymer Science", "Ocean Engineering", "Ceramic Engineering", 
   "Agricultural Engineering", "Pharmaceutical Engineering", "Materials Science", 
   "Environmental Engineering", "Naval Architecture", "Earth Sciences", 
-  "Industrial and Systems Engineering", "Smart Manufacturing"
+  "Industrial and Systems Engineering", "Smart Manufacturing", "Economics", 
+  "Architecture", "Design", "Biosciences", "Biotechnology", "Physics", 
+  "Chemistry", "Artificial Intelligence", "Information Technology"
 ];
 
 function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode = false) {
