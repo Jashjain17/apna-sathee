@@ -2320,6 +2320,12 @@ function renderChances() {
     rows = rows.filter((r) => {
       const group = instituteGroup(r.instituteType, r.institute);
 
+      const instNorm = normalizeName(r.institute);
+      const isMatch = (list) => list.some(i => {
+          const n = normalizeName(i);
+          return instNorm.includes(n) || n.includes(instNorm);
+      });
+
       if (activeCategory === "all-iits") {
         if (group !== "iit") return false;
       } else if (activeCategory === "all-nits") {
@@ -2328,13 +2334,13 @@ function renderChances() {
         // Specific category logic
         if (activeChancesType === "IIT") {
           if (group !== "iit") return false;
-          if (activeCategory === "top7" && !TOP_7_IITS.includes(r.institute)) return false;
-          if (activeCategory === "old12" && !OLD_IITS.includes(r.institute)) return false;
-          if (activeCategory === "newer" && OLD_IITS.includes(r.institute)) return false;
+          if (activeCategory === "top7" && !isMatch(TOP_7_IITS)) return false;
+          if (activeCategory === "old12" && !isMatch(OLD_IITS)) return false;
+          if (activeCategory === "newer" && isMatch(OLD_IITS)) return false;
         } else {
           if (group !== "nit") return false;
-          if (activeCategory === "top10" && !TOP_10_NITS.includes(r.institute)) return false;
-          if (activeCategory === "bottom" && TOP_10_NITS.includes(r.institute)) return false;
+          if (activeCategory === "top10" && !isMatch(TOP_10_NITS)) return false;
+          if (activeCategory === "bottom" && isMatch(TOP_10_NITS)) return false;
         }
       }
 
