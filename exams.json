@@ -1,0 +1,153 @@
+{
+  "source": "NTA JEE Main information brochure 2026, JEE Advanced 2026 information brochure",
+  "lastVerified": "2026",
+
+  "JEE_Main": {
+    "conducted_by": "National Testing Agency (NTA)",
+    "official_website": "jeemain.nta.nic.in",
+    "purpose": "Gateway for NITs, IIITs, GFTIs. Also mandatory for JEE Advanced eligibility.",
+
+    "eligibility": {
+      "age_limit": "No age limit as of 2017 onwards. Removed. No upper age barrier.",
+      "year_of_passing_12th": "First attempt in Class 12 must be in the year of JEE or the previous year only. Two-year window.",
+      "number_of_attempts": "Maximum 3 consecutive years of JEE Main",
+      "subject_requirement_btech": "Physics and Mathematics mandatory. Plus any one of: Chemistry, Biology, Biotechnology, Technical Vocational subject",
+      "subject_requirement_barch": "Physics, Chemistry, Mathematics (50% marks minimum)",
+      "subject_requirement_bplan": "Mathematics (50% marks minimum)",
+      "class12_marks": "75% aggregate for General/OBC/EWS. 65% for SC/ST/PwD. OR top 20 percentile of board."
+    },
+
+    "exam_pattern": {
+      "sessions": "2 sessions per year - January and April",
+      "Paper_1_BTech": {
+        "subjects": ["Physics", "Chemistry", "Mathematics"],
+        "total_questions": 90,
+        "questions_to_attempt": 75,
+        "duration_minutes": 180,
+        "total_marks": 300,
+        "question_types": {
+          "MCQ": "20 questions per subject (4 marks each, -1 negative marking)",
+          "Numerical": "10 questions per subject (attempt any 5), 4 marks each, NO negative marking"
+        }
+      },
+      "Paper_2A_BArch": {
+        "subjects": ["Mathematics", "Aptitude", "Drawing"],
+        "total_marks": 400,
+        "duration_minutes": 180
+      },
+      "Paper_2B_BPlan": {
+        "subjects": ["Mathematics", "Aptitude", "Planning Based Questions"],
+        "total_marks": 400,
+        "duration_minutes": 180
+      }
+    },
+
+    "scoring": {
+      "NTA_score": "Score out of 300 in Paper 1. Maximum 300.",
+      "percentile_calculation": "Based on all candidates in THAT session",
+      "normalization": "When multiple sessions held, normalization applied across sessions to make scores comparable",
+      "best_of_two": "Better of January and April NTA score used for final rank. Both attempts considered.",
+      "CRL_rank": "All India Rank based on final normalized NTA score",
+      "cutoff_for_advanced": "Top 2.5 lakh unique candidates in JEE Main become eligible for JEE Advanced"
+    },
+
+    "what_score_cutoff_for_NITs_typically": {
+      "Top_NITs_CSE_OPEN": "CRL rank under 5,000-10,000 typically",
+      "Top_NITs_other_branches": "CRL rank 10,000-50,000 typically",
+      "Lower_NITs_CSE": "CRL rank up to 1,00,000",
+      "note": "These are broad estimates. Actual cutoffs vary by year, institute, category, quota. Always check actual JoSAA data."
+    },
+
+    "registration": {
+      "website": "jeemain.nta.nic.in",
+      "fee_general_obc": "Rs 1000 per paper per session",
+      "fee_sc_st_pwd_female": "Rs 500 per paper per session",
+      "documents_needed_at_registration": ["Aadhaar", "Class 10/12 details", "Category certificate details", "Photo and signature upload"]
+    }
+  },
+
+  "JEE_Advanced": {
+    "conducted_by": "One of the IITs (rotates each year)",
+    "official_website": "jeeadv.ac.in",
+    "purpose": "Gateway for IIT admissions only",
+
+    "eligibility": {
+      "JEE_Main_cutoff": "Must be in top 2,50,000 in JEE Main (Paper 1). Category-wise cutoff applies.",
+      "number_of_attempts": "Maximum 2 attempts in consecutive years",
+      "age_limit": {
+        "general_obc_ews": "Must be born on or after October 1, 1999 (for 2026 Advanced)",
+        "sc_st_pwd": "Must be born on or after October 1, 1994 (5 year relaxation)"
+      },
+      "year_of_12th": "Should have appeared for Class 12 for the FIRST TIME in 2023 or 2026 (two-year window)",
+      "no_previous_IIT_admission": "Must NOT have previously taken admission in any IIT program (even if left after one day)",
+      "class12_percentage": "Same as JEE Main: 75% for General/OBC/EWS, 65% for SC/ST/PwD",
+      "criterion_B4": "Should not have accepted IIT admission by reporting to IIT in any previous year"
+    },
+
+    "exam_pattern": {
+      "papers": "Paper 1 and Paper 2 (BOTH mandatory)",
+      "duration_each_paper": "180 minutes (3 hours)",
+      "subjects_each_paper": ["Physics", "Chemistry", "Mathematics"],
+      "question_types": [
+        "Single Correct Option MCQ",
+        "Multiple Correct Options MCQ",
+        "Integer Answer (numerical)",
+        "Matching List",
+        "Paragraph based"
+      ],
+      "marking_scheme": "Varies by question type. Partial marking for some. Negative marking for some.",
+      "total_marks": "360 (varies slightly year to year - always check official brochure)",
+      "minimum_in_each_subject": "Must score minimum cutoff marks in each subject individually",
+      "minimum_aggregate": "Must score minimum aggregate cutoff to qualify"
+    },
+
+    "AAT": {
+      "fullName": "Architecture Aptitude Test",
+      "for": "B.Arch at IITs (IIT Roorkee, IIT Kharagpur, IIT Varanasi BHU)",
+      "eligibility": "Must qualify JEE Advanced first",
+      "when": "Conducted after JEE Advanced results",
+      "exam_type": "Drawing and architecture aptitude. Freehand drawing, 3D visualization, geometric drawing.",
+      "duration": "3 hours",
+      "no_negative_marking": true
+    },
+
+    "result": {
+      "category_wise_cutoffs": "Minimum marks in each paper + minimum aggregate for each category",
+      "rank_lists": ["CRL", "OBC-NCL rank", "SC rank", "ST rank", "EWS rank", "PwD rank", "Preparatory rank"],
+      "zone_ranks": "IITs divided into 7 zones. Zone rank used for tiebreaking in some IITs.",
+      "preparation_for_JoSAA": "JEE Advanced rank required to apply for IITs in JoSAA"
+    },
+
+    "registration": {
+      "when": "After JEE Main result, in May",
+      "requires_JEE_Main_score": true,
+      "fee_general_obc_ews_male": "Rs 3200",
+      "fee_sc_st_pwd_female": "Rs 1600",
+      "late_fee": "Higher. Avoid late registration."
+    },
+
+    "what_ranks_get_which_IITs": {
+      "IIT_Bombay_CSE": "JEE Advanced CRL rank under 100",
+      "IIT_Delhi_CSE": "CRL rank under 100",
+      "IIT_Madras_CSE": "CRL rank under 100",
+      "Old_IITs_top_branches": "CRL rank under 500-1000",
+      "Old_IITs_other_branches": "CRL rank under 5000-8000",
+      "New_IITs_CSE": "CRL rank under 10000-15000",
+      "New_IITs_other_branches": "CRL rank up to 20000-25000",
+      "note": "These are rough estimates. Exact cutoffs from JoSAA data files should be used."
+    }
+  },
+
+  "JEE_ecosystem_overview": {
+    "January_JEE_Main": "First attempt. Results in February.",
+    "April_JEE_Main": "Second attempt. Results in April-May.",
+    "JEE_Advanced_eligibility": "Top 2.5L from JEE Main announced in May.",
+    "JEE_Advanced_registration": "May",
+    "JEE_Advanced_exam": "End of May / June",
+    "JEE_Advanced_result": "June",
+    "JoSAA_counselling_starts": "After JEE Advanced result. June-July.",
+    "JoSAA_ends": "July",
+    "CSAB_special_rounds": "August",
+    "Reporting_to_institute": "July-August depending on institute"
+  }
+}

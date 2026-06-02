@@ -1,0 +1,160 @@
+{
+  "source": "JoSAA business rules, CSAB 2026 official pages, counselling expert advice",
+  "lastVerified": "2026-05-07",
+
+  "special_scenarios": [
+    {
+      "scenario": "Got IIT seat but branch is not preferred. Should I take it or drop?",
+      "analysis": "Depends on: which IIT, which branch, what career goal, financial situation, willingness to re-appear.",
+      "factors_favoring_taking": ["IIT brand opens exceptional doors regardless of branch", "Branch change possible after 1st year if CGPA is top 5-10%", "Minor opportunities (research, clubs, alumni network) are branch-independent", "Risk of drop - next year's result is not guaranteed", "One year lost = one year less earnings in career"],
+      "factors_favoring_dropping": ["If branch has no relation to career goal AND career goal is specific (e.g. VLSI specifically)", "If you are from top-10 IIT and got a very non-preferred branch and are very confident of improvement"],
+      "recommendation": "Unless the IIT is one of old IITs (Bombay, Delhi, Madras, Kanpur, Kharagpur, Roorkee, Guwahati) AND the branch is very non-preferred, generally take the IIT seat. The IIT tag matters enormously in India.",
+      "drop_risk_note": "Only 30-40% of JEE repeaters significantly improve their rank. Many end up with same or worse rank."
+    },
+    {
+      "scenario": "Got top NIT CSE but want IIT. Should I drop?",
+      "analysis": "NIT Trichy/Warangal/Karnataka CSE vs IIT Dhanbad/Jodhpur etc - this is the most common dilemma.",
+      "considerations": ["NIT Trichy CSE median placement 15-20 LPA", "New IIT CSE similar range but IIT brand for future growth", "If target is research/MS abroad - IIT is better", "If target is immediate placement - top NIT CSE is also excellent"],
+      "recommendation": "If you got Top 5 NIT CSE, strongly consider taking it. The risk-reward of dropping is not always favorable. If you got a mid-tier NIT and your rank was close to old IIT cutoff, a calculated drop may be considered.",
+      "success_rate_note": "Statistically, only about 40% of JEE repeaters who had NIT-level ranks achieve IIT-level ranks the next year."
+    },
+    {
+      "scenario": "What if my category certificate is rejected during document verification?",
+      "what_happens": "You will be treated as OPEN category. If your rank qualifies for OPEN seat - you keep seat in OPEN category. If not - you may lose the seat.",
+      "immediate_action": "Contact the reporting center immediately. Show supporting documents. Request reconsideration.",
+      "prevention": "Double-check certificate format, authority, and date BEFORE uploading. Get fresh certificate if in doubt."
+    },
+    {
+      "scenario": "Can I cancel allotment and re-enter next round?",
+      "answer": "You cannot cancel and re-enter in the SAME JoSAA session. You can withdraw your seat (losing SAF minus processing fee), but you will NOT be considered for any further JoSAA rounds.",
+      "alternative": "If you Float or Slide, you automatically participate in next round. That is the correct way to 'try again' within JoSAA."
+    },
+    {
+      "scenario": "What are CSAB Special Rounds and who should consider them?",
+      "who_eligible": "Eligibility depends on the student's exact JoSAA status and the current CSAB information brochure. Students with no JoSAA seat, withdrawn/cancelled cases, and candidates holding NIT+ seats may have different registration, fee and seat-surrender consequences.",
+      "institutes": "NITs, IIITs, GFTIs (NOT IITs)",
+      "when": "After JoSAA final round, typically August. CSAB-Special 2026 was run with DASA under a combined process and had three seat-allocation rounds.",
+      "strategy": "CSAB makes sense if: You got no seat in JoSAA, OR you got a poor branch at a lesser NIT/GFTI and believe better options remain vacant after JoSAA.",
+      "warning": "If you have a decent JoSAA seat, using CSAB aggressively can be risky. Always check the current CSAB brochure for whether your seat is retained, surrendered or replaced before making the move."
+    },
+    {
+      "scenario": "Online Reporting vs Physical Reporting - what is the difference?",
+      "online_reporting": "Document upload on JoSAA portal + fee payment. Mandatory for all in JoSAA rounds.",
+      "physical_reporting": "Going to allotted institute in person with original documents. Mandatory for final admission confirmation.",
+      "reporting_centre": "Some institutes use separate reporting centres for document verification. Check your allotment letter for the specific centre.",
+      "recommendation": "Check your institute's specific physical reporting schedule on their official website after final allotment."
+    },
+    {
+      "scenario": "Can I appear for JEE Advanced after joining an IIT?",
+      "answer": "NO. If you have taken admission by reporting to an IIT (even for one day), you are permanently ineligible for JEE Advanced.",
+      "nuance": "If you were allotted an IIT seat but did NOT report (did not physically or online complete reporting), you may still be eligible. But this is risky - check JoSAA business rules for the year.",
+      "important": "Simply paying SAF does NOT mean you have 'joined'. Reporting is the key criterion."
+    },
+    {
+      "scenario": "Is lateral entry to second year possible?",
+      "answer": "At IITs and NITs under JoSAA - NO lateral entry. JoSAA is for first year admissions only.",
+      "alternative": "CCMT (Centralised Counselling for M.Tech.) is for M.Tech admissions after B.Tech. Diploma holders can sometimes get lateral entry at private colleges but not IITs/NITs."
+    },
+    {
+      "scenario": "Dual Degree vs B.Tech - which to choose?",
+      "dual_degree": "5-year integrated program leading to B.Tech + M.Tech degree from same IIT",
+      "btech": "4-year program. Can pursue M.Tech/MS separately later.",
+      "pros_dual": ["M.Tech at same IIT included", "Research exposure", "Placement packages can be higher (M.Tech designation)", "No separate GATE exam needed"],
+      "cons_dual": ["One extra year committed upfront", "Must complete M.Tech thesis", "Less flexibility if you change plans after 3rd year", "If you want to switch to MBA/other after 4 years - you leave before completing dual degree"],
+      "who_should_take": "Students who are sure about the technical field and interested in research or deep technical work.",
+      "who_should_avoid": "Students unsure of goals, or planning MBA right after graduation."
+    },
+    {
+      "scenario": "What is a reporting centre and which one to choose?",
+      "what_it_is": "Physical location where you go with original documents for verification. Some institutes designate specific reporting centres (may not be the institute itself for first-time document check).",
+      "how_to_find": "Check your JoSAA allotment letter. It specifies the reporting centre for your allotted institute.",
+      "multiple_centres": "Some institutes have multiple centres in different cities. Choose the closest to you.",
+      "when_to_go": "On the date and time specified in allotment letter. Being late can mean seat cancellation."
+    },
+    {
+      "scenario": "What if I get 2 different seats in different rounds?",
+      "how_it_works": "If you selected Float/Slide and get upgraded in Round 2, your Round 1 seat is automatically released. You pay no additional fee. Your original SAF stays valid.",
+      "you_must": "Submit your Freeze/Float/Slide preference again for the NEW seat allotted in each round"
+    },
+    {
+      "scenario": "What happens if I don't pay SAF on time?",
+      "consequence": "Allotted seat is cancelled. You are barred from ALL subsequent JoSAA rounds.",
+      "no_exceptions": "This rule is strict. Even one hour late can cost you the seat.",
+      "prevention": "Pay within first few hours of allotment result. Don't wait for last hour."
+    },
+    {
+      "scenario": "Branch change rules at IITs",
+      "availability": "Most IITs allow branch change after 1st year",
+      "criteria": "Based on CGPA after 2 semesters. Usually top 5-10% of batch eligible",
+      "to_branch_you_want": "The branch you want must have vacancy (i.e., not everyone in that branch wants to stay)",
+      "competition": "Very competitive. CSE slots are most sought after. Very few slots available.",
+      "strategy": "Do NOT take a branch you hate just planning to change. It is not guaranteed. Study hard in first year but have a plan if branch change doesn't happen."
+    },
+    {
+      "scenario": "IIT vs foreign university comparison",
+      "IIT_advantages": ["Extremely strong domestic alumni network", "Lower cost", "No need to leave India", "Top companies recruit from IITs", "Research opportunities at IIT itself"],
+      "foreign_advantages": ["Global network", "International exposure", "Often stronger for cutting-edge research", "Some top companies recruit only/primarily from foreign universities for certain roles"],
+      "recommendation": "For most students: IIT is the better choice than a mid-tier foreign university. But a top-10 global university (MIT, Stanford, Cambridge) would be comparable or better than IIT.",
+      "for_MS": "Many IIT graduates pursue MS abroad after B.Tech. That's a common and excellent path."
+    }
+  ],
+
+  "prediction_model_rules": {
+    "how_to_read_7_year_trends": {
+      "safe": "Your rank is better than the BEST closing rank of last 3 years for that seat",
+      "moderate": "Your rank is between the best and average of last 3 years closing ranks",
+      "ambitious": "Your rank is worse than the average but within 2x of closing rank",
+      "very_risky": "Your rank is more than 2x the closing rank"
+    },
+
+    "COVID_years_2020_2021": {
+      "note": "JEE 2020 and 2021 had fewer students due to COVID disruptions. Cutoffs were slightly different.",
+      "weighting": "Give 2020 and 2021 data less weight in trend analysis. Use 2022-2026 as primary indicators.",
+      "direction_of_change": "In some programs, cutoffs became more relaxed in 2020-2021 then tightened again."
+    },
+
+    "new_IIT_rank_fluctuation": {
+      "note": "Newer IITs (post 2008 - IIT Bhubaneswar, IIT Gandhinagar, IIT Ropar, etc.) had more rank fluctuation in early years",
+      "stabilization": "By 2020-2021 most new IIT cutoffs stabilized",
+      "recommendation": "Use full 7-year trend for old IITs. Use 2022-2026 primarily for new IITs."
+    },
+
+    "CSE_rising_cutoffs": {
+      "pattern": "CSE cutoffs across ALL institutes have been rising every year 2018-2026",
+      "prediction_adjustment": "When predicting chances for CSE, be conservative. Assume cutoff may be 5-10% tighter than last year.",
+      "reason": "AI/software boom increased demand. More aspirants targeting CS specifically."
+    },
+
+    "gender_neutral_vs_female_only": {
+      "female_strategy": "Female candidates should add both Gender-Neutral and Female-Only seats for the same programs",
+      "female_only_advantage": "Female-only closing ranks are often much higher (worse rank still gets seat) than gender-neutral because fewer female candidates",
+      "example": "OPEN Female-only closing rank at NIT Trichy CSE might be 25,000 when OPEN GN closing rank is 5,000"
+    },
+
+    "home_state_quota_advantage": {
+      "quantification": "HS quota closing ranks are typically 1.5x to 5x higher (worse rank) than OS quota for same institute/program",
+      "example": "NIT Trichy ECE OS quota closed at 5,000 but HS (Tamil Nadu) closed at 15,000 in 2026",
+      "implication": "If you are from the state of that NIT, your effective competition is much less for HS quota"
+    },
+
+    "boundary_rank_advice": {
+      "within_500_ranks": "If your rank is within 500 of a closing rank, you have reasonable chance but it's not safe. Apply but also have alternatives.",
+      "within_1000_ranks": "Possible but risky. Count as ambitious choice.",
+      "strategy": "Always have 2-3 safe choices, 2-3 moderate, 2-3 ambitious. Never rely on one choice."
+    },
+
+    "round_wise_strategy": {
+      "round_1_advice": "Seats allotted in Round 1 tend to have the strictest cutoffs because the highest-ranked candidates are still in the pool.",
+      "later_rounds": "In later rounds, vacant seats from withdrawals/upgrades open up. Sometimes good options appear later, but never rely on that without safe backups.",
+      "if_allotted_poor_seat_round_1": "Float if you have good rank. Slide if you want better branch in same good institute.",
+      "last_round_only_freeze": "Float/Slide not available in last round. You keep whatever seat you have."
+    },
+
+    "OBC_EWS_vs_OPEN_comparison": {
+      "OBC_NCL_vs_OPEN": "OBC-NCL closing ranks are typically 2x-4x OPEN closing ranks (much higher number = easier to get)",
+      "EWS_vs_OPEN": "EWS closing ranks similar to OPEN since both use similar rank pools",
+      "SC_ST_vs_OPEN": "SC/ST closing ranks are typically 5x-20x OPEN closing ranks",
+      "example": "If OPEN GN closes at CRL 5000, OBC-NCL might close at OBC rank 10000-15000, SC at SC rank 20000-30000"
+    }
+  }
+}
