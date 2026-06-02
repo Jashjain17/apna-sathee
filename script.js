@@ -995,7 +995,7 @@ loadPreferenceFromStorage();
 const screenLabels = {
   choiceScreen: "Dashboard",
   profileScreen: "Profile",
-  chatScreen: "Ask Saathi",
+  chatScreen: "Ask Sathee",
   chancesScreen: "My Chances",
   preferenceScreen: "Preference List",
   compareScreen: "Compare"
@@ -1191,7 +1191,7 @@ function updateTopbar(screenId) {
   }
 
   greeting.textContent = "Hi";
-  title.textContent = $(screenId)?.dataset.title || "Apna Saathi";
+  title.textContent = $(screenId)?.dataset.title || "Apna Sathee";
 }
 
 function requireProfile(nextScreen) {
@@ -1416,7 +1416,7 @@ function addMessage(role, text, persist = true, messageObj) {
   box.className = `message ${role}`;
   box.dataset.messageId = messageId;
   const label = document.createElement("span");
-  label.textContent = role === "user" ? "You" : "Apna Saathi";
+  label.textContent = role === "user" ? "You" : "Apna Sathee";
 
   // MARDKOWN TRANSLATOR FIX ------------------------------------------
   const body = document.createElement("div");
@@ -1659,7 +1659,7 @@ async function askBot(message) {
   typingText.textContent = "Sathee is typing...";
   
   const typingSpan = document.createElement("span");
-  typingSpan.textContent = "Apna Saathi";
+  typingSpan.textContent = "Apna Sathee";
   
   typingBubble.appendChild(typingSpan);
   typingBubble.appendChild(typingText);
@@ -1757,7 +1757,7 @@ async function handleGeneratePreferenceList(targetId = "preferenceDnDList") {
     if (!data.ready) {
       lastChoiceList = [];
       $("exportBtn").disabled = true;
-      target.innerHTML = `<div class="rec-card warning"><strong>Predictor updating</strong><p>The college predictor is being updated by the Apna Saathi team. You can still ask Apna Saathi or create a support request right now.</p></div>`;
+      target.innerHTML = `<div class="rec-card warning"><strong>Predictor updating</strong><p>The college predictor is being updated by the Apna Sathee team. You can still ask Apna Sathee or create a support request right now.</p></div>`;
       return;
     }
     if (!data.results.length) {
@@ -2045,7 +2045,7 @@ function exportToPdf() {
 
   element.style.color = "#000000";
 
-  let html = `<h1>Apna Saathi - JEE Preference List</h1>`;
+  let html = `<h1>Apna Sathee - JEE Preference List</h1>`;
   html += `<p>Generated on ${new Date().toLocaleString()}</p>`;
   html += `<table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
     <thead>
@@ -2930,7 +2930,7 @@ listen("exportBtn", "click", () => {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "apna-saathi-choice-list.csv";
+  link.download = "apna-sathee-choice-list.csv";
   link.click();
   URL.revokeObjectURL(url);
 });
@@ -2976,7 +2976,7 @@ listen("exportShareBtn", "click", async () => {
 listen("reviewWithAiBtn", "click", async () => {
   if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
     const textEl = document.getElementById('modalMessageText');
-    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to use the Saathi AI review feature.";
+    if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to use the Sathee AI review feature.";
     const modal = document.getElementById('limitReachedModal');
     if (modal) modal.style.display = 'flex';
     return;
@@ -2987,7 +2987,7 @@ listen("reviewWithAiBtn", "click", async () => {
   try {
     const data = await postJson("/api/chat", { message: prompt, profile: profile(), history: [] });
     const resEl = $("preferenceResults");
-    if (resEl) resEl.innerHTML = `<div class="rec-card"><strong>Saathi strategic review</strong><p class="compare-analysis">${escapeHtml(data.answer || data.fallback || "No review returned.")}</p></div>`;
+    if (resEl) resEl.innerHTML = `<div class="rec-card"><strong>Sathee strategic review</strong><p class="compare-analysis">${escapeHtml(data.answer || data.fallback || "No review returned.")}</p></div>`;
   } catch (e) {
     const resEl = $("preferenceResults");
     if (resEl) resEl.innerHTML = `<div class="rec-card warning"><strong>Review unavailable</strong><p>${escapeHtml(e.message)}</p></div>`;
