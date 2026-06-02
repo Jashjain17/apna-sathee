@@ -122,6 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       console.log("👤 User logged in:", user.uid);
+      
+      // Fire Meta Pixel Registration Event
+      if (typeof fbq === 'function') {
+        fbq('track', 'CompleteRegistration');
+      }
 
       // Show profile, hide login & consent UI
       if (loginBtn) loginBtn.style.display = 'none';
@@ -291,6 +296,12 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       "handler": function (response) {
         console.log("✅ Razorpay Payment Success:", response.razorpay_payment_id);
+        
+        // Fire Meta Pixel Purchase Event
+        if (typeof fbq === 'function') {
+          fbq('track', 'Purchase', { value: 499, currency: 'INR' });
+        }
+
         try {
           const user = auth.currentUser;
           if (!user) {
