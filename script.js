@@ -406,9 +406,9 @@ document.addEventListener('DOMContentLoaded', () => {
       applyCouponBtn.disabled = true;
 
       try {
-        // Query Firestore: find a user where referral_code == enteredCode AND is_affiliat == true
+        // Query Firestore: find a user where referral_code == enteredCode AND is_affiliate == true
         const usersRef = collection(db, 'users');
-        const q = query(usersRef, where('referral_code', '==', enteredCode), where('is_affiliat', '==', true));
+        const q = query(usersRef, where('referral_code', '==', enteredCode), where('is_affiliate', '==', true));
         const snapshot = await getDocs(q);
 
         if (snapshot.empty) {
