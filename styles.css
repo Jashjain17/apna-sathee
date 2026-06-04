@@ -4092,3 +4092,64 @@ body.theme-dark .message.bot {
 }
 
 
+
+
+/* AI Markdown Verdict Styling */
+.markdown-body {
+  font-family: inherit;
+  color: var(--fg);
+}
+.markdown-body table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 16px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.markdown-body th, .markdown-body td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  text-align: left;
+}
+.markdown-body th {
+  background: rgba(0,0,0,0.03);
+  font-weight: 600;
+  color: var(--navy);
+}
+body.theme-dark .markdown-body th {
+  background: rgba(255,255,255,0.05);
+  color: #fbbf24;
+}
+.markdown-body th:last-child, .markdown-body td:last-child {
+  border-right: none;
+}
+.markdown-body tr:last-child td, .markdown-body tr:last-child th {
+  border-bottom: none;
+}
+.markdown-body h3 {
+  color: #fbbf24;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.markdown-body p {
+  margin-bottom: 12px;
+}
+.markdown-body ul {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+.markdown-body li {
+  margin-bottom: 6px;
+}
+.markdown-body strong {
+  color: var(--navy);
+}
+body.theme-dark .markdown-body strong {
+  color: #fff;
+}
+
