@@ -3447,16 +3447,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// Add BETA badge to Compare tab
-setTimeout(() => {
-  const compareTitle = document.querySelector('#compareScreen .panel-head p');
-  if (compareTitle && !compareTitle.innerHTML.includes('BETA')) {
-    compareTitle.innerHTML = `Compare college/branch <span style="background: linear-gradient(135deg, #a855f7 0%, #fbbf24 100%); color: #fff; font-size: 0.65em; padding: 2px 6px; border-radius: 12px; margin-left: 8px; font-weight: bold; vertical-align: middle; letter-spacing: 0.5px;">BETA</span>`;
-    compareTitle.style.display = 'flex';
-    compareTitle.style.alignItems = 'center';
-  }
-}, 100);
-
 // --- APNA SATHEE GLOBAL AI DISCLAIMER ---
 document.addEventListener('DOMContentLoaded', () => {
   const disclaimerHTML = `
