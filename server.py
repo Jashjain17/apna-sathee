@@ -132,22 +132,26 @@ async def get_compare_verdict(data: dict):
         tavily_key = os.getenv("TAVILY_API_KEY")
         tavily_context = ""
         if tavily_key:
-            query = f"Official placement average package highest package and total fees estimation for engineering at {c1} {b1} and {c2} {b2}"
             url = "https://api.tavily.com/search"
             headers = {"Content-Type": "application/json"}
-            payload = {
-                "api_key": tavily_key,
-                "query": query,
-                "max_results": 3
-            }
-            try:
-                req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
-                with urllib.request.urlopen(req) as res:
-                    res_data = json.loads(res.read().decode('utf-8'))
-                    results = res_data.get("results", [])
-                    tavily_context = "\n\n".join([r.get("content", "") for r in results])
-            except Exception as search_err:
-                print(f"Tavily search error: {search_err}")
+            
+            def fetch_tavily(q):
+                try:
+                    payload = {"api_key": tavily_key, "query": q, "max_results": 3}
+                    req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
+                    with urllib.request.urlopen(req) as res:
+                        res_data = json.loads(res.read().decode('utf-8'))
+                        return "\n\n".join([r.get("content", "") for r in res_data.get("results", [])])
+                except Exception as search_err:
+                    print(f"Tavily search error: {search_err}")
+                    return ""
+
+            q1 = f"Official placement average package highest package and total fees estimation for engineering at {c1} {b1}"
+            q2 = f"Official placement average package highest package and total fees estimation for engineering at {c2} {b2}"
+            
+            ctx1 = fetch_tavily(q1)
+            ctx2 = fetch_tavily(q2)
+            tavily_context = f"--- Data for Option 1 ({c1}) ---\n{ctx1}\n\n--- Data for Option 2 ({c2}) ---\n{ctx2}"
                 
         # 2. DeepSeek Hookup
         system_prompt = f"""You are the elite Senior AI Career Counselor at Apna Sathee. Your task is to provide a comprehensive, deep-dive comparison between two engineering choices selected by an aspirant:
