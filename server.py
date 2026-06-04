@@ -150,7 +150,9 @@ async def get_compare_verdict(data: dict):
                 print(f"Tavily search error: {search_err}")
                 
         # 2. DeepSeek Hookup
-        system_prompt = f"""You are the elite Senior AI Career Counselor at Apna Sathee. Your task is to provide a comprehensive, deep-dive comparison between two engineering choices selected by an aspirant.
+        system_prompt = f"""You are the elite Senior AI Career Counselor at Apna Sathee. Your task is to provide a comprehensive, deep-dive comparison between two engineering choices selected by an aspirant:
+Option 1: {c1} {b1}
+Option 2: {c2} {b2}
 
 Live Web Context Provided (Use this data for your answer):
 {tavily_context}
