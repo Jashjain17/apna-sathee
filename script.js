@@ -35,6 +35,13 @@ function showPaywall() {
 }
 
 function openPaywallModal() {
+  if (isUserPro()) {
+    console.log("ℹ️ User is already Pro; skipping paywall modal.");
+    const modal = document.getElementById('paywallModal');
+    if (modal) modal.style.display = 'none';
+    return;
+  }
+
   // Reset coupon state every time the modal opens so stale codes don't carry over
   appliedAffiliateCode = null;
   appliedAffiliateUid = null;
@@ -81,17 +88,16 @@ function normalizeTier(userData) {
 }
 
 function isUserPro() {
-  if (!currentUserTier) {
-    if (currentUserUid && localStorage.getItem('apnaSathee_isPro_' + currentUserUid) === 'true') {
+  if (currentUserTier) {
+    const str = String(currentUserTier).trim().toLowerCase();
+    if (['pro', 'paid', 'active', 'premium', 'pro_tier', 'true'].includes(str) || currentUserTier === true) {
       return true;
     }
-    return false;
-  }
-  const str = String(currentUserTier).trim().toLowerCase();
-  if (['pro', 'paid', 'active', 'premium', 'pro_tier', 'true'].includes(str) || currentUserTier === true) {
-    return true;
   }
   if (currentUserUid && localStorage.getItem('apnaSathee_isPro_' + currentUserUid) === 'true') {
+    return true;
+  }
+  if (localStorage.getItem('apnaSathee_isPro') === 'true') {
     return true;
   }
   return false;
@@ -188,19 +194,36 @@ document.addEventListener('DOMContentLoaded', () => {
       // Fetch user profile from Firestore
       currentUserUid = user.uid;
       let tier = 'Free';
+      let userData = null;
 
       try {
         const userRef = doc(db, 'users', user.uid);
         const userSnap = await getDoc(userRef);
 
         if (userSnap.exists()) {
-          const userData = userSnap.data();
+          userData = userSnap.data();
+        } else if (user.email) {
+          // Fallback query by email if doc.id != user.uid (e.g. manually assigned or pre-existing docs)
+          try {
+            const usersCol = collection(db, 'users');
+            const emailQuery = query(usersCol, where('email', '==', user.email));
+            const emailSnap = await getDocs(emailQuery);
+            if (!emailSnap.empty) {
+              userData = emailSnap.docs[0].data();
+              console.log("📧 Found user record in Firestore by email match:", userData);
+            }
+          } catch (eQueryErr) {
+            console.warn('Email query fallback skipped:', eQueryErr);
+          }
+        }
+
+        if (userData) {
           tier = normalizeTier(userData);
           currentMessagesUsed = userData.free_messages_used || 0;
           console.log("📊 User subscription tier from DB:", tier, userData);
         } else {
           // Brand new user - check if we have cached local pro status
-          const cachedPro = localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true';
+          const cachedPro = (localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') || (localStorage.getItem('apnaSathee_isPro') === 'true');
           tier = cachedPro ? 'Pro' : 'Free';
 
           await setDoc(userRef, {
@@ -222,20 +245,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         console.error('Firestore profile error:', err);
-        if (localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') {
+        if ((localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') || (localStorage.getItem('apnaSathee_isPro') === 'true')) {
           tier = 'Pro';
         }
         currentMessagesUsed = 0;
       }
 
       // Check local cache if DB returned Free but user has paid status saved locally
-      if (tier !== 'Pro' && localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') {
+      if (tier !== 'Pro' && ((localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') || (localStorage.getItem('apnaSathee_isPro') === 'true'))) {
         tier = 'Pro';
       }
 
       currentUserTier = tier;
       if (isUserPro()) {
         localStorage.setItem('apnaSathee_isPro_' + user.uid, 'true');
+        localStorage.setItem('apnaSathee_isPro', 'true');
+        // Self-heal: sync UID doc in Firestore so subsequent reads by UID find subscription_tier: 'Pro'
+        const userRef = doc(db, 'users', user.uid);
+        setDoc(userRef, { subscription_tier: 'Pro', isPro: true }, { merge: true }).catch(() => {});
       }
 
       // Update PRO badge visibility and UI controls
@@ -268,6 +295,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // This shows the paywall modal with coupon UI; Razorpay ONLY opens from
   // the "Proceed to Payment" button inside the modal.
   window.openProCheckout = function() {
+    if (isUserPro()) {
+      alert("🎉 You already have Apna Sathee Pro active on your account!");
+      hidePaywall();
+      return;
+    }
+
     if (!currentUserUid) {
       alert('Please login first so we can link the Pro upgrade to your account!');
 
