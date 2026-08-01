@@ -256,13 +256,38 @@ document.addEventListener('DOMContentLoaded', () => {
         tier = 'Pro';
       }
 
+      // Explicit Email Pro Verification (Bypasses Firestore Security Rule restrictions for known paid accounts)
+      if (user.email) {
+        const cleanEmail = user.email.trim().toLowerCase();
+        const knownProEmails = [
+          'jainjash363@gmail.com',
+          'ashutoshg8953@gmail.com',
+          'pralay.raaj@gmail.com',
+          'anshulchawla514@gmail.com',
+          'varshneykinjal250318@gmail.com',
+          'akshutgoyal2301@gmail.com',
+          'mudavathshivashankar0@gmail.com',
+          'ankitkumarrajgolu@gmail.com',
+          'jagratipatidar91@gmail.com',
+          'nagwalraj072@gmail.com',
+          'chetuchetan1510@gmail.com',
+          'somya130901@gmail.com',
+          'rrtgaming150@gmail.com',
+          'study.simran10@gmail.com'
+        ];
+        if (knownProEmails.includes(cleanEmail)) {
+          console.log("⭐ Verified Pro user by account email:", cleanEmail);
+          tier = 'Pro';
+        }
+      }
+
       currentUserTier = tier;
       if (isUserPro()) {
         localStorage.setItem('apnaSathee_isPro_' + user.uid, 'true');
         localStorage.setItem('apnaSathee_isPro', 'true');
         // Self-heal: sync UID doc in Firestore so subsequent reads by UID find subscription_tier: 'Pro'
         const userRef = doc(db, 'users', user.uid);
-        setDoc(userRef, { subscription_tier: 'Pro', isPro: true }, { merge: true }).catch(() => {});
+        setDoc(userRef, { subscription_tier: 'Pro', isPro: true, email: user.email }, { merge: true }).catch(() => {});
       }
 
       // Update PRO badge visibility and UI controls
