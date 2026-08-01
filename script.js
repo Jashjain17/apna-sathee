@@ -69,8 +69,52 @@ function hidePaywall() {
   if (modal) modal.style.display = 'none';
 }
 
+function normalizeTier(userData) {
+  if (!userData) return 'Free';
+  if (userData.isPro === true || userData.pro === true || userData.is_pro === true) return 'Pro';
+  const raw = userData.subscription_tier || userData.subscriptionTier || userData.tier || userData.plan || userData.subscription || '';
+  const str = String(raw).trim().toLowerCase();
+  if (['pro', 'paid', 'active', 'premium', 'pro_tier', 'true'].includes(str)) {
+    return 'Pro';
+  }
+  return 'Free';
+}
+
+function isUserPro() {
+  if (!currentUserTier) {
+    if (currentUserUid && localStorage.getItem('apnaSathee_isPro_' + currentUserUid) === 'true') {
+      return true;
+    }
+    return false;
+  }
+  const str = String(currentUserTier).trim().toLowerCase();
+  if (['pro', 'paid', 'active', 'premium', 'pro_tier', 'true'].includes(str) || currentUserTier === true) {
+    return true;
+  }
+  if (currentUserUid && localStorage.getItem('apnaSathee_isPro_' + currentUserUid) === 'true') {
+    return true;
+  }
+  return false;
+}
+
 function isPremiumLocked() {
-  return !currentUserTier || currentUserTier === 'Free';
+  return !isUserPro();
+}
+
+function updateProUI(isPro) {
+  const badge = document.getElementById('proBadge');
+  const upgradeToProBtn = document.getElementById('upgradeToProBtn');
+  const contactTxt = document.querySelector('#contactUsBtn .nav-text');
+
+  if (isPro) {
+    if (badge) badge.style.display = 'inline-block';
+    if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
+    if (contactTxt) contactTxt.innerText = '1-on-1 Help';
+  } else {
+    if (badge) badge.style.display = 'none';
+    if (upgradeToProBtn) upgradeToProBtn.style.display = 'flex';
+    if (contactTxt) contactTxt.innerText = '1-on-1 Help 🔒';
+  }
 }
 
 // --- Auth UI Wiring ---------------------------------------------------------
@@ -151,50 +195,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (userSnap.exists()) {
           const userData = userSnap.data();
-          tier = userData.subscription_tier || 'Free';
+          tier = normalizeTier(userData);
           currentMessagesUsed = userData.free_messages_used || 0;
-          console.log("📊 User subscription tier from DB:", tier);
+          console.log("📊 User subscription tier from DB:", tier, userData);
         } else {
-          // Brand new user - initialize Firestore document with legal audit trails
+          // Brand new user - check if we have cached local pro status
+          const cachedPro = localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true';
+          tier = cachedPro ? 'Pro' : 'Free';
+
           await setDoc(userRef, {
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
-            subscription_tier: 'Free',
+            subscription_tier: tier,
+            isPro: cachedPro,
             free_messages_used: 0,
             agreedToTerms: true,
             agreedToTermsAt: new Date(),
             createdAt: new Date(),
-            // Referral system fields
             successful_referrals: 0,
             referred_by: localStorage.getItem('apnaSathee_ref_code') || null,
             upi_id: null
-          });
+          }, { merge: true });
           currentMessagesUsed = 0;
-          console.log("🆕 New user profile initialized in Firestore.");
+          console.log("🆕 New user profile initialized in Firestore with tier:", tier);
         }
       } catch (err) {
         console.error('Firestore profile error:', err);
+        if (localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') {
+          tier = 'Pro';
+        }
         currentMessagesUsed = 0;
       }
 
-      // Set global state
-      currentUserTier = tier;
-
-      // Update PRO badge visibility based on database truth
-      const badge = document.getElementById('proBadge');
-      const upgradeToProBtn = document.getElementById('upgradeToProBtn');
-      if (tier === 'Pro') {
-        if (badge) badge.style.display = 'inline-block';
-        if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
-        const contactTxt = document.querySelector('#contactUsBtn .nav-text');
-        if (contactTxt) contactTxt.innerText = '1-on-1 Help';
-      } else {
-        if (badge) badge.style.display = 'none';
-        if (upgradeToProBtn) upgradeToProBtn.style.display = 'flex';
-        const contactTxt = document.querySelector('#contactUsBtn .nav-text');
-        if (contactTxt) contactTxt.innerText = '1-on-1 Help 🔒';
+      // Check local cache if DB returned Free but user has paid status saved locally
+      if (tier !== 'Pro' && localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') {
+        tier = 'Pro';
       }
+
+      currentUserTier = tier;
+      if (isUserPro()) {
+        localStorage.setItem('apnaSathee_isPro_' + user.uid, 'true');
+      }
+
+      // Update PRO badge visibility and UI controls
+      updateProUI(isUserPro());
 
     } else {
       // User is logged out
@@ -309,19 +354,16 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
 
-          // 1. OPTIMISTIC UI UPDATE (Do this instantly)
-          if (typeof currentUserTier !== 'undefined') {
-            currentUserTier = 'Pro';
+          // 1. OPTIMISTIC UI UPDATE & LOCAL STORAGE CACHE (Do this instantly)
+          currentUserTier = 'Pro';
+          if (user && user.uid) {
+            localStorage.setItem('apnaSathee_isPro_' + user.uid, 'true');
           }
+          
+          updateProUI(true);
+
           const modal = document.querySelector('.paywall-modal') || document.getElementById('paywallModal') || document.querySelector('[class*="paywall"]');
           if (modal) modal.style.display = 'none';
-
-          const badge = document.getElementById('proBadge');
-          const upgradeToProBtn = document.getElementById('upgradeToProBtn');
-          if (badge) badge.style.display = 'inline-block';
-          if (upgradeToProBtn) upgradeToProBtn.style.display = 'none';
-          const contactTxt = document.querySelector('#contactUsBtn .nav-text');
-          if (contactTxt) contactTxt.innerText = '1-on-1 Help';
 
           alert('🎉 Payment Successful! Welcome to Apna Sathee Pro.');
 
@@ -340,10 +382,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (exportPdfBtn) exportPdfBtn.disabled = (!lastChoiceList || lastChoiceList.length === 0);
           }
 
-          // 2. BACKGROUND FIREBASE SYNC (Don't await, let it run in background)
+          // 2. BACKGROUND FIREBASE SYNC (use setDoc merge to guarantee update even if doc doesn't exist)
           console.log("🔄 Updating Firebase for user:", user.uid);
           const userRef = doc(db, 'users', user.uid);
-          updateDoc(userRef, { subscription_tier: 'Pro' })
+          setDoc(userRef, { 
+            subscription_tier: 'Pro',
+            isPro: true,
+            updatedAt: new Date()
+          }, { merge: true })
             .then(() => console.log("✅ Firebase Updated to Pro!"))
             .catch((error) => console.error("Firebase sync error (background):", error));
 
@@ -1693,7 +1739,7 @@ async function askBot(message) {
   if (confEl) confEl.textContent = "thinking";
 
   // 3. FREEMIUM GATE: Check tier before making API call
-  if (currentUserTier !== 'Pro') {
+  if (!isUserPro()) {
     if (currentMessagesUsed >= 5) {
       // Remove typing indicator
       if (typingBubble.parentNode) typingBubble.remove();
@@ -1731,7 +1777,7 @@ async function askBot(message) {
     if (confEl) confEl.textContent = "answered";
 
     // 5. INCREMENT usage for Free users (background, non-blocking)
-    if (currentUserTier !== 'Pro') {
+    if (!isUserPro()) {
       currentMessagesUsed++;
       if (currentUserUid) {
         const userRef = doc(db, 'users', currentUserUid);
@@ -1918,7 +1964,7 @@ function renderPreferenceBoard() {
     warnings.innerHTML = "";
     return;
   }
-  const isFreeUser = (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro');
+  const isFreeUser = !isUserPro();
   host.innerHTML = preferenceState.rows
     .map((row, index) => {
       const band = prefBand(row);
@@ -2883,7 +2929,7 @@ async function runCompare() {
 }
 
 listen("compareBtn", "click", async () => {
-  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+  if (!isUserPro()) {
     let compareCount = parseInt(localStorage.getItem('sathee_compare_count') || '0', 10);
     if (compareCount >= 2) {
       const textEl = document.getElementById('modalMessageText');
@@ -2922,7 +2968,7 @@ listen("saveCompareBtn", "click", async () => {
 
 
 listen("exportBtn", "click", () => {
-  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+  if (!isUserPro()) {
     const textEl = document.getElementById('modalMessageText');
     if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to download your complete, AI-optimized preference list.";
     const modal = document.getElementById('limitReachedModal');
@@ -2947,7 +2993,7 @@ listen("exportBtn", "click", () => {
 });
 
 listen("exportPdfBtn", "click", () => {
-  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+  if (!isUserPro()) {
     const textEl = document.getElementById('modalMessageText');
     if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to download your complete, AI-optimized preference list.";
     const modal = document.getElementById('limitReachedModal');
@@ -2964,7 +3010,7 @@ listen("exportPdfBtn", "click", () => {
 });
 
 listen("exportShareBtn", "click", async () => {
-  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+  if (!isUserPro()) {
     const textEl = document.getElementById('modalMessageText');
     if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to share your complete, AI-optimized preference list.";
     const modal = document.getElementById('limitReachedModal');
@@ -2985,7 +3031,7 @@ listen("exportShareBtn", "click", async () => {
 });
 
 listen("reviewWithAiBtn", "click", async () => {
-  if (typeof currentUserTier === 'undefined' || currentUserTier !== 'Pro') {
+  if (!isUserPro()) {
     const textEl = document.getElementById('modalMessageText');
     if (textEl) textEl.innerText = "Please upgrade to Pro for ₹499 to use the Sathee AI review feature.";
     const modal = document.getElementById('limitReachedModal');
@@ -3366,7 +3412,7 @@ listen("chancesCheckBtn", "click", function(e) {
   console.log("Raw Storage:", rawCount);
   console.log("Parsed Count:", currentCount);
   
-  if (typeof currentUserTier !== 'undefined' && currentUserTier === 'Pro') { 
+  if (isUserPro()) { 
       console.log("User is PRO. Running.");
       renderChances();
   } 
@@ -3556,7 +3602,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 🚨 THE IMMUNITY CHECK: If free user clicks a paid tab, DO NOT CLOSE!
         const premiumTabs = ["contactUs"];
         const isPremiumTab = premiumTabs.includes(item.dataset.target);
-        const isLocked = !currentUserTier || currentUserTier === 'Free';
+        const isLocked = !isUserPro();
 
         if (isPremiumTab && isLocked) {
             return; // Aborts the close script immediately. Lets the Paywall slider take over.
@@ -3599,7 +3645,7 @@ document.addEventListener('DOMContentLoaded', function() {
     lockedButtons.forEach(function(btn) {
         btn.addEventListener('click', function(e) {
             
-            if (typeof currentUserTier !== 'undefined' && currentUserTier !== 'Pro') {
+            if (!isUserPro()) {
                 e.preventDefault();       
                 e.stopImmediatePropagation();
                 e.stopPropagation();      
