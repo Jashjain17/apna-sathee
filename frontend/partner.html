@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner Dashboard | Apna Sathee</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.5);
+      --success: #10b981;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-image: radial-gradient(circle at 50% -20%, #1e293b, #0f172a);
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      background: linear-gradient(135deg, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 32px;
+    }
+    .stat-group {
+      background: rgba(15, 23, 42, 0.5);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: transform 0.3s ease;
+    }
+    .stat-group:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    .stat-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .stat-value {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .stat-value.earnings {
+      color: var(--success);
+      text-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-radius: 50%;
+      border-top-color: var(--accent);
+      animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    #error-msg {
+      color: #ef4444;
+      font-size: 14px;
+      margin-top: 16px;
+      display: none;
+    }
+    .brand {
+      margin-top: 32px;
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Partner Dashboard</h1>
+    <div class="subtitle">Real-time performance tracking</div>
+
+    <div class="stat-group">
+      <div class="stat-label">Partner Code</div>
+      <div class="stat-value" id="promo-code"><div class="loading"></div></div>
+    </div>
+
+    <div class="stat-group">
+      <div class="stat-label">Total Conversions</div>
+      <div class="stat-value" id="total-conversions"><div class="loading"></div></div>
+    </div>
+
+    <div class="stat-group">
+      <div class="stat-label">Total Earnings</div>
+      <div class="stat-value earnings" id="total-earnings"><div class="loading"></div></div>
+    </div>
+
+    <div id="error-msg"></div>
+    <div class="brand">Powered by Apna Sathee</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
+    import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCh1MJ9gLfcw0qnXIIyBm_HZPdsYP8X6AQ",
+      authDomain: "apna-sathee.firebaseapp.com",
+      projectId: "apna-sathee",
+      storageBucket: "apna-sathee.firebasestorage.app",
+      messagingSenderId: "613010043979",
+      appId: "1:613010043979:web:23183f40daf344059809ce"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function loadData() {
+      try {
+        // Extract promo code from URL (e.g., /partner/JASH10)
+        // Clean URL to handle trailing slashes or query params
+        const path = window.location.pathname.replace(/\/$/, '');
+        const pathParts = path.split('/');
+        let code = pathParts[pathParts.length - 1];
+        
+        // Handle cases where the URL might just be /partner or /partner/
+        if (!code || code.toLowerCase() === 'partner') {
+          code = 'UNKNOWN';
+        }
+
+        document.getElementById('promo-code').textContent = code;
+
+        if (code === 'UNKNOWN') {
+          throw new Error('Invalid Partner Code');
+        }
+
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, where('referral_code', '==', code), where('is_affiliate', '==', true));
+        
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+          throw new Error('Partner Code Not Found');
+        }
+
+        // The influencer's own document already tracks their total referrals and earnings!
+        // This is 1 document read and completely protects student data.
+        const affiliateData = snapshot.docs[0].data();
+        
+        const count = affiliateData.total_successful_referrals || 0;
+        
+        // You can either use their tracked balance or strictly use Count * 74.85
+        // Let's use count * 74.85 as requested, or fallback to their unpaid cash balance.
+        // I will stick to your exact requested math: count * 74.85
+        const earnings = count * 74.85;
+
+        // Animate numbers
+        document.getElementById('total-conversions').textContent = count;
+        
+        // Format as Indian Rupees
+        const formatter = new Intl.NumberFormat('en-IN', {
+          style: 'currency',
+          currency: 'INR',
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        
+        document.getElementById('total-earnings').textContent = formatter.format(earnings);
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        document.getElementById('error-msg').textContent = "Error: " + error.message;
+        document.getElementById('error-msg').style.display = "block";
+        document.getElementById('total-conversions').textContent = "--";
+        document.getElementById('total-earnings').textContent = "--";
+      }
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
