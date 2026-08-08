@@ -1,0 +1,279 @@
+{
+  "source": "JoSAA 2026 official website, JoSAA Business Rules updated 20-06-2026, CSAB 2026 official website and information brochure references",
+  "lastVerified": "2026-05-07",
+  "version": "2.0",
+
+  "what_is_josaa": {
+    "fullForm": "Joint Seat Allocation Authority",
+    "establishedBy": "Ministry of Education, Government of India",
+    "purpose": "Centralized seat allocation for admissions to IITs, NITs, IIITs and GFTIs through a single platform",
+    "institutes_covered": {
+      "IITs": 23,
+      "NITs": 31,
+      "IIITs": 26,
+      "GFTIs": 47,
+      "IIEST_Shibpur": 1,
+      "total_institutes_2026": 127
+    },
+    "which_exam_for_which": {
+      "IITs": "JEE Advanced rank required",
+      "NITs_IIITs_GFTIs": "JEE Main rank required",
+      "note": "Both JEE Main and Advanced qualifiers can apply to NITs/IIITs/GFTIs. Only JEE Advanced qualifiers can apply to IITs."
+    }
+  },
+
+  "josaa_vs_csab": {
+    "JoSAA": {
+      "rounds": "6 main rounds",
+      "institutes": "All IITs, NITs, IIITs, GFTIs",
+      "when": "June-July after JEE Advanced results"
+    },
+    "CSAB": {
+      "fullForm": "Central Seat Allocation Board",
+      "rounds": "CSAB-Special 2026 was conducted with three seat-allocation rounds under the DASA + CSAB-Special umbrella. Older years commonly had two special rounds.",
+      "institutes": "NITs, IIITs, GFTIs only (not IITs)",
+      "when": "After JoSAA final round, usually August",
+      "eligibility": "Eligibility and fee rules differ by candidate status after JoSAA. Always check the current CSAB information brochure before advising a student to surrender or retain a seat.",
+      "important": "CSAB is a fresh counselling process for vacant NIT+ system seats after JoSAA. IIT seats are not filled through CSAB."
+    }
+  },
+
+  "step_by_step_process": [
+    {
+      "step": 1,
+      "name": "Registration",
+      "details": "Visit josaa.nic.in. Login using JEE Main application number and password (or JEE Advanced credentials for IIT applicants). Verify personal and academic details fetched from JEE database. No separate registration fee charged by JoSAA.",
+      "timeline": "Opens after JEE Advanced results, typically mid-June"
+    },
+    {
+      "step": 2,
+      "name": "Choice Filling",
+      "details": "Fill preferences for institutes and programs in order of priority. Can add as many choices as desired (no limit). Order matters - higher preference = higher position in list. Verify OTP before locking choices. CRITICAL: Once the choice filling deadline passes, you CANNOT modify, add, or reorder choices.",
+      "tips": [
+        "Add all possible choices including backup options",
+        "Do not keep your first choice as your only choice",
+        "Research previous year cutoffs before filling",
+        "Include both safe and ambitious choices"
+      ]
+    },
+    {
+      "step": 3,
+      "name": "Mock Seat Allotment",
+      "details": "JoSAA releases 1-2 mock allotments before Round 1. Based on your current choices and current registrations. Not binding - just to help students revise their choice list if needed.",
+      "when": "Before Round 1 actual allotment"
+    },
+    {
+      "step": 4,
+      "name": "Seat Allotment - Round 1 to Round 6",
+      "details": "Seats allocated based on: JEE rank, category, choices filled, seat availability. Results published on JoSAA portal. After each round, candidates must: (a) Accept/respond to allotted seat, (b) Upload documents, (c) Pay Seat Acceptance Fee."
+    },
+    {
+      "step": 5,
+      "name": "Freeze / Float / Slide Decision",
+      "details": "After each round allotment, you must choose one of three options:",
+      "options": {
+        "FREEZE": {
+          "meaning": "Accept current seat permanently. Exit counselling process. No upgrades considered.",
+          "when_to_use": "When you are happy with allotted institute and program",
+          "irreversible": true
+        },
+        "FLOAT": {
+          "meaning": "Accept current seat tentatively. Remain open for upgrade to any higher preferred institute/program in subsequent rounds.",
+          "when_to_use": "When allotted seat is okay but you want to try for better options",
+          "note": "If no upgrade found in later rounds, you keep current seat"
+        },
+        "SLIDE": {
+          "meaning": "Accept current institute but want a better branch within the SAME institute in subsequent rounds.",
+          "when_to_use": "When you are happy with the institute but want a better branch there",
+          "note": "Upgrades considered only within same institute"
+        }
+      },
+      "important_rules": [
+        "Float and Slide are NOT available in the last round",
+        "If you got your first choice, only Freeze is available",
+        "You can change from Float to Slide/Freeze, or Slide to Freeze at any point",
+        "Once you Freeze, you CANNOT change to Float/Slide",
+        "Failure to respond by deadline = seat cancellation, barred from future rounds"
+      ]
+    },
+    {
+      "step": 6,
+      "name": "Document Upload",
+      "details": "Upload scanned copies of all required documents on JoSAA portal. Documents must be clear, legible. File size limits apply (usually under 1MB per document). JoSAA may raise queries if documents are unclear."
+    },
+    {
+      "step": 7,
+      "name": "Seat Acceptance Fee Payment",
+      "details": "Pay Seat Acceptance Fee (SAF) online within deadline.",
+      "fees": {
+        "General_OBC_EWS": "Rs 35,000",
+        "SC_ST_PwD": "Rs 17,500",
+        "note": "Paid only ONCE. Not paid again for subsequent rounds if you Float/Slide. Amount adjusted against institute fee at reporting."
+      },
+      "refund_policy": "If you withdraw seat before final round: Rs 35,000 refunded minus Rs 5,000 processing fee. No refund if you simply do not report to institute."
+    },
+    {
+      "step": 8,
+      "name": "Document Verification",
+      "details": "JoSAA verifies uploaded documents online. May raise queries for incorrect/unclear documents. Must respond to queries within deadline. Only after verification clearance can you proceed to final reporting."
+    },
+    {
+      "step": 9,
+      "name": "Physical Reporting at Institute",
+      "details": "After final round, report to allotted institute with original documents. Pay remaining admission fee. Complete institute-specific admission formalities. Attend orientation as per institute schedule.",
+      "note": "Some institutes have online reporting followed by physical reporting later. Check institute-specific schedule."
+    }
+  ],
+
+  "seat_acceptance_fee": {
+    "general_obc_ews": 35000,
+    "sc_st_pwd": 17500,
+    "paid_once": true,
+    "adjusted_in_institute_fee": true,
+    "refund_on_withdrawal": 30000,
+    "processing_fee_retained": 5000
+  },
+
+  "rounds_timeline_2026": {
+    "registration_choice_filling": "June 10 - June 18, 2026",
+    "mock_allotment_1": "June 18, 2026",
+    "mock_allotment_2": "June 20, 2026",
+    "note": "The app should not rely on hard-coded old schedules. Always check the official JoSAA schedule page for the current admission year."
+  },
+
+  "rounds_timeline_2026": {
+    "status": "Use official JoSAA 2026 schedule documents only",
+    "official_schedule_page": "https://josaa.nic.in/schedule/",
+    "official_business_rules": "https://josaa.nic.in/document/business-rule-updated-on-28-05-2026/",
+    "note": "JoSAA published an updated 2026 schedule on 20-06-2026 and later revised schedule documents. The website should point students to the official schedule rather than giving stale dates."
+  },
+
+  "csab_special_2026": {
+    "official_page": "https://csab.nic.in/csab-special/",
+    "opening_closing_ranks": "https://csab.nic.in/document/dasa-and-csab-special-round-2026-opening-and-closing-ranks/",
+    "rounds": "DASA & CSAB-Special 2026 had three rounds of seat allocation.",
+    "fresh_registration": true,
+    "applies_to": "NIT+ system vacant seats after JoSAA; not IITs.",
+    "advice": "Use CSAB as a separate post-JoSAA strategy. Do not tell a student to risk a decent JoSAA seat unless the current CSAB brochure confirms the exact surrender, fee, eligibility and refund consequences for their case."
+  },
+
+  "quotas_explained": {
+    "HS": {
+      "name": "Home State",
+      "applies_to": "NITs, IIITs, GFTIs (NOT IITs)",
+      "percentage": "50% of seats in each NIT reserved for students from the state where that NIT is located",
+      "how_determined": "Based on state you selected at JEE Main registration (not necessarily your birth state or current residence)"
+    },
+    "OS": {
+      "name": "Other State",
+      "applies_to": "NITs, IIITs, GFTIs",
+      "percentage": "50% of seats open for students from all states except home state",
+      "note": "Students from states with no NIT compete in OS quota of nearby NITs"
+    },
+    "AI": {
+      "name": "All India",
+      "applies_to": "IITs, and some GFTIs",
+      "note": "No home state/other state division for IITs. All seats are All India quota."
+    },
+    "home_state_strategy": "If your state has an NIT, you get HS quota advantage there. If you are from a state without an NIT (like Delhi, Bihar in some cases), you compete in OS quota everywhere.",
+    "state_mapping_note": "Home state for JoSAA purposes = State you marked in JEE Main application form. This cannot be changed later even if you live elsewhere."
+  },
+
+  "seat_types": {
+    "OPEN": "General category, no income restriction for seat itself (though fee waivers may apply based on income)",
+    "OBC_NCL": "Other Backward Classes - Non Creamy Layer. Must be in central OBC list.",
+    "SC": "Scheduled Caste",
+    "ST": "Scheduled Tribe",
+    "EWS": "Economically Weaker Section. General category families with income below Rs 8 lakh/year",
+    "OPEN_PwD": "General category persons with benchmark disability",
+    "OBC_NCL_PwD": "OBC-NCL persons with benchmark disability",
+    "SC_PwD": "SC persons with benchmark disability",
+    "ST_PwD": "ST persons with benchmark disability",
+    "EWS_PwD": "EWS persons with benchmark disability",
+    "Female_only": "Seats exclusively for female candidates. If unfilled in early rounds, may be converted to Gender-Neutral.",
+    "Gender_Neutral": "Open to all genders"
+  },
+
+  "supernumerary_seats": {
+    "Female_Supernumerary": "Additional seats created at IITs specifically for female candidates to increase female ratio. These are over and above regular seats.",
+    "DS": {
+      "name": "Defence Service",
+      "eligibility": "Children of armed forces personnel killed/disabled in action, or with service disability. Also serving armed forces personnel.",
+      "percentage": "Usually 5% of seats"
+    },
+    "Kashmiri_Migrant": "2 supernumerary seats per institute for Kashmiri migrants who moved out due to terrorism",
+    "Foreign_National": "Up to 10% supernumerary seats for foreign nationals at IITs"
+  },
+
+  "preparatory_course": {
+    "at_IITs": true,
+    "for": "SC/ST/PwD candidates who narrowly missed cutoff for regular B.Tech programs",
+    "duration": "1 year preparatory course",
+    "after_completion": "If they pass preparatory course, they are eligible for regular B.Tech admission next year",
+    "ranks_marked_P": "If a rank in JoSAA data has suffix 'P', it is from the Preparatory rank list, not regular rank list"
+  },
+
+  "dual_reporting": {
+    "concept": "If you are upgraded to a better institute after Round 1, you need to withdraw from first institute and report fresh to new institute",
+    "note": "JoSAA handles this automatically in online process. Seat acceptance fee paid once is transferred."
+  },
+
+  "withdrawal": {
+    "before_final_round": "Can withdraw seat. Refund of SAF minus Rs 5000 processing fee.",
+    "after_final_round": "No refund of SAF. You lose the seat.",
+    "to_join_CSAB": "Must withdraw from JoSAA allotted seat before CSAB deadline"
+  },
+
+  "common_mistakes": [
+    {
+      "mistake": "Using state OBC list instead of Central OBC list",
+      "consequence": "Category certificate rejected. Treated as General category. May lose seat.",
+      "fix": "Ensure certificate says 'recognized as backward class by Government of India' with central government OM number"
+    },
+    {
+      "mistake": "EWS certificate expired or wrong financial year",
+      "consequence": "Certificate rejected",
+      "fix": "EWS and OBC-NCL certificates must usually be issued on or after April 1 of the admission year; verify the current official format and date rule."
+    },
+    {
+      "mistake": "Not freezing seat and missing deadline",
+      "consequence": "Seat cancelled, barred from all subsequent rounds",
+      "fix": "Always submit willingness (Freeze/Float/Slide) before deadline even if you plan to float"
+    },
+    {
+      "mistake": "Name mismatch between JEE form and category certificate",
+      "consequence": "Document verification failure",
+      "fix": "Ensure name spelling is exactly same across all documents"
+    },
+    {
+      "mistake": "Choosing wrong gender pool",
+      "consequence": "Cannot claim female-only seats even if eligible",
+      "fix": "Female candidates should choose 'Female' gender in JEE application"
+    },
+    {
+      "mistake": "Forgetting that Home State = JEE Main registration state, not actual residence",
+      "consequence": "Surprised by HS/OS quota results",
+      "fix": "Check what state you marked in JEE Main form"
+    },
+    {
+      "mistake": "Maharashtra SC/ST/OBC candidates not getting caste validity certificate",
+      "consequence": "Certificate rejected at reporting",
+      "fix": "Maharashtra candidates need additional Caste Validity Certificate from Social/Tribal Welfare department"
+    },
+    {
+      "mistake": "Tamil Nadu ST candidates with wrong issuing authority",
+      "consequence": "Certificate rejected",
+      "fix": "TN ST certificates must be from Revenue Divisional Officer specifically"
+    },
+    {
+      "mistake": "Not responding to document verification queries on time",
+      "consequence": "Seat cancelled",
+      "fix": "Check JoSAA portal daily after document upload"
+    },
+    {
+      "mistake": "Thinking you can add new choices after Round 1 results",
+      "consequence": "No new choices possible once initial choice filling deadline passes",
+      "fix": "Add all possible choices in the initial choice filling itself"
+    }
+  ]
+}

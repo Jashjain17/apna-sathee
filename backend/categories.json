@@ -1,0 +1,219 @@
+{
+  "source": "Government of India reservation policies, JoSAA/CSAB certificate formats and counselling rules",
+  "lastVerified": "2026-05-07",
+
+  "categories": {
+    "OPEN": {
+      "description": "General category. No caste/income restriction for seat allocation itself.",
+      "certificate_required": "None for seat. Income certificate may be needed for fee waivers.",
+      "rank_used": "CRL (Common Rank List)",
+      "reservation_percentage": "No reservation. Competes on merit."
+    },
+
+    "OBC_NCL": {
+      "fullName": "Other Backward Classes - Non Creamy Layer",
+      "reservation": "27% of seats",
+      "rank_used": "OBC-NCL category rank (NOT CRL)",
+      "certificate_required": true,
+      "certificate_details": {
+        "must_be": "Central Government OBC list (NOT state OBC list)",
+        "format": "Government of India format with specific Office Memorandum reference",
+        "OM_reference": "DoPT OM No. 36012/22/93-Estt.(SCT) dated 08.09.1993 and subsequent modifications",
+        "validity": "Must usually be issued on or after April 1 of the admission year; verify the current JoSAA/CSAB format and instructions",
+        "issuing_authority": "Competent government authority (District Magistrate, Sub-Divisional Magistrate, etc.)",
+        "income_limit": "Family income must be below Rs 8 lakh per year to be Non-Creamy Layer",
+        "state_vs_central": "CRITICAL: Many states have their own OBC lists which may include castes not in Central list. Only Central OBC list valid for JoSAA."
+      },
+      "creamy_layer_definition": {
+        "income_threshold": "Rs 8 lakh per year gross annual income (both parents combined)",
+        "excludes_also": "Constitutional posts, Group A/B services officers, military officers above Colonel rank",
+        "assets_based_exclusion": "Agricultural land above certain limits in some states"
+      },
+      "common_issues": [
+        "State OBC certificate used instead of Central OBC certificate",
+        "Certificate expired (older than current financial year)",
+        "Caste listed in state OBC list but not in central OBC list",
+        "Maharashtra: Needs additional Caste Validity Certificate"
+      ]
+    },
+
+    "SC": {
+      "fullName": "Scheduled Caste",
+      "reservation": "15% of seats",
+      "rank_used": "SC category rank",
+      "certificate_required": true,
+      "certificate_details": {
+        "format": "State Government format (each state has its own)",
+        "issuing_authority": "District Magistrate / SDM / Tehsildar as per state rules",
+        "validity": "No expiry (unlike OBC/EWS). A permanent certificate.",
+        "special_states": {
+          "Maharashtra": "Need Caste Validity Certificate from Social Welfare Department in addition to caste certificate",
+          "Tamil Nadu": "Regular District authority"
+        }
+      },
+      "fee_benefit": "100% tuition fee waiver at IITs. Significant fee concession at NITs."
+    },
+
+    "ST": {
+      "fullName": "Scheduled Tribe",
+      "reservation": "7.5% of seats",
+      "rank_used": "ST category rank",
+      "certificate_required": true,
+      "certificate_details": {
+        "format": "State Government format",
+        "issuing_authority": "District Magistrate / SDM / Tehsildar",
+        "validity": "Permanent (no expiry)",
+        "special_states": {
+          "Maharashtra": "Needs Caste Validity Certificate from Tribal Welfare Department",
+          "Tamil Nadu": "Must be issued by Revenue Divisional Officer (RDO) specifically"
+        }
+      },
+      "fee_benefit": "100% tuition fee waiver at IITs."
+    },
+
+    "EWS": {
+      "fullName": "Economically Weaker Section",
+      "reservation": "10% of seats (introduced from 2019)",
+      "rank_used": "EWS category rank (similar to CRL for this category)",
+      "for_whom": "General category families who do not fall under SC/ST/OBC but have low income",
+      "certificate_required": true,
+      "certificate_details": {
+        "income_limit": "Gross annual family income below Rs 8 lakh per year",
+        "assets_criteria": {
+          "agricultural_land": "Below 5 acres",
+          "residential_flat": "Below 1000 sq ft",
+          "residential_plot_in_notified_municipalities": "Below 100 sq yards",
+          "residential_plot_in_non_notified_areas": "Below 200 sq yards",
+          "note": "Family should not own more than ONE house/property above these limits"
+        },
+        "format": "Central Government prescribed format (available on josaa.nic.in)",
+        "validity": "Must be issued on or after April 1 of admission year",
+        "issuing_authority": "District Magistrate / Additional District Magistrate / Collector / Deputy Commissioner / Additional Deputy Commissioner / First Class Stipendary Magistrate / Sub-Divisional Magistrate / Taluka Magistrate / Executive Magistrate / Extra Assistant Commissioner (not below rank of First Class Stipendary Magistrate)"
+      },
+      "common_rejection_reasons": [
+        "Certificate issued before April 1 of current year",
+        "Wrong format (not central government format)",
+        "Issued by wrong authority (e.g., village sarpanch, gram panchayat)",
+        "Income calculation error (all family members' income not included)",
+        "Property ownership not declared correctly"
+      ],
+      "important_note": "EWS benefit is for GENERAL category families only. SC/ST/OBC families are NOT eligible for EWS even if income is low."
+    },
+
+    "PwD": {
+      "fullName": "Persons with Benchmark Disabilities",
+      "reservation": "5% horizontal reservation across all categories",
+      "meaning_of_horizontal": "5% within each category. E.g., 5% of OPEN seats for OPEN-PwD, 5% of SC seats for SC-PwD",
+      "benchmark_disability_definition": "40% or more disability as certified by competent authority",
+      "types_of_disability": {
+        "VH": "Visually Handicapped (blindness / low vision)",
+        "HH": "Hearing Handicapped (deaf / hard of hearing)",
+        "OH": "Orthopedically Handicapped (locomotor disability / cerebral palsy)",
+        "MD": "Multiple Disabilities",
+        "Other": "Autism, intellectual disability, specific learning disability, mental illness"
+      },
+      "certificate_required": true,
+      "certificate_details": {
+        "format": "Prescribed format from JEE Advanced/Main information brochure",
+        "issuing_authority": "Medical Board constituted by Central/State Government",
+        "disability_percentage": "Must clearly state percentage of disability (minimum 40%)",
+        "special_case": "If disability is less than 40% but candidate has difficulty in writing, a separate certificate needed"
+      },
+      "scribe_facility": "Available for candidates with writing difficulty. Apply during JEE registration.",
+      "exam_accommodation": "Extra time, scribe, other accommodations as per disability type"
+    },
+
+    "DS": {
+      "fullName": "Defence Service",
+      "type": "Supernumerary seats (additional seats, not from regular quota)",
+      "eligibility": [
+        "Children of Defence personnel killed in action",
+        "Children of Defence personnel disabled in action with disability pension",
+        "Children of serving armed forces personnel",
+        "Children of ex-servicemen"
+      ],
+      "certificate": "From commanding officer / service records / pension documents",
+      "seats": "Usually 1-2 supernumerary seats per institute per program"
+    },
+
+    "Kashmiri_Migrant": {
+      "eligibility": "Kashmiri Pandits / migrants who left Jammu & Kashmir due to militancy",
+      "seats": "2 supernumerary seats per institute",
+      "certificate": "Migration certificate from Divisional Commissioner or Relief Commissioner, J&K"
+    }
+  },
+
+  "rank_types": {
+    "CRL": {
+      "fullName": "Common Rank List",
+      "used_for": "OPEN category seats",
+      "how_it_works": "All JEE candidates ranked together regardless of category"
+    },
+    "OBC_NCL_rank": {
+      "used_for": "OBC-NCL category seats",
+      "how_it_works": "Separate rank list prepared from all OBC-NCL candidates who qualify JEE"
+    },
+    "SC_rank": "Separate rank list for SC candidates",
+    "ST_rank": "Separate rank list for ST candidates",
+    "EWS_rank": "Separate rank list for EWS candidates (similar to CRL range)",
+    "PwD_rank": "Rank within each category for PwD candidates",
+    "Preparatory_rank": "Rank for SC/ST/PwD candidates for preparatory course seats at IITs (suffixed with P in JoSAA data)",
+
+    "JEE_Main_specific": {
+      "NTA_score": "Score out of 300 in JEE Main",
+      "Percentile": "Percentile score based on all candidates who appeared. Different from NTA score.",
+      "CRL_rank": "All India rank in JEE Main based on percentile. Used for NIT/IIIT/GFTI admissions.",
+      "Category_rank": "Rank within category (OBC/SC/ST/EWS). Used for reserved category seats.",
+      "normalization": "Multi-session normalization applied to equalize difficulty across sessions",
+      "best_of_two": "Best score from two attempts considered (from 2026 onwards)"
+    },
+
+    "JEE_Advanced_specific": {
+      "Paper_1_and_2": "Both papers mandatory. Both marks counted.",
+      "Zone_rank": "IITs divided into zones. Zone rank for tiebreaking.",
+      "Aggregate_marks": "Sum of Paper 1 and Paper 2 marks",
+      "Minimum_aggregate": "Must score minimum marks in each paper AND aggregate",
+      "Used_for": "IIT admissions only"
+    },
+
+    "tiebreaker_rules_JEE_Main": [
+      "Higher NTA score in Mathematics",
+      "Higher NTA score in Physics",
+      "Higher NTA score in Chemistry",
+      "Older candidate gets better rank"
+    ],
+
+    "tiebreaker_rules_JEE_Advanced": [
+      "Higher aggregate marks",
+      "Higher marks in Mathematics",
+      "Higher marks in Physics",
+      "Older candidate"
+    ]
+  },
+
+  "class12_eligibility": {
+    "minimum_marks_general_obc_ews": "75% aggregate in Class 12",
+    "minimum_marks_sc_st_pwd": "65% aggregate in Class 12",
+    "OR": "Top 20 percentile of successful candidates in their respective state board",
+    "which_is_applied": "Whichever is MORE relaxed (75% OR top 20 percentile, whichever gives benefit to candidate)",
+    "year_of_passing": "Class 12 must have been passed in the year of JEE or one year prior (2-year window)",
+    "subjects_required": {
+      "BTech": "Physics, Mathematics, and any one of Chemistry/Biology/Biotechnology/Technical Vocational",
+      "BArch": "Physics, Chemistry, Mathematics with 50% marks",
+      "BPlan": "Mathematics with 50% marks"
+    },
+    "year_window_example": "For JEE 2026, Class 12 must be from 2026 or 2026 (first attempt in 2026 or 2026)"
+  },
+
+  "reservation_seat_calculation_example": {
+    "example_institute_program_total_seats": 60,
+    "OPEN_GN": 18,
+    "OBC_NCL_GN": 16,
+    "SC_GN": 9,
+    "ST_GN": 5,
+    "EWS_GN": 6,
+    "Female_supernumerary_at_IITs": "Additional seats calculated separately",
+    "PwD_horizontal": "5% of each category's seats",
+    "note": "Exact numbers depend on total seats and rounding rules in JoSAA business rules"
+  }
+}

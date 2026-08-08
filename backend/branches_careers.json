@@ -1,0 +1,176 @@
+{
+  "source": "NIRF data, industry reports, placement data from institute websites 2026",
+  "lastVerified": "2026",
+
+  "branches": {
+    "CSE": {
+      "fullName": "Computer Science and Engineering",
+      "duration": "4 years B.Tech",
+      "what_you_study": "Programming, algorithms, data structures, OS, DBMS, computer networks, AI/ML, software engineering, theory of computation",
+      "career_paths": ["Software Development", "Product Management", "Data Science / ML Engineer", "DevOps / Cloud", "Cybersecurity", "Research / PhD", "Startup Founder", "Quant Finance"],
+      "top_hiring_sectors": ["IT / Product Companies", "Finance (Quant/HFT)", "Consulting", "Startups", "FAANG-type companies"],
+      "typical_fresher_salary_LPA": {"top_IITs": "25-80+", "other_IITs": "15-40", "top_NITs": "12-30", "other_NITs": "6-15"},
+      "higher_studies": "MS (abroad), MTech, MBA, PhD - all very common",
+      "demand_trend": "Rising sharply. Highest cutoffs across all institutes.",
+      "best_institutes_for_branch": ["IIT Bombay", "IIT Delhi", "IIT Madras", "IIT Kanpur", "IIT Kharagpur", "NIT Trichy", "NIT Warangal", "NIT Karnataka", "IIIT Hyderabad", "IIIT Bangalore"],
+      "note": "CSE cutoffs have risen every year 2018-2026. Even CSE at new IITs is highly competitive."
+    },
+
+    "IT": {
+      "fullName": "Information Technology",
+      "what_you_study": "Similar to CSE. More focus on software systems, web technologies, databases, networking",
+      "career_paths_similar_to": "CSE",
+      "vs_CSE": "IT is very similar to CSE in most institutes. Minor curriculum difference. Placement outcomes nearly identical at good institutes.",
+      "typical_fresher_salary_LPA": {"top_NITs": "10-25", "other_NITs": "6-15"},
+      "demand_trend": "High and stable",
+      "best_institutes": ["NIT Trichy", "NIT Calicut", "NIT Warangal", "NIT Karnataka"]
+    },
+
+    "ECE": {
+      "fullName": "Electronics and Communication Engineering",
+      "what_you_study": "Analog/digital electronics, VLSI, signal processing, communication systems, embedded systems, microprocessors",
+      "career_paths": ["VLSI / Chip Design", "Embedded Systems", "Telecom", "Defense / DRDO / ISRO", "Software (many ECE grads go into software)", "Graduate studies in ECE or CS"],
+      "top_hiring_sectors": ["Semiconductors (Intel, Qualcomm, Texas Instruments)", "Telecom (Ericsson, Nokia)", "Defense PSUs", "IT companies (software roles)"],
+      "typical_fresher_salary_LPA": {"top_IITs": "20-60", "other_IITs": "10-25", "top_NITs": "8-20", "other_NITs": "5-12"},
+      "higher_studies": "Very popular for MS/MTech in ECE, VLSI, Signal Processing. Also common to switch to CS for MS.",
+      "demand_trend": "Stable. VLSI sector growing rapidly in India post-semiconductor push.",
+      "best_institutes_VLSI": ["IIT Madras", "IIT Bombay", "IIT Kharagpur", "NIT Trichy"],
+      "note": "ECE from top institutes often leads to VLSI/chip design roles at Intel, Qualcomm worth 20-40 LPA fresh. Software jobs also very accessible."
+    },
+
+    "EEE": {
+      "fullName": "Electrical and Electronics Engineering",
+      "also_called": "Electrical Engineering (EE) at IITs",
+      "what_you_study": "Power systems, electric machines, control systems, power electronics, digital systems",
+      "career_paths": ["Power sector (NTPC, BHEL, Power Grid)", "PSU jobs via GATE", "EV sector", "Software (career switch common)", "VLSI", "Core electrical companies"],
+      "typical_fresher_salary_LPA": {"top_IITs_EE": "15-50", "NITs_EEE": "6-15"},
+      "higher_studies": "GATE for M.Tech / PSU. MS abroad in EE or CS. MBA.",
+      "demand_trend": "Stable. EV revolution creating new demand. PSU sector always stable.",
+      "note": "At IITs, EE is considered very prestigious and flexible. Many IIT EE grads go into software, finance, or VLSI."
+    },
+
+    "Mechanical": {
+      "fullName": "Mechanical Engineering",
+      "what_you_study": "Thermodynamics, fluid mechanics, manufacturing, machine design, CAD/CAM, robotics",
+      "career_paths": ["Core manufacturing (Tata Steel, L&T, Mahindra)", "Automobile sector", "PSUs (NTPC, BHEL, Oil sector) via GATE", "Aerospace (ISRO, HAL, DRDO)", "Consulting", "MBA (very common)", "Software (career switch - many do this)"],
+      "typical_fresher_salary_LPA": {"top_IITs_Mech": "12-40", "NITs_Mech": "5-12"},
+      "higher_studies": "GATE for PSU/MTech. MBA very popular. MS in ME or related abroad.",
+      "demand_trend": "Stable but slower than CS/ECE. Manufacturing and core sector hiring reliable.",
+      "note": "Mechanical from top IITs still has strong placements. NITs also have solid placement for Mech but packages lower than CS."
+    },
+
+    "Civil": {
+      "fullName": "Civil Engineering",
+      "what_you_study": "Structural engineering, transportation, geotechnical, water resources, environmental engineering, surveying",
+      "career_paths": ["Government jobs (UPSC ESE, state PSCs)", "PSUs (AAI, NHAI, RVNL)", "Private construction (L&T, HCC, Gammon)", "Real estate", "Consulting", "GATE for MTech/PSU", "MBA"],
+      "typical_fresher_salary_LPA": {"top_IITs_Civil": "8-20", "NITs_Civil": "4-10"},
+      "demand_trend": "Stable. Government infrastructure push creating demand. But private sector packages lower than CS.",
+      "higher_studies": "GATE for PSU is most common path. MTech in Structural/Geotech. MS abroad.",
+      "note": "Civil engineering offers strong government sector career path. Packages are lower than CS/ECE but job security in government roles is very high."
+    },
+
+    "Chemical": {
+      "fullName": "Chemical Engineering",
+      "what_you_study": "Process engineering, thermodynamics, mass transfer, heat transfer, reaction engineering, petrochemicals",
+      "career_paths": ["Oil & Gas (IOCL, ONGC, BPCL)", "Pharmaceuticals (Cipla, Dr. Reddy's)", "Petrochemicals", "Process consulting", "Research", "MBA", "MS abroad in ChemE or related"],
+      "typical_fresher_salary_LPA": {"IITs_Chemical": "10-30", "NITs_Chemical": "5-12"},
+      "demand_trend": "Stable. Niche sector but reliable.",
+      "best_institutes": ["IIT Bombay", "IIT Delhi", "IIT Madras", "IIT Kharagpur", "NIT Trichy"]
+    },
+
+    "Aerospace": {
+      "fullName": "Aerospace Engineering",
+      "what_you_study": "Aerodynamics, propulsion, structures, flight mechanics, avionics",
+      "career_paths": ["ISRO", "DRDO", "HAL", "NAL", "Air India / airlines (tech side)", "Defense", "MS/PhD abroad (very common)"],
+      "typical_fresher_salary_LPA": {"IITs": "8-25"},
+      "availability": "Only at few IITs (IIT Bombay, IIT Madras, IIT Kharagpur, IIT Kanpur)",
+      "higher_studies": "MS/PhD abroad very common for this branch. US universities have strong aerospace programs.",
+      "note": "Pure aerospace jobs in India mostly in government (ISRO, DRDO, HAL). Private aviation sector growing but limited. Many grads go into software or pursue MS abroad."
+    },
+
+    "Metallurgy": {
+      "fullName": "Metallurgical and Materials Engineering",
+      "also_called": "Materials Science, Materials Engineering",
+      "what_you_study": "Properties of metals, alloys, ceramics, polymers, composites. Processing, characterization.",
+      "career_paths": ["Steel plants (Tata Steel, JSW, SAIL)", "Defense materials", "Research", "MS/PhD abroad", "MBA (career switch common)", "Software (career switch)"],
+      "typical_fresher_salary_LPA": {"IITs": "6-20", "NITs": "4-10"},
+      "demand_trend": "Niche. Core metallurgy jobs exist but fewer than CS/ECE.",
+      "note": "Often called 'unpopular' branch but IIT Bombay Metallurgy still places students well. Many go for higher studies or switch careers."
+    },
+
+    "Mining": {
+      "fullName": "Mining Engineering",
+      "what_you_study": "Mining methods, rock mechanics, mine safety, mineral processing, mine management",
+      "career_paths": ["Coal India", "NMDC", "MECL", "Private mining companies", "Consulting"],
+      "typical_fresher_salary_LPA": {"IITs_NITs": "5-15"},
+      "availability": "IIT Kharagpur, IIT (ISM) Dhanbad, NIT Rourkela, NIT Srinagar",
+      "note": "IIT (ISM) Dhanbad is the premier institute for mining. Government mining PSUs are primary employers."
+    },
+
+    "Naval_Architecture": {
+      "fullName": "Naval Architecture and Ocean Engineering",
+      "what_you_study": "Ship design, marine structures, ocean engineering, hydrodynamics",
+      "career_paths": ["Shipyards (Mazagon Dock, Cochin Shipyard)", "Navy / Coast Guard (technical)", "Offshore oil platforms", "MS abroad"],
+      "availability": "IIT Madras, IIT Kharagpur",
+      "note": "Very niche. Good for those interested in maritime sector."
+    },
+
+    "Engineering_Physics": {
+      "fullName": "Engineering Physics",
+      "what_you_study": "Quantum mechanics, solid state physics, optics, electromagnetic theory, advanced mathematics. Rigorous theoretical foundation.",
+      "career_paths": ["Research (IISc, TIFR)", "MS/PhD abroad in Physics or related", "Semiconductor/VLSI (some)", "Quant finance (strong math background)", "Defense research"],
+      "availability": "IIT Bombay, IIT Delhi, IIT Madras, IIT Kanpur, IIT Roorkee",
+      "note": "Very research-oriented degree. Best for students targeting PhD/research. Not the best choice if you want software job without further study."
+    },
+
+    "Mathematics_and_Computing": {
+      "fullName": "Mathematics and Computing",
+      "also_called": "B.Tech in Mathematics and Computing",
+      "what_you_study": "Pure mathematics + computer science. Strong theoretical CS, algorithms, statistics, probability, cryptography.",
+      "career_paths": ["Software (FAANG-type roles)", "Quant finance", "Data science", "Research / Academia", "ML/AI research"],
+      "availability": "IIT Delhi, IIT Bombay, IIT Kharagpur, IIT Guwahati, IIT Roorkee",
+      "note": "Highly sought after at IITs. Cutoffs close to or even better than CSE at some IITs. Excellent for quant finance and top software roles.",
+      "placement_outcome": "Similar to or better than CSE at same IIT"
+    },
+
+    "Statistics_and_Data_Science": {
+      "fullName": "Statistics and Data Science / B.Stat",
+      "what_you_study": "Statistics, probability, machine learning, data analysis, applied mathematics",
+      "career_paths": ["Data scientist", "ML engineer", "Quant analyst", "Research", "Higher studies"],
+      "availability": "IIT Bombay (B.Stat recently), IIT Kanpur, IIIT Hyderabad, some NITs",
+      "demand_trend": "Rising rapidly with AI/ML boom"
+    },
+
+    "Biotech_Biomed": {
+      "fullName": "Biotechnology / Biomedical Engineering",
+      "what_you_study": "Molecular biology, genetics, bioprocessing, medical devices, bioinformatics",
+      "career_paths": ["Pharma companies", "Biotech startups", "Research / PhD (very common)", "Medical devices", "MS/PhD abroad in Life Sciences or Biomedical"],
+      "typical_fresher_salary_LPA": {"IITs": "6-20", "NITs": "4-8"},
+      "note": "Campus placement in pure biotech is limited. Most students either go for higher studies or switch to software. Strong research career path."
+    },
+
+    "Architecture": {
+      "fullName": "Architecture (B.Arch)",
+      "duration": "5 years",
+      "requires": "JEE Main Paper 2A and AAT (for IIT BArch)",
+      "what_you_study": "Architectural design, building materials, urban planning, history of architecture, structures",
+      "career_paths": ["Architectural firms", "Urban planning", "Government PWD/CPWD", "Interior design", "Real estate", "Further studies (M.Arch)"],
+      "best_institutes": ["IIT Roorkee", "IIT Kharagpur", "NIT Trichy", "NIT Calicut", "NIT Hamirpur"],
+      "note": "Very different from engineering branches. Design-oriented. Portfolio matters in career."
+    }
+  },
+
+  "branch_selection_advice": {
+    "if_rank_is_very_good": "Top IIT with any branch often better than lesser NIT with CSE. IIT brand opens more doors.",
+    "if_rank_is_moderate": "Consider CSE/IT at top NIT vs other branch at old IIT. CSE at NIT Trichy vs Mechanical at IIT Patna - difficult call depending on career goals.",
+    "for_software_career_any_branch": "Many core branch graduates (Mech, Civil, ECE) successfully enter software via competitive programming, internships, and switching. The branch is not a hard barrier.",
+    "branch_change_at_IITs": "Possible after first year based on CGPA. Competitive. Usually top 5-10% of batch can change.",
+    "branch_change_at_NITs": "Available at some NITs but less common than IITs. Institute-specific rules.",
+    "dual_degree_vs_btech": {
+      "dual_degree": "B.Tech + M.Tech in 5 years at IITs. Must complete M.Tech research/project.",
+      "pros": "Integrated PG degree. Research exposure. May have slightly better research-oriented placements.",
+      "cons": "One extra year. If you decide to switch after 3rd year, difficult. Thesis requirement.",
+      "recommendation": "Take dual degree only if you are interested in research or specific technical depth in that field."
+    }
+  }
+}
