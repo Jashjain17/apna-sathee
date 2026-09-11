@@ -8,7 +8,7 @@
 
 ---
 
-## 📁 Repository Architecture
+##  Repository Architecture
 
 ```text
 apna-sathee/
@@ -28,7 +28,7 @@ apna-sathee/
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 - **Full-Stack Integration:** Modular frontend connected to a RESTful backend.
 - **Unified Monorepo:** Clean directory structure isolating client and server dependencies.
@@ -37,7 +37,7 @@ apna-sathee/
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Domain | Technologies Used |
 | :--- | :--- |
@@ -48,7 +48,7 @@ apna-sathee/
 
 ---
 
-## 🚀 Quick Start & Installation
+##  Quick Start & Installation
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) (v18 or higher)
