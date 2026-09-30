@@ -153,13 +153,12 @@
 
     async function loadData() {
       try {
-        // Extract promo code from URL (e.g., /partner/JASH10)
-        // Clean URL to handle trailing slashes or query params
+        
         const path = window.location.pathname.replace(/\/$/, '');
         const pathParts = path.split('/');
         let code = pathParts[pathParts.length - 1];
         
-        // Handle cases where the URL might just be /partner or /partner/
+        
         if (!code || code.toLowerCase() === 'partner') {
           code = 'UNKNOWN';
         }
@@ -179,21 +178,18 @@
           throw new Error('Partner Code Not Found');
         }
 
-        // The influencer's own document already tracks their total referrals and earnings!
-        // This is 1 document read and completely protects student data.
+        
         const affiliateData = snapshot.docs[0].data();
         
         const count = affiliateData.total_successful_referrals || 0;
         
-        // You can either use their tracked balance or strictly use Count * 74.85
-        // Let's use count * 74.85 as requested, or fallback to their unpaid cash balance.
-        // I will stick to your exact requested math: count * 74.85
+        
         const earnings = count * 74.85;
 
-        // Animate numbers
+       
         document.getElementById('total-conversions').textContent = count;
         
-        // Format as Indian Rupees
+
         const formatter = new Intl.NumberFormat('en-IN', {
           style: 'currency',
           currency: 'INR',
