@@ -7,31 +7,30 @@ import json
 import re
 from dotenv import load_dotenv
 
-# Load secret key from .env file
+
 load_dotenv()
 
 app = FastAPI()
 
-# Allow your frontend to talk to this backend
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # In production, change this to your actual website URL
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Set up the DeepSeek client
+
 client = AsyncOpenAI(
     api_key=os.getenv("DEEPSEEK_API_KEY"),
     base_url="https://api.deepseek.com"
 )
 
-# Define what data the frontend will send
 class ChatRequest(BaseModel):
     message: str
 
-# Load Official Rules JSON for RAG
+
 official_rules_chunks = []
 try:
     with open('josaa_official_rules.json', 'r', encoding='utf-8') as f:
@@ -39,7 +38,7 @@ try:
 except Exception as e:
     print(f"Warning: Could not load official rules json: {e}")
 
-# Load additional general knowledge contexts
+
 knowledge_context = ""
 try:
     counselling = json.load(open('counselling_process.json', 'r', encoding='utf-8'))
@@ -65,7 +64,7 @@ def get_relevant_context(query, chunks, top_k=4):
     if not chunks:
         return ""
     
-    # Basic keyword extraction matching
+   
     query_words = [w for w in re.sub(r'[^a-z0-9\s]', '', query.lower()).split() if len(w) > 2]
     
     scored_chunks = []
@@ -153,7 +152,7 @@ async def get_compare_verdict(data: dict):
             ctx2 = fetch_tavily(q2)
             tavily_context = f"--- Data for Option 1 ({c1}) ---\n{ctx1}\n\n--- Data for Option 2 ({c2}) ---\n{ctx2}"
                 
-        # 2. DeepSeek Hookup
+      
         system_prompt = f"""You are the elite Senior AI Career Counselor at Apna Sathee. Your task is to provide a comprehensive, deep-dive comparison between two engineering choices selected by an aspirant:
 Option 1: {c1} {b1}
 Option 2: {c2} {b2}
