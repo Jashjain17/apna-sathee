@@ -1,9 +1,8 @@
-// --- Firebase CDN Imports ---------------------------------------------------
+
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js';
 import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, increment } from 'https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js';
 
-// --- Firebase Config & Initialization ---------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyCh1MJ9gLfcw0qnXIIyBm_HZPdsYP8X6AQ",
   authDomain: "apna-sathee.firebaseapp.com",
@@ -17,16 +16,16 @@ const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 const provider = new GoogleAuthProvider();
 
-// --- Global User Subscription State -----------------------------------------
-let currentUserTier = null;      // null = logged out, 'Free', or 'Pro'
+
+let currentUserTier = null;      
 let currentMessagesUsed = 0;
 let currentUserUid = null;
 
-// --- Tier 1 Affiliate/Influencer Coupon State --------------------------------
-let appliedAffiliateCode = null;      // The validated affiliate referral_code
-let appliedAffiliateUid = null;       // The UID of the affiliate whose code was used
-let affiliateDiscountApplied = false; // Whether a 10% discount is active
-const BASE_PRICE_PAISE = 49900;       // ₹499 in paise
+
+let appliedAffiliateCode = null;      
+let appliedAffiliateUid = null;       
+let affiliateDiscountApplied = false; 
+const BASE_PRICE_PAISE = 49900;       
 const AFFILIATE_DISCOUNT_PERCENT = 10;
 const AFFILIATE_COMMISSION_PERCENT = 15;
 
@@ -42,12 +41,12 @@ function openPaywallModal() {
     return;
   }
 
-  // Reset coupon state every time the modal opens so stale codes don't carry over
+  
   appliedAffiliateCode = null;
   appliedAffiliateUid = null;
   affiliateDiscountApplied = false;
 
-  // Reset coupon UI elements
+  
   const codeInput = document.getElementById('couponCodeInput');
   const statusMsg = document.getElementById('couponStatusMsg');
   const priceEl  = document.querySelector('.paywall-price');
@@ -68,7 +67,7 @@ function openPaywallModal() {
   if (modal) modal.style.display = 'flex';
 }
 
-// Expose globally so inline onclick handlers and external scripts can use it
+
 window.openPaywallModal = openPaywallModal;
 
 function hidePaywall() {
@@ -123,7 +122,6 @@ function updateProUI(isPro) {
   }
 }
 
-// --- Auth UI Wiring ---------------------------------------------------------
 document.addEventListener('DOMContentLoaded', () => {
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
@@ -131,11 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const userAvatar = document.getElementById('userAvatar');
   const userName = document.getElementById('userName');
 
-  // Paywall close button
   const paywallCloseBtn = document.getElementById('paywallCloseBtn');
   if (paywallCloseBtn) paywallCloseBtn.addEventListener('click', hidePaywall);
 
-  // Close paywall on backdrop click
+
   const paywallModal = document.getElementById('paywallModal');
   if (paywallModal) paywallModal.addEventListener('click', (e) => {
     if (e.target === paywallModal) hidePaywall();
@@ -143,12 +140,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (loginBtn) {
     loginBtn.addEventListener('click', async () => {
-      // Check if the user ticked the consent box
+      
       const isAgreed = document.getElementById('legalAgreeCheckbox')?.checked;
 
       if (!isAgreed) {
         alert('Please read and agree to the Privacy Policy and Terms & Conditions to proceed.');
-        return; // Stops the login execution right here!
+        return; 
       }
 
       try {
@@ -173,12 +170,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       console.log("👤 User logged in:", user.uid);
       
-      // Fire Meta Pixel Registration Event
+      
       if (typeof fbq === 'function') {
         fbq('track', 'CompleteRegistration');
       }
 
-      // Show profile, hide login & consent UI
+      
       if (loginBtn) loginBtn.style.display = 'none';
 
       const headerLegalWrapper = document.getElementById('headerLegalWrapper');
@@ -191,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (userName) userName.textContent = user.displayName ? user.displayName.split(' ')[0] : 'User';
 
-      // Fetch user profile from Firestore
+    
       currentUserUid = user.uid;
       let tier = 'Free';
       let userData = null;
@@ -203,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (userSnap.exists()) {
           userData = userSnap.data();
         } else if (user.email) {
-          // Fallback query by email if doc.id != user.uid (e.g. manually assigned or pre-existing docs)
+          
           try {
             const usersCol = collection(db, 'users');
             const emailQuery = query(usersCol, where('email', '==', user.email));
@@ -222,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
           currentMessagesUsed = userData.free_messages_used || 0;
           console.log("📊 User subscription tier from DB:", tier, userData);
         } else {
-          // Brand new user - check if we have cached local pro status
+          
           const cachedPro = (localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') || (localStorage.getItem('apnaSathee_isPro') === 'true');
           tier = cachedPro ? 'Pro' : 'Free';
 
@@ -251,12 +248,12 @@ document.addEventListener('DOMContentLoaded', () => {
         currentMessagesUsed = 0;
       }
 
-      // Check local cache if DB returned Free but user has paid status saved locally
+      
       if (tier !== 'Pro' && ((localStorage.getItem('apnaSathee_isPro_' + user.uid) === 'true') || (localStorage.getItem('apnaSathee_isPro') === 'true'))) {
         tier = 'Pro';
       }
 
-      // Explicit Email Pro Verification (Bypasses Firestore Security Rule restrictions for known paid accounts)
+      
       if (user.email) {
         const cleanEmail = user.email.trim().toLowerCase();
         const knownProEmails = [
@@ -285,16 +282,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isUserPro()) {
         localStorage.setItem('apnaSathee_isPro_' + user.uid, 'true');
         localStorage.setItem('apnaSathee_isPro', 'true');
-        // Self-heal: sync UID doc in Firestore so subsequent reads by UID find subscription_tier: 'Pro'
+        
         const userRef = doc(db, 'users', user.uid);
         setDoc(userRef, { subscription_tier: 'Pro', isPro: true, email: user.email }, { merge: true }).catch(() => {});
       }
 
-      // Update PRO badge visibility and UI controls
+      
       updateProUI(isUserPro());
 
     } else {
-      // User is logged out
+      
       if (loginBtn) loginBtn.style.display = 'flex';
 
       const headerLegalWrapper = document.getElementById('headerLegalWrapper');
@@ -315,10 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- Global Upgrade Entry Point (opens Paywall Modal) -----------------------
-  // ALL upgrade buttons across the site should call this function.
-  // This shows the paywall modal with coupon UI; Razorpay ONLY opens from
-  // the "Proceed to Payment" button inside the modal.
+
   window.openProCheckout = function() {
     if (isUserPro()) {
       alert("🎉 You already have Apna Sathee Pro active on your account!");
@@ -332,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const modal = document.getElementById('paywallModal') || document.querySelector('.paywall-modal');
       if (modal) modal.style.display = 'none';
 
-      // Highlight the login button in the dashboard header
+    
       setTimeout(() => {
           const loginBtnInHeader = document.getElementById('loginBtn');
           const dashboardHeader = document.querySelector('.dashboard-header');
@@ -361,21 +355,21 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // User is logged in — show the paywall modal (not Razorpay directly)
+  
     openPaywallModal();
   };
 
-  // --- Internal: Launch Razorpay (ONLY called from Paywall Modal CTA) ---------
+  
   function _launchRazorpay() {
     if (!currentUserUid) {
       alert('Please login first!');
       return;
     }
 
-    // Grab stored referral code for checkout payload (Tier 2 peer referral)
+    
     const storedRefCode = localStorage.getItem('apnaSathee_ref_code') || '';
 
-    // Calculate final checkout amount (with affiliate discount if applied)
+  
     const finalAmountPaise = affiliateDiscountApplied
       ? Math.round(BASE_PRICE_PAISE * (1 - AFFILIATE_DISCOUNT_PERCENT / 100))
       : BASE_PRICE_PAISE;
@@ -400,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
       "handler": function (response) {
         console.log("✅ Razorpay Payment Success:", response.razorpay_payment_id);
         
-        // Fire Meta Pixel Purchase Event
+        
         if (typeof fbq === 'function') {
           fbq('track', 'Purchase', { value: 499, currency: 'INR' });
         }
@@ -412,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
 
-          // 1. OPTIMISTIC UI UPDATE & LOCAL STORAGE CACHE (Do this instantly)
+          
           currentUserTier = 'Pro';
           if (user && user.uid) {
             localStorage.setItem('apnaSathee_isPro_' + user.uid, 'true');
@@ -440,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (exportPdfBtn) exportPdfBtn.disabled = (!lastChoiceList || lastChoiceList.length === 0);
           }
 
-          // 2. BACKGROUND FIREBASE SYNC (use setDoc merge to guarantee update even if doc doesn't exist)
+          
           console.log("🔄 Updating Firebase for user:", user.uid);
           const userRef = doc(db, 'users', user.uid);
           setDoc(userRef, { 
@@ -451,17 +445,17 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(() => console.log("✅ Firebase Updated to Pro!"))
             .catch((error) => console.error("Firebase sync error (background):", error));
 
-          // 3. REFERRAL PROCESSING — credit the referrer (Tier 2 peer referral)
+          
           if (storedRefCode) {
             processReferralConversion(storedRefCode, user.uid, finalAmountPaise);
           }
 
-          // 4. AFFILIATE COMMISSION — credit the influencer (Tier 1)
+          
           if (appliedAffiliateCode && appliedAffiliateUid) {
             processAffiliateCommission(appliedAffiliateUid, user.uid, finalAmountPaise);
           }
 
-          // Reset coupon state after successful payment
+          
           appliedAffiliateCode = null;
           appliedAffiliateUid = null;
           affiliateDiscountApplied = false;
@@ -483,13 +477,13 @@ document.addEventListener('DOMContentLoaded', () => {
     window.rzp1.open();
   }
 
-  // --- "Proceed to Payment" Button (inside Paywall Modal → Razorpay) ----------
+  
   const upgradeBtn = document.getElementById('upgradeBtn');
   if (upgradeBtn) {
     upgradeBtn.addEventListener('click', _launchRazorpay);
   }
 
-  // --- Influencer Coupon Code: Apply Button -----------------------------------
+  
   const applyCouponBtn = document.getElementById('applyCouponBtn');
   if (applyCouponBtn) {
     applyCouponBtn.addEventListener('click', async () => {
@@ -505,28 +499,28 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      // Disable button during validation
+      
       applyCouponBtn.textContent = 'Checking...';
       applyCouponBtn.disabled = true;
 
       try {
-        // Query Firestore: find a user where referral_code == enteredCode AND is_affiliate == true
+        
         const usersRef = collection(db, 'users');
         const q = query(usersRef, where('referral_code', '==', enteredCode), where('is_affiliate', '==', true));
         const snapshot = await getDocs(q);
 
         if (snapshot.empty) {
-          // Invalid code
+          
           statusMsg.textContent = 'Invalid coupon code. Please check and try again.';
           statusMsg.style.color = '#f87171';
           statusMsg.style.display = 'block';
           appliedAffiliateCode = null;
           appliedAffiliateUid = null;
           affiliateDiscountApplied = false;
-          // Reset price display
+          
           if (priceEl) priceEl.innerHTML = '₹499 <span>/ one-time</span>';
         } else {
-          // Valid affiliate code found
+          
           const affiliateDoc = snapshot.docs[0];
           appliedAffiliateCode = enteredCode;
           appliedAffiliateUid = affiliateDoc.id;
@@ -538,10 +532,10 @@ document.addEventListener('DOMContentLoaded', () => {
           statusMsg.style.color = '#34d399';
           statusMsg.style.display = 'block';
 
-          // Update the visible price
+          
           if (priceEl) priceEl.innerHTML = `<s style="color:#64748b;font-size:0.85em;">₹499</s> ₹${discountedPrice} <span>/ one-time</span>`;
 
-          // Lock the input so they can't change it
+          
           codeInput.disabled = true;
           codeInput.style.opacity = '0.6';
           applyCouponBtn.textContent = '✓ Applied';
@@ -549,7 +543,7 @@ document.addEventListener('DOMContentLoaded', () => {
           applyCouponBtn.style.color = '#34d399';
           applyCouponBtn.style.border = '1px solid rgba(16, 185, 129, 0.4)';
           console.log(`🏷️ Affiliate coupon applied: ${enteredCode} (affiliate UID: ${appliedAffiliateUid})`);
-          return; // Keep button disabled in success state
+          return; 
         }
       } catch (error) {
         console.error('Coupon validation error:', error);
@@ -563,7 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Referral URL Catcher (First Click Wins) --------------------------------
+  
   const urlParams = new URLSearchParams(window.location.search);
   const incomingRefCode = urlParams.get('ref');
   if (incomingRefCode && !localStorage.getItem('apnaSathee_ref_code')) {
@@ -572,7 +566,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// --- Existing Application Code ----------------------------------------------
+
 const $ = (id) => document.getElementById(id);
 const listen = (id, event, fn) => {
   const el = $(id);
@@ -634,7 +628,6 @@ async function loadDataFiles() {
     console.log('Fetched Data: main_cutoffs.json', mainCutoffsCache.length);
     console.log('Fetched Data: institutes_master.json', masterInstitutes);
 
-    // Pre-calculate stats for recommendation engine
     const allCutoffs = cutoffsCache;
     const years = [...new Set(allCutoffs.map(r => r.year))];
     latestYearVal = Math.max(...years);
@@ -655,7 +648,7 @@ async function loadDataFiles() {
         if (!statsMap.has(key)) statsMap.set(key, { sum: 0, count: 0, years: new Set() });
         const stats = statsMap.get(key);
         
-        // Prevent duplicate corrupted rows in the dataset from the same year from inflating the average
+        
         if (stats.years.has(row.year)) continue;
 
         const raw = row.closingRank;
@@ -702,14 +695,14 @@ function normalizeName(value = '') {
 }
 
 function getSeatTypes(category, pwdStatus) {
-  // 1. Map the UI category string to the exact base string JoSAA uses
+  
   let base;
   switch (category) {
     case 'GEN-EWS':
       base = 'EWS';
       break;
     case 'OBC-NCL':
-      base = 'OBC- NCL'; // Exact JoSAA JSON string
+      base = 'OBC- NCL'; 
       break;
     case 'OPEN-PwD':
       base = 'OPEN (PwD)';
@@ -726,15 +719,15 @@ function getSeatTypes(category, pwdStatus) {
       break;
   }
 
-  // If the selected category is already a PwD variant, just return it
+  
   if (base.includes('(PwD)')) {
     return [base];
   }
 
-  // 2. Generate the seat types array
+  
   const types = [base];
   
-  // 3. Append the PwD variant if the user selected 'Yes' for PWD status
+  
   if (pwdStatus === 'yes' || pwdStatus === 'Yes') {
     types.push(base + ' (PwD)');
   }
@@ -751,40 +744,37 @@ function classifyBand(studentRank, avgClosingRank) {
   if (R > 0.85 * CR && R <= 1.05 * CR) return 'BALANCED';
   if (R > 1.05 * CR && R <= 1.20 * CR) return 'AMBITIOUS';
 
-  return null; // Drop anything R > 1.20 * CR
+  return null; 
 }
 
 function normalizeBranchQuery(branch) {
   const value = branch.trim().toLowerCase();
-  // Map student shorthand to the SHORTEST unique substring that will match
-  // against official JoSAA program names via .includes().  Keep these
-  // short: 'electronics' catches 'Electronics and Communication Engineering',
-  // 'Electronics Engineering', 'Electronics and Electrical', etc.
+  
   const aliases = {
-    // Computer Science variants
+    
     cse: 'computer science',
     cs: 'computer science',
     csd: 'computer science',
     csbs: 'computer science',
-    // Information Technology
+    
     it: 'information technology',
-    // Electronics - short base catches all ECE / EEE variants
+    
     ece: 'electronics',
     ec: 'electronics',
-    // Electrical - catches 'Electrical Engineering', 'Electrical and Electronics', etc.
+    
     eee: 'electrical',
     ee: 'electrical',
-    // Mechanical
+    
     mech: 'mechanical',
     me: 'mechanical',
-    // Other engineering branches
+    
     chem: 'chemical',
     aero: 'aerospace',
     biotech: 'biotechnology',
     civil: 'civil',
-    meta: 'metallurg',        // catches both 'metallurgical' and 'metallurgy'
+    meta: 'metallurg',        
     mining: 'mining',
-    // Interdisciplinary / newer branches
+    
     mnc: 'mathematics and computing',
     ai: 'artificial intelligence',
     ml: 'artificial intelligence',
@@ -847,17 +837,7 @@ function matchStrictProfile(record, profile, instState) {
   return true;
 }
 
-/**
- * Robust IIT identification based on the institute NAME, not the
- * instituteType field (which can be wrong or missing after extraction).
- *
- * Rules:
- * - 'IIT Bombay', 'IIT (BHU) Varanasi', 'IIT (ISM) Dhanbad' -> true
- * - 'IIIT Pune', 'IIIT Dharwad' -> false  (triple-I)
- * - 'NIT Trichy', 'BIT Mesra', 'IIEST Shibpur' -> false
- * - 'Indian Institute of Technology Madras' -> true
- * - 'Indian Institute of Information Technology Allahabad' -> false
- */
+
 function isStrictlyIIT(instituteName) {
   if (!instituteName) return false;
   const name = instituteName.toLowerCase();
@@ -905,7 +885,7 @@ function processAndSortDataset(cache, currentSeatStats, targetRank, targetRound,
     const rawClosing = record.closingRank;
     const rawClosingStr = String(rawClosing);
     
-    // Completely remove preparatory ranks
+  
     if (rawClosingStr.toLowerCase().includes('p')) {
       continue;
     }
@@ -1076,7 +1056,7 @@ let preferenceState = {
 };
 const savedComparisonsKey = "apnaSaathiSavedComparisons";
 
-// --- Preference localStorage helpers ----------------------------------------
+
 function savePreferenceToStorage() {
   try {
     localStorage.setItem(PREF_STORAGE_KEY, JSON.stringify(preferenceState.rows));
@@ -1105,7 +1085,7 @@ function loadPreferenceFromStorage() {
   }
 }
 
-// Hydrate immediately on script load
+
 loadPreferenceFromStorage();
 const screenLabels = {
   choiceScreen: "Dashboard",
@@ -1152,7 +1132,7 @@ function saveProfile(profileData = null) {
   const next = profileData || profile();
   localStorage.setItem("apnaSaathiProfile", JSON.stringify(next));
   renderProfileSummary();
-  chancesCache = null; // Invalidate cache so My Chances re-fetches with new profile
+  chancesCache = null; 
   if (typeof updateEditLimitUI === "function") {
     updateEditLimitUI(next);
   }
@@ -1533,7 +1513,7 @@ function addMessage(role, text, persist = true, messageObj) {
   const label = document.createElement("span");
   label.textContent = role === "user" ? "You" : "Apna Sathee";
 
-  // MARDKOWN TRANSLATOR FIX ------------------------------------------
+  
   const body = document.createElement("div");
   body.className = "message-body";
   if (role === "bot" && typeof marked !== 'undefined') {
@@ -1541,16 +1521,16 @@ function addMessage(role, text, persist = true, messageObj) {
   } else {
     body.textContent = text;
   }
-  // ------------------------------------------------------------------
+  
 
   box.append(label, body);
 
   if (role === "bot") {
     const actions = document.createElement("div");
     actions.className = "message-actions";
-    // ALIEN EMOJI FIX ------------------------------------------------
+    
     actions.innerHTML = ``;
-    // ----------------------------------------------------------------
+   
     box.append(actions);
 
     actions.querySelectorAll("[data-action]").forEach((btn) => {
@@ -1751,7 +1731,7 @@ function maybeLoadSharedProfile() {
     });
     renderProfileSummary();
   } catch {
-    // ignore invalid share
+    
   }
 }
 
@@ -1760,12 +1740,11 @@ let isFirstChatQuery = true;
 async function askBot(message) {
   requireProfile("chatScreen");
 
-  // 1. INSTANT UI: Show user message and clear input
+ 
   addMessage("user", message);
   const msgInput = $("messageInput");
   if (msgInput) msgInput.value = "";
 
-  // 2. Show typing indicator
   const msgHost = $("messages");
   const typingBubble = document.createElement("article");
   typingBubble.className = "message bot typing-indicator";
@@ -1796,10 +1775,10 @@ async function askBot(message) {
   const confEl = $("confidence");
   if (confEl) confEl.textContent = "thinking";
 
-  // 3. FREEMIUM GATE: Check tier before making API call
+
   if (!isUserPro()) {
     if (currentMessagesUsed >= 5) {
-      // Remove typing indicator
+     
       if (typingBubble.parentNode) typingBubble.remove();
       addMessage("bot", "🔒 You have reached your 5 free messages. Upgrade to Apna Sathee Pro to continue chatting with unlimited AI counselling.");
       showPaywall();
@@ -1808,7 +1787,7 @@ async function askBot(message) {
     }
   }
 
-  // 4. FETCH from Python FastAPI backend
+
   try {
     const response = await fetch("https://apna-sathee-backend.onrender.com/api/chat" + '?_=' + Date.now(), {
       method: "POST",
@@ -1822,19 +1801,19 @@ async function askBot(message) {
 
     const data = await response.json();
 
-    // Remove typing indicator
+    
     if (typingBubble.parentNode) typingBubble.remove();
 
-    // Append AI response
+  
     let reply = data.reply || data.answer || data.response || "I'm not sure how to answer that. Please try rephrasing.";
     
-    // Targeted Regex Sanitizer: Safely replace 2024/2025 with 2026 when near specific document/exam keywords
+    
     reply = reply.replace(/(JEE(?:\s+(?:Main|Advanced))?|JoSAA(?:[^0-9]{1,30})?|Year|Scorecard|Admit\s+Card|Certificate|marksheet|Letter)\s+(2024|2025)/gi, "$1 2026");
 
     addMessage("bot", reply);
     if (confEl) confEl.textContent = "answered";
 
-    // 5. INCREMENT usage for Free users (background, non-blocking)
+    
     if (!isUserPro()) {
       currentMessagesUsed++;
       if (currentUserUid) {
@@ -1846,7 +1825,7 @@ async function askBot(message) {
     }
 
   } catch (error) {
-    // Remove typing indicator
+ 
     if (typingBubble.parentNode) typingBubble.remove();
 
     console.error("Chat fetch error:", error);
@@ -1859,7 +1838,7 @@ async function askBot(message) {
   }
 }
 
-// Contact Us button logic moved to nav-item handler for paywall integration
+
 
 
 async function handleGeneratePreferenceList(targetId = "preferenceDnDList") {
@@ -1888,7 +1867,7 @@ async function handleGeneratePreferenceList(targetId = "preferenceDnDList") {
     lastChoiceList = generatePreferenceList(data.results, p);
     sessionStorage.setItem('apnaSatheeLastChoiceList', JSON.stringify(lastChoiceList));
 
-    // Save to explicit global buckets
+
     currentAmbitious = lastChoiceList.filter(r => (r.band || '').toUpperCase() === 'AMBITIOUS');
     currentBalanced = lastChoiceList.filter(r => (r.band || '').toUpperCase() === 'BALANCED');
     currentSafe = lastChoiceList.filter(r => (r.band || '').toUpperCase() === 'SAFE');
@@ -1971,7 +1950,7 @@ function generatePreferenceList(filteredDatabase, userProfile) {
       };
     })
     .sort((a, b) => {
-      // Sort purely by Closing Rank as the new default
+      
       const pA = parseInt(String(a.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
       const pB = parseInt(String(b.closingRank).replace(/,/g, ''), 10) || Number.MAX_VALUE;
       return pA - pB;
@@ -2365,22 +2344,21 @@ function filterBranches(rows, query) {
   const exactRegex = new RegExp(`\\b${safeQuery}\\b`, 'i');
 
   return rows.filter(r => {
-    // 1. Isolate the Branch Column
+ 
     const program = String(r.program || "");
     const programLower = program.toLowerCase();
 
-    // 2. Strict Acronym Mapping
+
     if (mappedQuery) {
       return programLower.includes(mappedQuery) || exactRegex.test(program);
     }
 
-    // 3. Implement Keyword Exclusion & Whole Word Match
+  
     if (exactRegex.test(program)) {
       return true;
     }
 
-    // 4. Fallback Multi-Word Fuzzy Match
-    // Strip common words that often cause mismatches between query and official name
+    
     const strippedProgram = programLower
       .replace(/engineering/g, "")
       .replace(/degree/g, "")
@@ -2395,17 +2373,17 @@ function filterBranches(rows, query) {
       .replace(/[(),]/g, "")
       .trim();
 
-    // If simple substring matches
+
     if (strippedProgram.includes(cleanQuery)) {
       return true;
     }
 
-    // Otherwise, split the query into keywords and ensure ALL significant keywords are in the program
+    
     const stopWords = ['and', 'of', 'in', 'engineering', 'technology', 'science'];
     const keywords = cleanQuery.split(/\s+/).filter(w => w.length > 2 && !stopWords.includes(w));
     
     if (keywords.length > 0) {
-      // Check if EVERY keyword is present in the program string
+    
       const allKeywordsMatch = keywords.every(kw => programLower.includes(kw));
       if (allKeywordsMatch) return true;
     }
@@ -2428,10 +2406,10 @@ function renderChances() {
     const mainNum = p.rankMain ? parseInt(String(p.rankMain).replace(/,/g, ''), 10) : null;
     const advNum = p.rankAdvanced ? parseInt(String(p.rankAdvanced).replace(/,/g, ''), 10) : null;
 
-    // Apply branch keyword filter first
+    
     rows = filterBranches(rows, rawQuery);
 
-    // Centralized single pass filter (AND logic)
+   
     rows = rows.filter((r) => {
       const group = instituteGroup(r.instituteType, r.institute);
 
@@ -2446,7 +2424,6 @@ function renderChances() {
       } else if (activeCategory === "all-nits") {
         if (group === "iit") return false;
       } else {
-        // Specific category logic
         if (activeChancesType === "IIT" || ["top7", "old12", "newer"].includes(activeCategory)) {
           if (group !== "iit") return false;
           if (activeCategory === "top7" && !isMatch(TOP_7_IITS)) return false;
@@ -2459,7 +2436,6 @@ function renderChances() {
         }
       }
 
-      // Rank type & Institute type check
       if (group === "iit" && p.exam !== "JEE Advanced" && p.exam !== "Both") return false;
       if (group !== "iit" && p.exam !== "JEE Main" && p.exam !== "Both") return false;
 
@@ -2553,7 +2529,7 @@ function renderChances() {
 
       const id = `${r.institute}__${r.program}`.replace(/\s+/g, "_");
       
-      // Safety check for preferenceState
+  
       let alreadyAdded = false;
       if (typeof preferenceState !== 'undefined' && preferenceState.rows) {
           alreadyAdded = preferenceState.rows.some((pref) => pref.institute === r.institute && pref.program === r.program);
@@ -2587,10 +2563,10 @@ function renderChances() {
         const closingRank = tr?.querySelector("td:nth-child(4)")?.textContent || "-";
         const round1 = tr?.querySelector("td:nth-child(3)")?.textContent || "-";
 
-        // Find the full row data from the current filtered set
+      
         const matchedRow = rows.find(r => r.institute === institute && r.program === program) || {};
 
-        // Use the exact schema from clientRecommend to prevent drag-and-drop crashes
+    
         addToPreference({
           institute: institute,
           instituteType: matchedRow.instituteType || "",
@@ -2627,10 +2603,10 @@ function showToast(message) {
 }
 
 function addToPreference(item, btn) {
-  // --- 1. Read latest from localStorage before writing ------------------------
+
   loadPreferenceFromStorage();
 
-  // --- 2. Duplicate check against the live list -------------------------------
+
   const isDuplicate = preferenceState.rows.some(
     (r) => r.institute === item.institute && r.program === item.program
   );
@@ -2645,18 +2621,17 @@ function addToPreference(item, btn) {
     return;
   }
 
-  // --- 3. Push to the bottom (no auto-sort, no cap) ---------------------------
+
   pushPrefUndoSnapshot();
   preferenceState.rows.push({ ...item, at: new Date().toISOString() });
   pushPreferenceSnapshot("Added manually");
-  syncLastChoiceList();   // this also calls savePreferenceToStorage()
+  syncLastChoiceList();   
 
-  // --- 4. Force re-render if Preference List tab is active --------------------
+ 
   if ($("preferenceScreen").classList.contains("active")) {
     renderPreferenceBoard();
   }
 
-  // --- 5. UI feedback ---------------------------------------------------------
   if (btn) {
     btn.textContent = "Added ✓";
     btn.classList.add("added");
@@ -2897,7 +2872,7 @@ async function runCompare() {
             }
           }
 
-          // Prioritize Round 6 (final round) for realistic cutoffs
+     
           const r6Set = targetSet.filter(c => String(c.round) === '6');
           const finalSet = r6Set.length > 0 ? r6Set : [...targetSet].sort((a, b) => b.round - a.round);
 
@@ -2926,9 +2901,8 @@ async function runCompare() {
 
     renderCompareTable(options);
 
-    // --- PART 3: AI Verdict Integration ---------------------------------------
     if (options.length >= 2) {
-      // Dynamically inject verdict container below compare table
+
       let verdictContainer = document.getElementById('aiVerdictContainer');
       if (!verdictContainer) {
         verdictContainer = document.createElement('div');
@@ -2939,14 +2913,14 @@ async function runCompare() {
         }
       }
 
-      // Show typing indicator
+  
       verdictContainer.innerHTML = `
         <div style="margin-top: 16px; padding: 16px 20px; border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.4); background: rgba(251, 191, 36, 0.05);">
           <strong style="color: #fbbf24; font-size: 14px;">✦ Sathee's Final Verdict</strong>
           <p style="color: var(--muted); margin: 8px 0 0; font-size: 13px;">Sathee is analyzing the placements...</p>
         </div>`;
 
-      // Fire background fetch to AI verdict endpoint
+
       const college1 = options[0]?.label || options[0]?.institute || '';
       const college2 = options[1]?.label || options[1]?.institute || '';
 
@@ -3009,7 +2983,7 @@ listen("closeLimitModal", "click", () => {
 listen("upgradeFromLimitBtn", "click", () => {
   const modal = document.getElementById('limitReachedModal');
   if (modal) modal.style.display = 'none';
-  // Route through the paywall modal (not directly to Razorpay)
+
   if (typeof window.openProCheckout === 'function') {
     window.openProCheckout();
   } else {
@@ -3222,12 +3196,11 @@ document.querySelectorAll(".nav-item").forEach((button) => {
     const target = button.dataset.target;
     if (!target) return;
 
-    // --- Paywall gate for premium tabs --------------------------------------
-    // --- Paywall gate for premium tabs --------------------------------------
+
     const premiumScreens = ["contactUs"];
     if (premiumScreens.includes(target) && isPremiumLocked()) {
       
-      // 1. Close mobile menus so the Paywall isn't hidden behind them!
+
       const sidebar = document.querySelector('.app-sidebar');
       const backdrop = document.querySelector('.sidebar-backdrop');
       const overlay = document.querySelector('.sidebar-overlay');
@@ -3235,7 +3208,7 @@ document.querySelectorAll(".nav-item").forEach((button) => {
       if (backdrop) backdrop.classList.remove('active');
       if (overlay) overlay.classList.remove('open');
 
-      // 2. Show the Paywall Modal 
+     
       if (typeof showPaywall === "function") {
           showPaywall();
       }
@@ -3303,7 +3276,7 @@ listen("toggleHistoryBtn", "click", () => {
 })();
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Background Wake-Up Ping
+
   fetch("https://apna-sathee-backend.onrender.com/api/wakeup").catch(() => {});
 
   listen("exam", "change", () => { updateRankInputsVisibility(); renderProfileVisuals(profile()); });
@@ -3311,11 +3284,11 @@ document.addEventListener('DOMContentLoaded', () => {
   listen("rankMain", "input", () => renderProfileVisuals(profile()));
   listen("rankAdvanced", "input", () => renderProfileVisuals(profile()));
 
-  // Dropdown listeners moved to delegated handler inside DOMContentLoaded for mobile stability
+
 
   try {
     loadProfile();
-    // Explicitly call updateRankInputsVisibility once DOM is fully loaded just to be safe
+   
     updateRankInputsVisibility();
     renderHistory();
     renderNewsFeed();
@@ -3329,7 +3302,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Optional compare prefill from shared link
+
 (() => {
   const url = new URL(window.location.href);
   const compare = url.searchParams.get("compare");
@@ -3341,7 +3314,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 })();
 
-// Accessibility preferences
+
 (() => {
   const mode = localStorage.getItem("apnaTheme") || "light";
   if (mode === "dark") document.body.classList.add("theme-dark");
@@ -3362,7 +3335,7 @@ listen("collapseSidebarBtn", "click", () => {
   }
 });
 
-// Lightweight first-time 3-step walkthrough
+
 (() => {
   if (localStorage.getItem("apnaWalkthroughDone") === "1") return;
   const steps = [
@@ -3437,7 +3410,6 @@ document.querySelectorAll(".segment-btn").forEach((btn) => {
     btn.classList.add("active");
     activeChancesType = btn.dataset.type;
 
-    // Update dropdown options
     const filter = $("chCategoryFilter");
     if (filter) {
       if (activeChancesType === "IIT") {
@@ -3551,7 +3523,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// --- APNA SATHEE GLOBAL AI DISCLAIMER ---
+
 document.addEventListener('DOMContentLoaded', () => {
   const disclaimerHTML = `
     <div style="text-align: center; padding: 12px 20px; font-size: 11px; color: #64748b; display: flex; justify-content: center; align-items: center; gap: 6px; width: 100%; border-top: 1px solid rgba(150, 150, 150, 0.1); margin-top: auto; opacity: 0.8;">
@@ -3560,7 +3532,6 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   `;
 
-  // The 4 feature screens you want to protect
   const targetScreens = ['chatScreen', 'chancesScreen', 'preferenceScreen', 'compareScreen'];
 
   targetScreens.forEach(id => {
@@ -3570,16 +3541,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
-// --- APNA SATHEE MOBILE SIDEBAR LOGIC ---
+
 document.addEventListener('DOMContentLoaded', () => {
   const appShell = document.querySelector('.app-shell');
   const sidebar = document.querySelector('.app-sidebar');
 
   if (appShell && sidebar) {
-    // 1. Create the Top Mobile Header (Hamburger + Logo)
+ 
     const mobileHeader = document.createElement('div');
     mobileHeader.className = 'mobile-header';
-    mobileHeader.style.display = 'none'; // Hidden on desktop
+    mobileHeader.style.display = 'none'; 
     mobileHeader.innerHTML = `
             <div style="font-weight: 700; font-size: 1.2rem; color: #f8fafc; display: flex; align-items: center; gap: 10px;">
                 <img src="/logo.png" style="width: 30px; height: 30px;" onerror="this.style.display='none'"> 
@@ -3588,38 +3559,36 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="hamburger-btn" aria-label="Open Menu">☰</button>
         `;
 
-    // 2. Create the Dark Overlay
+    
     const overlay = document.createElement('div');
     overlay.className = 'sidebar-overlay';
 
-    // Inject them into the DOM
+ 
     appShell.insertBefore(mobileHeader, appShell.firstChild);
     appShell.appendChild(overlay);
 
     const hamburgerBtn = mobileHeader.querySelector('.hamburger-btn');
     const closeBtn = document.getElementById('collapseSidebarBtn');
 
-    // 3. Open Sidebar Action
+
     hamburgerBtn.addEventListener('click', () => {
       sidebar.classList.add('open');
       overlay.classList.add('open');
     });
 
-    // 4. Close Sidebar Action
     const closeSidebar = () => {
       sidebar.classList.remove('open');
       overlay.classList.remove('open');
     };
 
-    // Close when X is clicked, or background is clicked
     if (closeBtn) {
-      // Change the standard collapse icon to an "X" on mobile
+    
       if (window.innerWidth <= 768) closeBtn.innerHTML = "✕";
       closeBtn.addEventListener('click', closeSidebar);
     }
     overlay.addEventListener('click', closeSidebar);
 
-    // 5. Auto-Close sidebar when a user clicks a menu link!
+
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', () => {
         if (window.innerWidth <= 768) {
@@ -3630,16 +3599,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// =========================================
-// MOBILE UI FIXES (Under 768px)
-// =========================================
+
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Off-Canvas Main Sidebar Logic
+
   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
   const mainSidebar = document.querySelector('.app-sidebar');
 
   if (mobileMenuBtn && mainSidebar) {
-    // Inject a backdrop
+  
     const backdrop = document.createElement('div');
     backdrop.className = 'sidebar-backdrop';
     document.body.appendChild(backdrop);
@@ -3652,21 +3619,20 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileMenuBtn.addEventListener('click', toggleMainMenu);
     backdrop.addEventListener('click', toggleMainMenu);
 
-    // Auto-close main sidebar when a navigation link is clicked
-    // Auto-close main sidebar when a navigation link is clicked
+   
     const navItems = mainSidebar.querySelectorAll('.nav-item');
     navItems.forEach(item => {
       item.addEventListener('click', () => {
-        // 🚨 THE IMMUNITY CHECK: If free user clicks a paid tab, DO NOT CLOSE!
+        
         const premiumTabs = ["contactUs"];
         const isPremiumTab = premiumTabs.includes(item.dataset.target);
         const isLocked = !isUserPro();
 
         if (isPremiumTab && isLocked) {
-            return; // Aborts the close script immediately. Lets the Paywall slider take over.
+            return; 
         }
 
-        // Otherwise, close normally
+    
         if (window.innerWidth <= 768) {
           mainSidebar.classList.remove('mobile-open');
           backdrop.classList.remove('active');
@@ -3675,7 +3641,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 2. Chat Sidebar Drawer Logic
+
   const mobileChatToggle = document.getElementById('mobileChatToggle');
   const chatSidebar = document.querySelector('.chat-sidebar');
 
@@ -3684,7 +3650,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chatSidebar.classList.toggle('open');
     });
 
-    // Auto-close chat drawer when a chat history item is clicked
+ 
     chatSidebar.addEventListener('click', (e) => {
       if (e.target.closest('.history-item') && window.innerWidth <= 768) {
         chatSidebar.classList.remove('open');
@@ -3694,9 +3660,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ==========================================
-// THE PAYWALL BOUNCER (Fixed Modal View)
-// ==========================================
+
 document.addEventListener('DOMContentLoaded', function() {
     const lockedButtons = document.querySelectorAll('.locked-feature');
 
@@ -3708,7 +3672,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.stopImmediatePropagation();
                 e.stopPropagation();      
                 
-                // 1. Close the mobile sidebar so they can actually see the Paywall Modal
+             
                 const sidebar = document.querySelector('.app-sidebar');
                 const backdrop = document.querySelector('.sidebar-backdrop');
                 const overlay = document.querySelector('.sidebar-overlay');
@@ -3716,7 +3680,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (backdrop) backdrop.classList.remove('active');
                 if (overlay) overlay.classList.remove('open');
 
-                // 2. Show the Paywall Modal (NOT the direct checkout)
+              
                 if (typeof showPaywall === "function") {
                     showPaywall(); 
                 }
@@ -3725,24 +3689,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// =============================================================================
-// REFERRAL SYSTEM — Processing, Dashboard Rendering, Event Handlers
-// =============================================================================
 
-/**
- * Process a Tier 2 (peer) referral conversion after a successful Pro payment.
- * Finds the referrer by their referral_code (UID), increments their count,
- * and checks if they hit the Tier 2 milestone (2 referrals).
- *
- * @param {string} refCode    - The referrer's UID (used as referral code)
- * @param {string} buyerUid   - The paying user's UID
- * @param {number} paidAmount - The amount paid in paise (after any discount)
- */
 async function processReferralConversion(refCode, buyerUid, paidAmount) {
   try {
-    // Look up the referrer's Firestore document by referral_code
-    // The ref code format is the referrer's UID itself (simple and collision-free).
-    const referrerRef = doc(db, 'users', refCode);
+   
     const referrerSnap = await getDoc(referrerRef);
 
     if (!referrerSnap.exists()) {
@@ -3750,7 +3700,7 @@ async function processReferralConversion(refCode, buyerUid, paidAmount) {
       return;
     }
 
-    // Prevent self-referrals
+
     if (refCode === buyerUid) {
       console.warn("⚠️ Self-referral blocked.");
       return;
@@ -3759,12 +3709,12 @@ async function processReferralConversion(refCode, buyerUid, paidAmount) {
     const referrerData = referrerSnap.data();
     const newRefCount = (referrerData.successful_referrals || 0) + 1;
 
-    // Update referrer's record
+   
     await updateDoc(referrerRef, {
       successful_referrals: newRefCount
     });
 
-    // Also mark who referred this buyer
+    
     const buyerRef = doc(db, 'users', buyerUid);
     await updateDoc(buyerRef, {
       referred_by: refCode
@@ -3772,7 +3722,7 @@ async function processReferralConversion(refCode, buyerUid, paidAmount) {
 
     console.log(`🎯 Referral credited! ${refCode} now has ${newRefCount} successful referral(s).`);
 
-    // Tier 2 milestone check
+   
     if (newRefCount >= 2) {
       console.log(`🏆 Referrer ${refCode} hit the 2-referral milestone! Reward unlocked.`);
     }
@@ -3782,18 +3732,11 @@ async function processReferralConversion(refCode, buyerUid, paidAmount) {
   }
 }
 
-/**
- * Process a Tier 1 (Influencer/Affiliate) commission after a successful Pro payment.
- * Increments the influencer's total_successful_referrals and adds 15% of the
- * discounted final price to their unpaid_cash_balance.
- *
- * @param {string} affiliateUid  - The affiliate/influencer's UID
- * @param {string} buyerUid      - The paying user's UID
- * @param {number} paidAmountPaise - The final amount paid in paise (post-discount)
+
  */
 async function processAffiliateCommission(affiliateUid, buyerUid, paidAmountPaise) {
   try {
-    // Prevent self-referral via affiliate code
+    
     if (affiliateUid === buyerUid) {
       console.warn("⚠️ Self-affiliate blocked.");
       return;
@@ -3801,17 +3744,16 @@ async function processAffiliateCommission(affiliateUid, buyerUid, paidAmountPais
 
     const affiliateRef = doc(db, 'users', affiliateUid);
 
-    // Calculate 15% commission on the discounted price (convert paise to rupees)
+
     const paidAmountRupees = paidAmountPaise / 100;
     const commissionRupees = parseFloat((paidAmountRupees * AFFILIATE_COMMISSION_PERCENT / 100).toFixed(2));
 
-    // Atomically increment the influencer's counters
     await updateDoc(affiliateRef, {
       total_successful_referrals: increment(1),
       unpaid_cash_balance: increment(commissionRupees)
     });
 
-    // Link the referred user to the affiliate
+    
     const buyerRef = doc(db, 'users', buyerUid);
     await updateDoc(buyerRef, {
       referred_by_affiliate: affiliateUid
@@ -3825,10 +3767,7 @@ async function processAffiliateCommission(affiliateUid, buyerUid, paidAmountPais
   }
 }
 
-/**
- * Render the referral dashboard UI with current user data.
- * Called when the referral screen becomes visible or after auth state changes.
- */
+ 
 function renderReferralDashboard() {
   const linkInput = document.getElementById('referralLinkInput');
   const progressText = document.getElementById('referralProgressText');
@@ -3840,7 +3779,7 @@ function renderReferralDashboard() {
 
   if (!linkInput) return;
 
-  // If not logged in, show placeholder state
+  
   if (!currentUserUid) {
     linkInput.value = 'Login to get your referral link';
     if (statusBadge) statusBadge.textContent = 'Login required';
@@ -3848,11 +3787,11 @@ function renderReferralDashboard() {
     return;
   }
 
-  // Set the referral link (using UID as referral code)
+  
   const referralUrl = `https://apnasathee.co.in/?ref=${currentUserUid}`;
   linkInput.value = referralUrl;
 
-  // Fetch referral data from Firestore and render
+  
   const userRef = doc(db, 'users', currentUserUid);
   getDoc(userRef).then(snap => {
     if (!snap.exists()) return;
@@ -3861,13 +3800,13 @@ function renderReferralDashboard() {
     const TARGET = 2;
     const percentage = (successfulRefs / TARGET) * 100;
 
-    // Progress bar
+    
     if (progressBar) progressBar.style.width = `${percentage}%`;
     if (progressText) {
       progressText.innerHTML = `${successfulRefs} <span style="color: #64748b; font-size: 0.8rem; font-weight: 400;">/ ${TARGET}</span>`;
     }
 
-    // Badge
+    
     if (statusBadge) {
       if (successfulRefs >= TARGET) {
         statusBadge.textContent = '🎉 Reward Unlocked';
@@ -3878,12 +3817,12 @@ function renderReferralDashboard() {
       }
     }
 
-    // Conditional reward section
+
     if (successfulRefs >= TARGET) {
       if (lockedSection) lockedSection.style.display = 'none';
       if (unlockedSection) unlockedSection.style.display = 'block';
 
-      // If already claimed, show success banner
+    
       if (data.upi_id) {
         const claimForm = document.getElementById('referralClaimForm');
         const claimSuccess = document.getElementById('referralClaimSuccess');
@@ -3901,10 +3840,10 @@ function renderReferralDashboard() {
   });
 }
 
-// --- Referral Dashboard Event Handlers ---------------------------------------
+
 document.addEventListener('DOMContentLoaded', () => {
 
-  // Copy referral link button
+
   const copyBtn = document.getElementById('copyReferralBtn');
   if (copyBtn) {
     copyBtn.addEventListener('click', async () => {
@@ -3926,7 +3865,7 @@ document.addEventListener('DOMContentLoaded', () => {
           copyBtn.style.border = 'none';
         }, 2000);
       } catch (err) {
-        // Fallback for older browsers
+       
         linkInput.select();
         document.execCommand('copy');
         copyBtn.textContent = '✓ Copied!';
@@ -3935,7 +3874,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Claim reward button
+ 
   const claimBtn = document.getElementById('claimRewardBtn');
   if (claimBtn) {
     claimBtn.addEventListener('click', async () => {
@@ -3954,7 +3893,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (errorEl) errorEl.style.display = 'none';
 
       try {
-        // Verify server-side: re-check referral count from Firestore
+       
         const userRef = doc(db, 'users', currentUserUid);
         const snap = await getDoc(userRef);
         if (!snap.exists()) throw new Error('User not found');
@@ -3967,7 +3906,7 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('Reward already claimed.');
         }
 
-        // Save UPI ID and mark payout as pending in Firestore
+       
         await updateDoc(userRef, { upi_id: upiInput.value.trim(), payout_status: "pending" });
 
         // Show success state
@@ -3987,8 +3926,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Render referral dashboard when the referral screen becomes active
-  // This hooks into the existing showScreen / nav-item click system
+  
   const observer = new MutationObserver(() => {
     const referralScreen = document.getElementById('referralScreen');
     if (referralScreen && referralScreen.classList.contains('active')) {
@@ -4002,7 +3940,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Branch Combobox Logic
+
 const josaaBranches = [
   "Computer Science", "Electronics", "Electrical", "Mechanical", "Civil", 
   "Chemical", "Aerospace", "Engineering Physics", "Mathematics and Computing", 
@@ -4044,7 +3982,6 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode 
       }
     }
     
-    // trigger input event so profile visuals update
     hiddenInput.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
@@ -4071,7 +4008,7 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode 
       item.className = 'suggestion-item';
       item.textContent = match;
       item.addEventListener('mousedown', (e) => {
-        e.preventDefault(); // Prevent blur
+        e.preventDefault(); 
         addTag(match);
       });
       item.addEventListener('touchstart', (e) => {
@@ -4115,7 +4052,7 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode 
   displayInput.addEventListener('blur', () => {
     setTimeout(() => {
       dropdown.classList.remove('active');
-      // Optionally add text as tag on blur if they typed something
+      
       if (displayInput.value.trim() !== '') {
           addTag(displayInput.value.trim());
       }
@@ -4157,16 +4094,16 @@ function initBranchCombobox(displayId, hiddenId, dropdownId, tagsId, singleMode 
     }
   }
 
-  // Hook into loadProfile (only for the main profile branches)
+  
   if (hiddenId === "branches") {
     window.renderBranchTags = () => {
       currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
       renderTags();
     };
-    // Call it once on init so that already loaded profile values are rendered
+    
     window.renderBranchTags();
   } else {
-    // For other instances like chances filter, just render initial value if any
+    
     currentTags = hiddenInput.value ? hiddenInput.value.split(',').map(t => t.trim()).filter(Boolean) : [];
     renderTags();
   }
