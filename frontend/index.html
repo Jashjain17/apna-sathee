@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css?v=2" />
   <meta name="google-site-verification" content="ac3aijOxZfruihG9xGGzWYXsnnztgJvAdf9uqLuboyM" />
   
-  <!-- Meta Pixel Code -->
+
   <script>
   !function(f,b,e,v,n,t,s)
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -28,7 +28,7 @@
   <noscript><img height="1" width="1" style="display:none"
   src="https://www.facebook.com/tr?id=85253724082531&ev=PageView&noscript=1"
   /></noscript>
-  <!-- End Meta Pixel Code -->
+
 </head>
 
 <body>
@@ -75,7 +75,7 @@
         <script>
     document.getElementById('upgradeToProBtn').addEventListener('click', function(e) {
         e.preventDefault();
-        // This calls the Master Function we built in script.js!
+       
         if (typeof window.openProCheckout === "function") {
             window.openProCheckout(); 
         } else {
@@ -98,7 +98,7 @@
       </div>
 
     </aside>
-    <!-- Add this Mobile Header for Sidebar -->
+   
     <header class="mobile-header">
       <div class="mobile-brand">
         <img src="/logo.png" alt="Logo" class="mobile-logo">
@@ -120,22 +120,22 @@
             -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--line);
             position: sticky;
-            top: -32px; /* Adjusted to app-main padding */
-            margin: -32px -36px 32px -36px; /* Negate app-main padding for edge-to-edge */
+            top: -32px; 
+            margin: -32px -36px 32px -36px; 
             z-index: 100;
         }
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 16px; /* Space between the legal text and the login button */
+            gap: 16px; 
         }
         .header-legal {
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 0.75rem; /* Small, sleek text */
+            font-size: 0.75rem; 
             color: #94a3b8;
-            white-space: nowrap; /* CRITICAL: Prevents the text from breaking into multiple lines */
+            white-space: nowrap; 
         }
         .header-legal a {
             color: #818cf8;
@@ -188,7 +188,7 @@
             padding: 0 16px;
           }
           .dashboard-header .header-left {
-            display: none; /* Hide title on mobile to save space */
+            display: none; 
           }
         }
       </style>
@@ -433,12 +433,12 @@
             <div id="chatHistory" class="history-list"></div>
           </aside>
           <section class="chat-panel">
-            <!-- Add this toggle button for mobile chat history -->
+           
             <button id="mobileChatToggle" class="mobile-history-btn">🕒 History</button>
 
           <style>
   @media (max-width: 768px) {
-    /* --- 1. Chatbot Cleanup --- */
+  
     #emptyChips {
       display: flex !important;
       flex-direction: column !important;
@@ -448,7 +448,7 @@
       display: none !important;
     }
 
-    /* --- 2. Sliding History Sidebar --- */
+    
     .chat-app {
       position: relative !important; 
       overflow: hidden !important; 
@@ -456,32 +456,32 @@
     .chat-sidebar {
       position: absolute !important;
       top: 0 !important;
-      left: -100% !important; /* Pushed off-screen */
+      left: -100% !important; 
       width: 280px !important;
       height: 100% !important;
-      background-color: #0f172a !important; /* Dark navy background */
+      background-color: #0f172a !important; 
       z-index: 100 !important;
-      transition: left 0.3s ease-in-out !important; /* Smooth sliding animation */
+      transition: left 0.3s ease-in-out !important; 
       box-shadow: 4px 0 20px rgba(0,0,0,0.5) !important;
     }
     .chat-sidebar.open {
-      left: 0 !important; /* Slides it into view */
+      left: 0 !important; 
     }
     #chatHistory {
       display: flex !important;
-      flex-direction: column !important; /* Forces them to stack downwards */
-      overflow-x: hidden !important; /* Kills the horizontal scroll */
-      overflow-y: auto !important; /* Keeps normal vertical scroll */
-      gap: 10px !important; /* Adds breathing room between chats */
+      flex-direction: column !important; 
+      overflow-x: hidden !important; 
+      overflow-y: auto !important; 
+      gap: 10px !important; 
       padding-right: 10px !important;
     }
     #chatHistory > div {
-      width: 100% !important; /* Stops cards from shrinking */
+      width: 100% !important; 
       max-width: 100% !important;
       box-sizing: border-box !important;
     }
   }
-  /* --- 2. GET PRO BUTTON STYLING --- */
+ 
 .side-nav {
   display: flex !important;
   flex-direction: column !important;
@@ -511,9 +511,9 @@
 .feedback-link {
   transition: all 0.3s ease;
   border-radius: 8px;
-  /* Matching the 15px margins from your Pro button screenshot */
+  
   margin: 0; 
-  /* 12px padding gives a better touch target for thumbs on mobile */
+  
   padding: 10px 16px; 
   display: flex;
   align-items: center;
@@ -526,21 +526,20 @@
   color: #ffffff;
 }
 
-/* Ensure the icon stays centered with the text */
 .feedback-link .nav-icon {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-/* Style the AI's rendered HTML */
+
 .ai-message-content p {
   margin-bottom: 12px;
   line-height: 1.6;
 }
 
-/* Change .ai-message-content to .message-body so it matches your script.js */
+
 .message-body strong {
-    color: #fbbf24; /* Make bold text pop in gold to match your brand */
+    color: #fbbf24; 
     font-weight: 700;
 }
 
@@ -557,12 +556,12 @@
 .message-body li {
     margin-bottom: 6px;
 }
-/* 1. Prevent buttons from squishing on any device */
+
 #loginBtn, .legal-consent-wrap, #upgradeToProBtn {
     flex-shrink: 0 !important;
 }
 
-/* 2. ONLY make sidebar scrollable on mobile phones (Protects laptop layout!) */
+
 @media (max-width: 768px) {
     .app-sidebar {
         height: 100vh; 
@@ -575,31 +574,31 @@
     }
 }
 
-/* 2. Tighten up the "Upgrade" button for mobile */
+
 #upgradeToProBtn {
     margin-top: 10px !important;
     margin-bottom: 10px !important;
-    flex-shrink: 0; /* Prevents the button from getting squashed */
+    flex-shrink: 0; 
 }
 
-/* 3. Ensure the legal wrap stays visible */
+
 .legal-consent-wrap {
-    margin-top: auto; /* Pushes it to the bottom of the list */
+    margin-top: auto; 
     padding: 15px;
     flex-shrink: 0;
 }
-/* Blurs the content for free users */
+
 .blurred-row {
     filter: blur(5px);
-    pointer-events: none; /* Prevents clicking on blurred links */
-    user-select: none;    /* Prevents copying the text */
+    pointer-events: none; 
+    user-select: none;   
     opacity: 0.6;
 }
 
-/* Container for the 'Unlock' button over the blurred list */
+
 .paywall-overlay-container {
     position: relative;
-    margin-top: -100px; /* Pulls it up over the blurred rows */
+    margin-top: -100px; 
     text-align: center;
     padding: 40px 20px;
     background: linear-gradient(to top, var(--bg) 60%, transparent);
@@ -617,40 +616,37 @@
     cursor: pointer;
     box-shadow: 0 10px 25px -5px rgba(251, 191, 36, 0.4);
 }
-/* ==========================================
-   THE DUAL-SCROLL DASHBOARD FIX
-   ========================================== */
 
-/* 1. Force the Main Dashboard to scroll vertically on all devices */
+
+
 body, html {
     overflow-y: auto !important; 
-    overflow-x: hidden !important; /* Prevents annoying side-to-side wobble */
+    overflow-x: hidden !important; 
 }
 
-/* 2. Force the Sidebar to scroll independently on all devices */
+
 .app-sidebar {
     height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow-y: auto !important; /* The magic unlock */
+    overflow-y: auto !important; 
     padding-bottom: 30px;
 }
 
-/* Hide the ugly scrollbar on the sidebar so it looks clean */
 .app-sidebar::-webkit-scrollbar {
     display: none;
 }
 .app-sidebar {
-    scrollbar-width: none; /* For Firefox */
+    scrollbar-width: none; 
 }
 
-/* 3. Create armor for your buttons so they never shrink or squish */
+
 #loginBtn, .legal-consent-wrap, #upgradeToProBtn {
     flex-shrink: 0 !important;
     min-height: max-content;
 }
 
-/* Segmented Control Styles */
+
 .controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; margin-bottom: 24px; width: 100%; }
 .segmented-control { display: inline-flex; background-color: var(--bg); padding: 6px; border-radius: 999px; border: 1px solid transparent; box-shadow: inset 0 2px 6px rgba(0,0,0,0.05); }
 .segmented-control button { background: transparent; color: var(--muted); border: none; padding: 10px 24px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
@@ -695,7 +691,6 @@ body, html {
             <span id="chancesMeta">rank-based dashboard</span>
           </div>
 
-          <!-- Segmented Control for IIT/NIT -->
           <div class="segmented-control" id="chancesTypeToggle">
             <button class="segment-btn active" data-type="IIT">IITs</button>
             <button class="segment-btn" data-type="NIT">NITs & Others</button>
@@ -902,7 +897,6 @@ body, html {
             <span id="referralStatusBadge" style="font-size: 0.8rem;">Loading...</span>
           </div>
 
-          <!-- Referral Link Section -->
           <div style="background: var(--paper); padding: 20px; border-radius: 12px; border: 1px solid var(--line); margin-bottom: 24px; box-shadow: var(--shadow);">
             <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">Your Unique Referral Link</label>
             <div style="display: flex; gap: 12px; flex-wrap: wrap;">
@@ -911,7 +905,6 @@ body, html {
             </div>
           </div>
 
-          <!-- Progress Tracker -->
           <div style="margin-bottom: 28px;">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
               <span style="font-size: 0.9rem; font-weight: 600; color: var(--text);">Your Progress</span>
@@ -923,17 +916,16 @@ body, html {
             <p style="margin-top: 10px; font-size: 0.8rem; color: var(--muted); text-align: center;">Get 2 friends to upgrade to Pro to unlock your ₹100 UPI Cashback!</p>
           </div>
 
-          <!-- Reward Claim Section -->
           <div id="referralRewardSection" style="padding-top: 20px; border-top: 1px solid var(--line);">
 
-            <!-- Locked State (default) -->
+        
             <div id="referralLocked" style="background: var(--bg); border-radius: 12px; padding: 28px 20px; text-align: center; border: 1px dashed var(--muted);">
               <div style="display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; background: var(--paper); border: 1px solid var(--line); margin-bottom: 16px; font-size: 1.4rem;">🔒</div>
               <h3 style="font-size: 1.1rem; font-weight: 600; color: var(--text); margin: 0 0 8px;">Reward Locked</h3>
               <p id="referralLockedText" style="font-size: 0.85rem; color: var(--muted); margin: 0;">Get 2 friends to upgrade to Pro to unlock your ₹100 UPI Cashback!</p>
             </div>
 
-            <!-- Unlocked State (hidden by default) -->
+    
             <div id="referralUnlocked" style="display: none; background: var(--paper); border-radius: 12px; padding: 24px; border: 1px solid var(--orange); box-shadow: var(--shadow);">
               <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
                 <span style="font-size: 1.6rem;">🎉</span>
@@ -943,12 +935,11 @@ body, html {
                 </div>
               </div>
 
-              <!-- Claim Success Banner (hidden) -->
               <div id="referralClaimSuccess" style="display: none; background: rgba(0, 182, 122, 0.1); border: 1px solid var(--green); color: var(--green-2); padding: 16px; border-radius: 10px; text-align: center; font-size: 0.9rem; font-weight: 600;">
                 ✅ Claim submitted! We'll process your ₹100 cashback shortly.
               </div>
 
-              <!-- Claim Form -->
+            
               <div id="referralClaimForm">
                 <label style="display: block; font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Enter your UPI ID for cashback</label>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
@@ -996,7 +987,7 @@ body, html {
     <button id="supportBtn" class="secondary">Create ticket</button>
     <div id="supportResult" class="ticket"></div>
   </dialog>
-  <!-- Paywall Modal -->
+
   <div id="paywallModal" class="paywall-modal" style="display: none;">
     <div class="paywall-card">
       <button id="paywallCloseBtn" class="paywall-close" aria-label="Close">&times;</button>
@@ -1012,7 +1003,7 @@ body, html {
       </ul>
       <div class="paywall-price">₹499 <span>/ one-time</span></div>
 
-      <!-- Influencer Coupon Code Section -->
+     
       <div id="couponSection" style="width: 100%; margin-bottom: 16px;">
         <label style="display: block; font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Got a Coupon Code?</label>
         <div style="display: flex; gap: 10px; align-items: center;">
@@ -1034,7 +1025,6 @@ body, html {
     const historyBtn = document.getElementById('mobileChatToggle');
     const sidebar = document.querySelector('.chat-sidebar');
 
-    // 1. The Sidebar Logic
     if (historyBtn && sidebar) {
       historyBtn.addEventListener('click', function(e) {
         e.preventDefault();
@@ -1049,12 +1039,11 @@ body, html {
       });
     }
 
-    // 2. Removed UI Sniper that was incorrectly hiding the show history button
   });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-<!-- Limit Reached Modal -->
+
 <div id="limitReachedModal" class="custom-overlay" style="display: none;">
     <div class="custom-modal-box">
         <h2>⏳ Limit Reached</h2>
