@@ -1,81 +1,79 @@
-# Apna Sathee — Full-Stack Monorepo
+# 🎓 Apna Sathee — AI-Powered JEE & JoSAA Counselling Copilot
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)](https://nodejs.org/)
-[![Architecture](https://img.shields.io/badge/Architecture-Monorepo-blue.svg)](#repository-architecture)
+[![FastAPI](https://img.shields.io/badge/FastAPI-Python-009688.svg)](https://fastapi.tiangolo.com/)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![Firebase](https://img.shields.io/badge/Firebase-Auth%20%26%20Firestore-FFCA28.svg)](https://firebase.google.com/)
 
-> **Apna Sathee** is a full-stack web application built to connect users seamlessly. This repository is structured as a unified monorepo containing both the frontend client and backend REST API services with complete commit histories.
+> **Apna Sathee** is an AI-powered web application built to assist Indian engineering aspirants during JEE & JoSAA/CSAB counselling. It features an in-memory rank predictor over historical cutoff datasets, a context-aware AI chat copilot trained on official JoSAA rulebooks, and live web-scraped college placement comparisons.
 
 ---
 
-##  Repository Architecture
+## 📁 Repository Architecture
 
 ```text
 apna-sathee/
-├── 🌐 frontend/       # Client-side web application
-│   ├── public/        # Static assets
-│   ├── src/           # Components, pages, and state management
-│   └── package.json   # Frontend dependencies & scripts
+├── 🌐 frontend/                      # Client-Side SPA (Deployed on Vercel)
+│   ├── public/                       # Historical Cutoff Datasets (JSON)
+│   │   ├── main_cutoffs.json         # JEE Main cutoffs across NITs/IIITs/GFTIs
+│   │   ├── iit_cutoffs.json          # JEE Advanced cutoffs across IITs
+│   │   ├── josaa_real_cutoffs.json   # Multi-year historical cutoff database
+│   │   └── institutes_master.json    # Institute metadata & state mappings
+│   ├── index.html                    # Dashboard, Rank Predictor & AI Chat UI
+│   ├── script.js                     # In-memory recommendation engine & Firebase logic
+│   ├── styles.css                    # Responsive glassmorphism styling
+│   └── vercel.json                   # Vercel deployment & routing config
 │
-├── ⚙️ backend/        # Server-side REST API & database service
-│   ├── controllers/   # Route handler logic
-│   ├── models/        # Database schemas
-│   ├── routes/        # API Endpoints
-│   └── package.json   # Backend dependencies & scripts
+├── ⚙️ backend/                       # Python AI REST API (Deployed on Render)
+│   ├── server.py                     # FastAPI server, rule matching & LLM routes
+│   ├── josaa_official_rules.json      # Rulebook database for AI context search
+│   ├── counselling_process.json      # Structured counselling process rules
+│   └── requirements.txt              # Python server dependencies
 │
-└── 📄 README.md       # Root monorepo documentation
+└── 📄 README.md                      # Project documentation
 ```
 
 ---
 
-##  Key Features
+## ✨ Key Technical Features
 
-- **Full-Stack Integration:** Modular frontend connected to a RESTful backend.
-- **Unified Monorepo:** Clean directory structure isolating client and server dependencies.
-- **Secure Authentication:** User signup, login, and token-based session handling.
-- **Scalable Architecture:** Designed for modular feature growth and independent deployment.
+- **⚡ Client-Side Rank Predictor:** Loads historical JSON cutoff datasets (~30MB) into browser memory, enabling sub-10ms filter responses (by Rank, Category, Quota, Gender, State) without server overhead.
+- **🤖 Context-Aware AI Copilot (`/api/chat`):** Built a FastAPI backend endpoint that scans official JoSAA text chunks for keyword matches to student questions, appending relevant rule snippets into the **DeepSeek API** prompt to generate accurate answers.
+- **📊 Live Web Comparison Matrix (`/api/compare-verdict`):** Leverages **Tavily Search API** to fetch real-time placement stats (average CTC, highest package) and fee structures for side-by-side college decision verdicts.
+- **🔐 Auth & Tiered Monetization:** Integrated **Firebase Auth** for Google Sign-In, **Cloud Firestore** for user profile & message tracking, and **Razorpay API** for Pro tier upgrades with custom coupon codes.
 
 ---
 
-##  Tech Stack
+## 🛠️ Tech Stack
 
 | Domain | Technologies Used |
 | :--- | :--- |
-| **Frontend** | JavaScript (ES6+), HTML5, CSS3, React / Web APIs |
-| **Backend** | Node.js, Express.js, REST API Architecture |
-| **Database** | MongoDB / SQL |
-| **Tools & Version Control** | Git, Monorepo Architecture (Git Subtree), npm |
+| **Frontend** | Vanilla JavaScript (ES6+), HTML5, CSS3 (Glassmorphism design), Web Storage APIs |
+| **Backend** | Python 3.10+, FastAPI, Uvicorn, AsyncOpenAI (DeepSeek API), Tavily API |
+| **Database & Auth** | Firebase Authentication, Cloud Firestore |
+| **Payments** | Razorpay Payment Gateway API |
+| **Hosting & Infra** | Vercel (Frontend SPA), Render (Python FastAPI Server) |
 
 ---
 
-##  Quick Start & Installation
+## 🚀 Quick Start & Local Setup
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v18 or higher)
-- [Git](https://git-scm.com/)
-
-### 1. Clone the Repository
+### 1. Backend Setup (Python FastAPI)
 ```bash
-git clone https://github.com/jash-cyber/apna-sathee.git
-cd apna-sathee
+cd backend
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# Set Environment Variables in .env
+# DEEPSEEK_API_KEY=your_deepseek_key
+# TAVILY_API_KEY=your_tavily_key
+
+uvicorn server:app --reload --port 8000
 ```
 
-### 2. Setup & Run Frontend
+### 2. Frontend Setup
+Open `frontend/index.html` directly in your browser, or serve it using any static server:
 ```bash
 cd frontend
-npm install
-npm run dev # or npm start
+npx serve .
 ```
-
-### 3. Setup & Run Backend
-```bash
-cd ../backend
-npm install
-npm start
-```
-
----
-
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
